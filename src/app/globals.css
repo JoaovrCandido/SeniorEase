@@ -1,49 +1,84 @@
+/* src/app/globals.css */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* =========================================
+     1. CORES (Alto Contraste e Conforto)
+     ========================================= */
+  /* Fundos e Superfícies */
+  --bg-canvas: #FAFAF9; /* Branco quente, corta o brilho do monitor */
+  --bg-surface: #FFFFFF; /* Branco puro para os cartões e blocos */
+  
+  /* Ação Principal e Marca (Teal - Verde Azuladado Elegante) */
+  --primary-main: #115E59; 
+  --primary-hover: #0F766E;
+  --primary-surface: #CCFBF1; /* Fundo de destaque suave */
+  
+  /* Tipografia */
+  --text-heading: #1C1917; /* Quase preto */
+  --text-body: #44403C; /* Cinza denso para leitura longa */
+  
+  /* Apoio e Feedback */
+  --danger-main: #B91C1C; /* Lixeira e exclusão */
+  --success-main: #15803D; /* Tarefa concluída */
+
+  /* =========================================
+     2. TIPOGRAFIA (Escala Acessível)
+     ========================================= */
+  /* O "normal" (1rem) na web é 16px, mas usaremos 18px como base */
+  --text-sm: 1rem;       /* 16px - Apenas para rodapés ou dicas curtas */
+  --text-base: 1.125rem; /* 18px - Corpo de texto padrão */
+  --text-lg: 1.5rem;     /* 24px - Botões grandes e subtítulos */
+  --text-xl: 2rem;       /* 32px - Títulos principais */
+
+  /* =========================================
+     3. ERGONOMIA E ESPAÇAMENTO
+     ========================================= */
+  /* Área mínima de clique para pessoas com tremor nas mãos */
+  --touch-target-min: 48px;
+  
+  /* Bordas e Sombras */
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+/* =========================================
+   RESET GLOBAL E ACESSIBILIDADE
+   ========================================= */
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  height: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-body);
+  /* A fonte será injetada pelo Next.js no layout, usamos o fallback aqui */
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-heading);
+  font-weight: 700;
+}
+
+a, button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Garante que os botões não fiquem minúsculos */
+button {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
 }
