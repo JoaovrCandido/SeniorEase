@@ -27,12 +27,13 @@ export interface MeetingBlock extends BaseBlock {
   type: 'meeting';
   title: string;
   meetingUrl: string; 
+  date: string; // <-- NOVO CAMPO: Precisamos saber quando é a reunião!
 }
 
 export interface ReminderBlock extends BaseBlock {
   type: 'reminder';
-  date: string; // Guardaremos a data/hora em formato ISO
+  content: string; // <-- NOVO CAMPO DE TEXTO
+  date: string;
 }
 
-// A União Discriminada
 export type ContentBlock = HeadingBlock | ParagraphBlock | TaskBlock | MeetingBlock | ReminderBlock;

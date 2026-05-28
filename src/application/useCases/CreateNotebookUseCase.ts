@@ -1,25 +1,19 @@
-// src/application/useCases/CreateNotebookUseCase.ts
-import { Notebook } from '../../domain/entities/Notebook';
 import { INotebookRepository } from '../../domain/repositories/INotebookRepository';
+import { Notebook } from '../../domain/entities/Notebook';
 
 export class CreateNotebookUseCase {
   constructor(private readonly notebookRepository: INotebookRepository) {}
 
-  async execute(title: string): Promise<Notebook> {
-    if (!title.trim()) {
-      throw new Error('O título do caderno não pode estar vazio.');
-    }
-
+  // Agora aceita a descrição
+  async execute(title: string, description: string = ''): Promise<void> {
     const newNotebook: Notebook = {
-      id: crypto.randomUUID(), // API nativa do navegador para IDs únicos
-      title: title.trim(),
+      id: crypto.randomUUID(),
+      title,
+      description,
+      blocks: [],
       createdAt: new Date(),
       updatedAt: new Date(),
-      blocks: [], // Começa vazio
     };
-
     await this.notebookRepository.save(newNotebook);
-
-    return newNotebook;
   }
 }

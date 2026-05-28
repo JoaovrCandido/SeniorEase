@@ -147,3 +147,144 @@
   font-size: var(--text-base);
   cursor: pointer;
 }
+
+/* =========================================
+   MODO LEITURA (FOCUS MODE)
+   ========================================= */
+.readingContainer {
+  /* 1. Padronização Mestra: Fonte, Tamanho e Peso únicos para TUDO */
+  font-family: var(--font-serif);
+  font-size: 1.5rem; /* Letra um pouco maior que o padrão */
+  font-weight: 400;  /* Peso normal e uniforme */
+  color: var(--text-heading);
+  
+  /* 2. Espaçamento mais confortável (entrelinhas maiores) */
+  line-height: 2; 
+  
+  /* 3. Remoção do max-width (ocupa a tela toda agora) */
+  padding: var(--space-xl) 16px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.readHeading {
+  font-size: 2rem; /* Devolve um tamanho maior e de destaque */
+  font-weight: 700; /* Devolve o negrito para criar hierarquia visual */
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-lg);
+}
+
+.readParagraph {
+  font-size: inherit;
+  font-weight: inherit;
+  margin-bottom: var(--space-lg); /* Espaçamento inferior aumentado */
+}
+
+.readTask {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg); /* Mais espaço entre a caixa e o texto */
+  font-size: inherit;
+  font-weight: inherit;
+  margin-bottom: var(--space-lg);
+}
+
+.readTask.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Checkbox levemente maior para acompanhar a fonte maior */
+.readCheckbox {
+  width: 28px;
+  height: 28px;
+  margin-top: 6px;
+  flex-shrink: 0;
+  accent-color: var(--primary-main);
+}
+
+.readCard {
+  background-color: var(--bg-canvas);
+  padding: var(--space-lg); /* Respiro interno aumentado */
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  border: 1px solid var(--text-body);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  
+  /* Força a herança para ficar idêntico ao parágrafo */
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* Força os textos em negrito dentro dos cartões a perderem o peso para padronizar */
+.readCard strong {
+  font-weight: inherit;
+}
+
+.toggleReadingButton {
+  background-color: var(--bg-surface);
+  color: var(--text-heading);
+  border: 2px solid var(--text-body);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggleReadingButton.active {
+  background-color: var(--primary-main);
+  color: var(--bg-surface);
+  border-color: var(--primary-main);
+}
+
+.cardDescription {
+  font-size: var(--text-base);
+  color: var(--text-body);
+  margin-top: 4px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.editorDescription {
+  font-size: var(--text-lg);
+  color: var(--text-body);
+  margin-top: 8px;
+}
+
+.headerActions {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.secondaryButton {
+  background: transparent;
+  border: 2px solid var(--text-body);
+  color: var(--text-heading);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.secondaryButton:hover { background: var(--bg-canvas); }
+
+.dangerButton {
+  background: transparent;
+  border: 2px solid var(--danger-main);
+  color: var(--danger-main);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.dangerButton:hover { background: #FEE2E2; }

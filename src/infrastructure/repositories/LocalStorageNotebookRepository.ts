@@ -63,9 +63,14 @@ export class LocalStorageNotebookRepository implements INotebookRepository {
       return;
     }
 
-    const notebooks = await this.getAll();
-    const filteredNotebooks = notebooks.filter((n) => n.id !== id);
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredNotebooks));
+    // Chama o STORAGE_KEY diretamente, sem o "this."
+    const data = localStorage.getItem(STORAGE_KEY);
+    if (data) {
+      // Tipagem segura sem uso de 'any'
+      const notebooks = JSON.parse(data) as { id: string }[];
+      // Filtra o array mantendo apenas os cadernos com ID diferente
+      const filtered = notebooks.filter((n) => n.id !== id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+    }
   }
 }
