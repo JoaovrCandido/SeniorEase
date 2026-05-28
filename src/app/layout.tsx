@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Lora } from "next/font/google";
+import { AccessibilityProvider } from "@/presentation/store/AccessibilityContext";
 import "./globals.css";
 
 // Configurando as fontes para gerarem as variáveis CSS
@@ -27,7 +28,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={`${inter.variable} ${lora.variable}`}>
-      <body>{children}</body>
+      <body>
+        <AccessibilityProvider>
+          {children}
+        </AccessibilityProvider>
+      </body>
     </html>
   );
 }

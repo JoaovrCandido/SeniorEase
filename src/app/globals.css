@@ -82,3 +82,30 @@ button {
   min-height: var(--touch-target-min);
   min-width: var(--touch-target-min);
 }
+
+/* =========================================
+   MODIFICADORES DE ACESSIBILIDADE
+   ========================================= */
+
+/* Quando o usuário ativar a "Fonte Grande" */
+html.font-large {
+  --text-sm: 1.125rem;   /* 18px */
+  --text-base: 1.5rem;   /* 24px */
+  --text-lg: 2rem;       /* 32px */
+  --text-xl: 2.5rem;     /* 40px */
+}
+
+/* Quando o usuário ativar o "Alto Contraste" */
+html.contrast-high {
+  --bg-canvas: #000000;
+  --bg-surface: #1A1A1A;
+  --text-body: #FFFFFF;
+  --text-heading: #FFFF00; /* Amarelo puro ajuda muito na leitura em alto contraste */
+  --primary-main: #FFFFFF; /* Botões ficam brancos para chamar máxima atenção */
+  --primary-surface: #333333;
+}
+
+html.contrast-high button {
+  color: #000000;
+  border: 2px solid #FFFFFF;
+}
