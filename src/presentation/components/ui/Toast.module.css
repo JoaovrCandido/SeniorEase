@@ -1,0 +1,61 @@
+/* src/presentation/components/ui/Toast.module.css */
+.toastContainer {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 9999;
+  width: 90%;
+  max-width: 400px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-lg); /* Letra grande */
+  font-weight: bold;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-out;
+  color: #ffffff;
+}
+
+/* Cores com alto contraste aprovado (WCAG) */
+.success {
+  background-color: #059669; /* Verde Escuro */
+  border: 2px solid #047857;
+}
+
+.error {
+  background-color: #DC2626; /* Vermelho Escuro */
+  border: 2px solid #B91C1C;
+}
+
+.info {
+  background-color: #2563EB; /* Azul Escuro */
+  border: 2px solid #1D4ED8;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+  margin-left: 16px;
+  width: 48px; /* Touch target acessível */
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -5,6 +5,7 @@ export type BlockType = 'heading' | 'paragraph' | 'task' | 'meeting' | 'reminder
 export interface BaseBlock {
   id: string;
   type: BlockType;
+  isDeleted?: boolean;
 }
 
 export interface HeadingBlock extends BaseBlock {

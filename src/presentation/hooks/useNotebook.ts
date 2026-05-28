@@ -9,11 +9,13 @@ import { AddBlockUseCase, CreateBlockDTO } from '../../application/useCases/AddB
 import { ToggleTaskUseCase } from '../../application/useCases/ToggleTaskUseCase';
 import { UpdateBlockUseCase } from '../../application/useCases/UpdateBlockUseCase';
 import { DeleteBlockUseCase } from '../../application/useCases/DeleteBlockUseCase';
+import { RestoreBlockUseCase } from '../../application/useCases/RestoreBlockUseCase';
 
 // Casos de Uso de Cadernos
 import { CreateNotebookUseCase } from '../../application/useCases/CreateNotebookUseCase';
 import { UpdateNotebookUseCase } from '../../application/useCases/UpdateNotebookUseCase';
 import { DeleteNotebookUseCase } from '../../application/useCases/DeleteNotebookUseCase';
+import { RestoreNotebookUseCase } from '../../application/useCases/RestoreNotebookUseCase';
 
 export const useNotebook = () => {
   const [notebooks, setNotebooks] = useState<Notebook[]>([]);
@@ -26,11 +28,13 @@ export const useNotebook = () => {
   const createNotebookUseCase = useMemo(() => new CreateNotebookUseCase(repository), [repository]);
   const updateNotebookUseCase = useMemo(() => new UpdateNotebookUseCase(repository), [repository]);
   const deleteNotebookUseCase = useMemo(() => new DeleteNotebookUseCase(repository), [repository]);
+  const restoreNotebookUseCase = useMemo(() => new RestoreNotebookUseCase(repository), [repository]);
   
   const addBlockUseCase = useMemo(() => new AddBlockUseCase(repository), [repository]);
   const toggleTaskUseCase = useMemo(() => new ToggleTaskUseCase(repository), [repository]);
   const updateBlockUseCase = useMemo(() => new UpdateBlockUseCase(repository), [repository]);
   const deleteBlockUseCase = useMemo(() => new DeleteBlockUseCase(repository), [repository]);
+  const restoreBlockUseCase = useMemo(() => new RestoreBlockUseCase(repository), [repository]);
 
   const fetchNotebooks = useCallback(async () => {
     try {
@@ -74,6 +78,13 @@ export const useNotebook = () => {
     } catch (err) { if (err instanceof Error) setError(err.message); }
   };
 
+  const restoreNotebook = async (id: string) => {
+    try {
+      await restoreNotebookUseCase.execute(id);
+      await fetchNotebooks();
+    } catch (err) { if (err instanceof Error) setError(err.message); }
+  };
+
   // =====================================
   // AÇÕES DE BLOCOS
   // =====================================
@@ -105,17 +116,36 @@ export const useNotebook = () => {
     } catch (err) { if (err instanceof Error) setError(err.message); }
   };
 
+  const restoreBlock = async (notebookId: string, blockId: string) => {
+    try {
+      await restoreBlockUseCase.execute(notebookId, blockId);
+      await fetchNotebooks();
+    } catch (err) { if (err instanceof Error) setError(err.message); }
+  };
+
+  // =====================================
+  // FILTROS PARA A INTERFACE
+  // =====================================
+  // Filtramos os cadernos que não estão apagados para mostrar na Home
+  const activeNotebooks = notebooks.filter((n) => !n.isDeleted);
+  
+  // Filtramos os cadernos apagados para a Lixeira
+  const deletedNotebooks = notebooks.filter((n) => n.isDeleted);
+
   return {
-    notebooks,
+    notebooks: activeNotebooks, // A aplicação principal usa este
+    deletedNotebooks,           // O painel da lixeira usará este
     isLoading,
     error,
     createNotebook,
     updateNotebookInfo,
     deleteNotebook,
+    restoreNotebook,
     addBlock,
     toggleTask,
     updateBlock,
     deleteBlock,
+    restoreBlock,
     refresh: fetchNotebooks
   };
 };
