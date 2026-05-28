@@ -1,6 +1,6 @@
 // src/domain/entities/Block.ts
 
-export type BlockType = 'heading' | 'paragraph' | 'task' | 'meeting';
+export type BlockType = 'heading' | 'paragraph' | 'task' | 'meeting' | 'reminder';
 
 export interface BaseBlock {
   id: string;
@@ -29,5 +29,10 @@ export interface MeetingBlock extends BaseBlock {
   meetingUrl: string; 
 }
 
-// A União Discriminada: um bloco genérico pode ser qualquer um destes
-export type ContentBlock = HeadingBlock | ParagraphBlock | TaskBlock | MeetingBlock;
+export interface ReminderBlock extends BaseBlock {
+  type: 'reminder';
+  date: string; // Guardaremos a data/hora em formato ISO
+}
+
+// A União Discriminada
+export type ContentBlock = HeadingBlock | ParagraphBlock | TaskBlock | MeetingBlock | ReminderBlock;

@@ -40,6 +40,14 @@
   --radius-md: 12px;
   --radius-lg: 20px;
   --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+  /* =========================================
+     4. VARIÁVEIS DE ESPAÇAMENTO (Novas)
+     ========================================= */
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
 }
 
 /* =========================================
@@ -108,4 +116,12 @@ html.contrast-high {
 html.contrast-high button {
   color: #000000;
   border: 2px solid #FFFFFF;
+}
+
+html.spacing-large {
+  --space-sm: 12px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --touch-target-min: 64px; /* Aumenta os botões e áreas de clique para 64px */
 }

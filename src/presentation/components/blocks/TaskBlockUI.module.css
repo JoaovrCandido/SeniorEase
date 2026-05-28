@@ -1,0 +1,117 @@
+/* src/presentation/components/blocks/TaskBlockUI.module.css */
+.container {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 16px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Destaca o bloco inteiro quando o utilizador está a escrever nele */
+.container:focus-within {
+  border-color: var(--primary-main);
+  background-color: var(--bg-canvas);
+}
+
+.completed {
+  opacity: 0.8;
+}
+
+/* Área de clique gigante para a checkbox (min 48px) */
+.checkboxButton {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+}
+
+.checkboxButton:focus-visible {
+  outline: 4px solid var(--text-heading);
+}
+
+/* O quadrado visual da checkbox */
+.checkboxBox {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--text-body);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.completed .checkboxBox {
+  background-color: var(--success-main);
+  border-color: var(--success-main);
+}
+
+.checkIcon {
+  color: #FFFFFF;
+  width: 24px;
+  height: 24px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.2s ease;
+}
+
+.completed .checkIcon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* O campo de texto a imitar o Notion */
+.input {
+  flex-grow: 1;
+  min-height: var(--touch-target-min);
+  border: none;
+  background: transparent;
+  font-size: var(--text-base);
+  color: var(--text-heading);
+  font-family: var(--font-sans);
+  padding: 0;
+  resize: none; /* Se usarmos textarea no futuro */
+}
+
+.input:focus {
+  outline: none;
+}
+
+.completed .input {
+  text-decoration: line-through;
+  color: var(--text-body);
+}
+
+/* Botão de apagar com área de toque segura */
+.deleteButton {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  background: transparent;
+  border: none;
+  color: var(--text-body);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.deleteButton:hover,
+.deleteButton:focus-visible {
+  color: var(--danger-main);
+  background-color: #FEE2E2; /* Fundo vermelho muito claro para aviso */
+  outline: none;
+}

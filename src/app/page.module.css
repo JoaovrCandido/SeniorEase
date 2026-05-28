@@ -1,0 +1,149 @@
+/* src/app/page.module.css */
+
+.main {
+  min-height: 100vh;
+  padding-bottom: 100px; /* Espaço para a barra inferior não sobrepor o texto */
+}
+
+/* =========================================
+   DASHBOARD (Lista de Cadernos)
+   ========================================= */
+.dashboard {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: var(--text-xl);
+  color: var(--text-heading);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  background-color: var(--bg-surface);
+  padding: 32px 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card:hover, .card:focus-visible {
+  border-color: var(--primary-main);
+  transform: translateY(-4px);
+  outline: none;
+}
+
+.cardTitle {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--primary-main);
+}
+
+.cardDate {
+  font-size: var(--text-sm);
+  color: var(--text-body);
+}
+
+/* =========================================
+   EDITOR (O Micro-Notion)
+   ========================================= */
+.editor {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.editorHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--text-body);
+}
+
+.editorTitle {
+  font-size: var(--text-xl);
+  font-family: var(--font-serif);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 64px 16px;
+  color: var(--text-body);
+  font-size: var(--text-lg);
+}
+
+/* A Barra Mágica do Rodapé */
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--bg-surface);
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  z-index: 50;
+}
+
+.actionButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: var(--primary-main);
+  cursor: pointer;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--text-base);
+}
+
+.actionButton:hover, .actionButton:focus-visible {
+  background-color: var(--primary-surface);
+  outline: none;
+}
+
+/* Botão de acessibilidade global */
+.a11yButton {
+  background-color: var(--text-heading);
+  color: var(--bg-surface);
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  font-size: var(--text-base);
+  cursor: pointer;
+}
