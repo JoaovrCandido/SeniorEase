@@ -1,31 +1,35 @@
 // src/presentation/hooks/useSpeech.ts
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { WebSpeechService } from '../../infrastructure/services/WebSpeechService';
 
 export const useSpeech = () => {
-  // Instancia o serviço apenas uma vez
-  const speechService = useMemo(() => new WebSpeechService(), []);
+  // Usamos useRef para manter a mesma instância do serviço de forma estável
+  const speechService = useRef<WebSpeechService | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-  const readText = (text: string) => {
-    // Funciona como um botão "Play/Pause"
+  useEffect(() => {
+    speechService.current = new WebSpeechService();
+    return () => {
+      speechService.current?.cancel();
+    };
+  }, []);
+
+  const readText = useCallback((text: string) => {
+    if (!speechService.current) return;
+
     if (isSpeaking) {
-      speechService.cancel();
+      speechService.current.cancel();
       setIsSpeaking(false);
     } else {
       setIsSpeaking(true);
-      speechService.speak(text, () => setIsSpeaking(false)); // Desliga quando terminar
+      speechService.current.speak(text, () => setIsSpeaking(false));
     }
-  };
+  }, [isSpeaking]);
 
-  const stop = () => {
-    speechService.cancel();
+  // useCallback com array vazio garante que o 'stop' nunca muda de identidade entre re-renders
+  const stop = useCallback(() => {
+    speechService.current?.cancel();
     setIsSpeaking(false);
-  };
-
-  // Medida de segurança: Pára de falar se o utilizador fechar o caderno ou a página
-  useEffect(() => {
-    return () => stop();
   }, []);
 
   return { isSpeaking, readText, stop };

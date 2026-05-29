@@ -2,6 +2,8 @@
 
 export class WebSpeechService {
   private synth: SpeechSynthesis | null = null;
+  // Guardar a referência evita o bug de Garbage Collection que corta a voz no Chrome
+  private currentUtterance: SpeechSynthesisUtterance | null = null; 
 
   constructor() {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -9,27 +11,24 @@ export class WebSpeechService {
     }
   }
 
-  // Adicionámos o onEnd para o React saber quando a voz parou
   public speak(text: string, onEnd?: () => void): void {
     if (!this.synth) {
       console.warn('Speech Synthesis API não é suportada neste navegador.');
       return;
     }
 
-    this.cancel(); // Cancela falas anteriores
+    this.cancel(); 
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    
-    utterance.lang = 'pt-BR';
-    utterance.rate = 0.9; 
-    utterance.pitch = 1.0; 
+    this.currentUtterance = new SpeechSynthesisUtterance(text);
+    this.currentUtterance.lang = 'pt-BR';
+    this.currentUtterance.rate = 0.9; // Velocidade confortável para a terceira idade
+    this.currentUtterance.pitch = 1.0; 
 
-    // Avisa a interface gráfica quando terminar de ler
-    utterance.onend = () => {
+    this.currentUtterance.onend = () => {
       if (onEnd) onEnd();
     };
 
-    this.synth.speak(utterance);
+    this.synth.speak(this.currentUtterance);
   }
 
   public cancel(): void {
