@@ -1,5 +1,7 @@
+// src/presentation/components/blocks/ParagraphBlockUI.tsx
 import React, { useState, useEffect } from 'react';
 import { ParagraphBlock } from '../../../domain/entities/Block';
+import { DictationButton } from '../ui/DictationButton';
 
 interface Props {
   block: ParagraphBlock;
@@ -11,6 +13,12 @@ export const ParagraphBlockUI: React.FC<Props> = ({ block, onChangeContent, onDe
   const [localContent, setLocalContent] = useState(block.content);
   useEffect(() => setLocalContent(block.content), [block.content]);
 
+  const handleDictate = (text: string) => {
+    const newContent = localContent ? `${localContent} ${text}` : text;
+    setLocalContent(newContent);
+    onChangeContent(block.id, newContent);
+  };
+
   return (
     <div style={{ display: 'flex', gap: '16px', marginBottom: '16px', padding: '16px', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-soft)' }}>
       <textarea
@@ -20,6 +28,7 @@ export const ParagraphBlockUI: React.FC<Props> = ({ block, onChangeContent, onDe
         placeholder="Digite sua anotação aqui..."
         style={{ flexGrow: 1, minHeight: '80px', border: 'none', background: 'transparent', fontSize: 'var(--text-base)', color: 'var(--text-body)', fontFamily: 'var(--font-sans)', resize: 'vertical' }}
       />
+      <DictationButton onDictate={handleDictate} />
       <button onClick={() => onDelete(block.id)} style={{ background: 'none', border: 'none', color: 'var(--danger-main)', cursor: 'pointer', height: '48px', width: '48px' }}>🗑️</button>
     </div>
   );

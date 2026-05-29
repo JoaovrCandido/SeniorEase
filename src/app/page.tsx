@@ -432,8 +432,8 @@ export default function Home() {
 
         <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title="Editar Caderno">
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-            <Input label="Nome do Caderno" value={notebookTitle} onChange={(e) => setNotebookTitle(e.target.value)} />
-            <Input label="Descrição (Opcional)" value={notebookDescription} onChange={(e) => setNotebookDescription(e.target.value)} placeholder="Do que se trata este caderno?" onKeyDown={(e) => { if (e.key === 'Enter') handleConfirmEdit(); }} />
+            <Input label="Nome do Caderno" value={notebookTitle} onChange={(e) => setNotebookTitle(e.target.value)} onDictate={(text) => setNotebookTitle(prev => prev ? `${prev} ${text}` : text)} />
+            <Input label="Descrição (Opcional)" value={notebookDescription} onChange={(e) => setNotebookDescription(e.target.value)} onDictate={(text) => setNotebookDescription(prev => prev ? `${prev} ${text}` : text)} placeholder="Do que se trata este caderno?" onKeyDown={(e) => { if (e.key === 'Enter') handleConfirmEdit(); }} />
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-md)' }}>
               <Button variant="ghost" onClick={() => setIsEditModalOpen(false)}>Cancelar</Button>
               <Button variant="primary" onClick={handleConfirmEdit} disabled={!notebookTitle.trim()}>Salvar Alterações</Button>
@@ -536,8 +536,8 @@ export default function Home() {
 
       <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} title="Criar Novo Caderno">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-          <Input label="Nome do Caderno" placeholder="Ex: Aula de Matemática, Reuniões..." value={notebookTitle} onChange={(e) => setNotebookTitle(e.target.value)} autoFocus />
-          <Input label="Descrição (Opcional)" placeholder="Do que se trata este caderno?" value={notebookDescription} onChange={(e) => setNotebookDescription(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleConfirmCreate(); }} />
+          <Input label="Nome do Caderno" placeholder="Ex: Aula de Matemática, Reuniões..." value={notebookTitle} onChange={(e) => setNotebookTitle(e.target.value)} onDictate={(text) => setNotebookTitle(prev => prev ? `${prev} ${text}` : text)} autoFocus />
+          <Input label="Descrição (Opcional)" placeholder="Do que se trata este caderno?" value={notebookDescription} onChange={(e) => setNotebookDescription(e.target.value)} onDictate={(text) => setNotebookDescription(prev => prev ? `${prev} ${text}` : text)} onKeyDown={(e) => { if (e.key === 'Enter') handleConfirmCreate(); }} />
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-md)' }}>
             <Button variant="ghost" onClick={() => setIsCreateModalOpen(false)}>Cancelar</Button>
             <Button variant="primary" onClick={handleConfirmCreate} disabled={!notebookTitle.trim()}>Criar Caderno</Button>
