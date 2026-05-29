@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useNotebook } from '@/presentation/hooks/useNotebook';
 import { useNotifications } from '@/presentation/hooks/useNotifications';
 import { useToast } from '@/presentation/store/ToastContext';
+import { useAccessibility } from '@/presentation/store/AccessibilityContext';
 
 // Importação das Entidades e Componentes
 import { ContentBlock } from '@/domain/entities/Block';
@@ -28,9 +29,10 @@ import styles from './page.module.css';
 // TEXTOS INSTRUTIVOS (OS TOURS)
 // ==========================================
 const DASHBOARD_STEPS: TourStep[] = [
-  { targetId: 'tour-accessibility', title: '1. Conforto Visual', description: 'Antes de começarmos, use estes botões para ajustar o tamanho da letra e as cores da tela. Deixe tudo confortável para os seus olhos.' },
+  { targetId: 'tour-accessibility-btn', title: '1. Conforto Visual', description: 'Antes de começarmos, clique aqui para ajustar o tamanho da letra e as cores da tela. Deixe tudo confortável para os seus olhos.' },
   { targetId: 'tour-create', title: '2. Criar Cadernos', description: 'Aqui você cria um novo caderno. Pense nele como uma pasta para guardar as suas tarefas, exames médicos, ou anotações pessoais.' },
-  { targetId: 'tour-trash-btn', title: '3. Acessar Lixeira', description: 'Se apagar algo sem querer, não se preocupe. Clicando aqui você acessa a Lixeira, onde poderá recuperar tudo com segurança.' }
+  { targetId: 'tour-history-btn', title: '3. Histórico de Atividades', description: 'Tudo o que você concluir ficará guardado aqui! Um ótimo lugar para ver as tarefas que já foram finalizadas.' },
+  { targetId: 'tour-trash-btn', title: '4. Acessar Lixeira', description: 'Se apagar algo sem querer, não se preocupe. Clicando aqui você acessa a Lixeira, onde poderá recuperar tudo com segurança.' }
 ];
 
 const EDITOR_STEPS: TourStep[] = [
@@ -45,32 +47,34 @@ const TRASH_STEPS: TourStep[] = [
   { targetId: 'tour-trash-content', title: '2. Como Recuperar', description: 'Nesta área abaixo você verá todos os cadernos inteiros ou anotações individuais que foram apagados. Basta clicar no botão azul "♻️ Restaurar" ao lado do item, e ele voltará imediatamente para o lugar de onde saiu!' }
 ];
 
-
 export default function Home() {
   const { notebooks, deletedNotebooks, isLoading, createNotebook, updateNotebookInfo, deleteNotebook, restoreNotebook, addBlock, toggleTask, updateBlock, deleteBlock, restoreBlock } = useNotebook();
 
   useNotifications(notebooks);
   const { showToast } = useToast();
+  const { actionConfirmation } = useAccessibility();
 
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
   const [isReadingMode, setIsReadingMode] = useState(false);
-  const [isTrashOpen, setIsTrashOpen] = useState(false);
   
-  // Estado que controla QUAL tour está aberto no momento
+  // Telas Especiais (Navegação)
+  const [isTrashOpen, setIsTrashOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false); // NOVO: Tela de Configurações
+  
+  // Modais e Tours
   const [currentTour, setCurrentTour] = useState<'dashboard' | 'editor' | 'trash' | null>(null);
-
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [blockToDelete, setBlockToDelete] = useState<string | null>(null);
+  
   const [notebookTitle, setNotebookTitle] = useState('');
   const [notebookDescription, setNotebookDescription] = useState('');
 
   const activeNotebook = notebooks.find((n) => n.id === activeNotebookId);
 
-  // ==========================================
-  // DISPARADORES AUTOMÁTICOS DOS TOURS
-  // ==========================================
   useEffect(() => {
     if (!isLoading && !localStorage.getItem('@SeniorEase:tour:dashboard')) {
       setCurrentTour('dashboard');
@@ -92,11 +96,14 @@ export default function Home() {
     }
   }, [isTrashOpen]);
 
-  // ==========================================
-  // FUNÇÕES AUXILIARES DA LIXEIRA
-  // ==========================================
   const deletedBlocksList = notebooks.flatMap(notebook => 
     notebook.blocks.filter(block => block.isDeleted).map(block => ({ notebookId: notebook.id, notebookTitle: notebook.title, block }))
+  );
+
+  const completedTasksList = notebooks.flatMap(notebook => 
+    notebook.blocks
+      .filter(block => !block.isDeleted && block.type === 'task' && block.isCompleted)
+      .map(block => ({ notebookId: notebook.id, notebookTitle: notebook.title, block }))
   );
 
   const getBlockTypeName = (type: string) => {
@@ -145,7 +152,19 @@ export default function Home() {
     }
   };
 
-  const handleConfirmDelete = async () => {
+  const requestNotebookDelete = async () => {
+    if (actionConfirmation === 'on') {
+      setIsDeleteModalOpen(true);
+    } else {
+      if (activeNotebook) {
+        await deleteNotebook(activeNotebook.id);
+        setActiveNotebookId(null);
+        showToast('Caderno apagado imediatamente.', 'info');
+      }
+    }
+  };
+
+  const executeNotebookDelete = async () => {
     if (activeNotebook) {
       await deleteNotebook(activeNotebook.id);
       setIsDeleteModalOpen(false);
@@ -154,7 +173,18 @@ export default function Home() {
     }
   };
 
-  const confirmBlockDelete = async () => {
+  const requestBlockDelete = async (blockId: string) => {
+    if (actionConfirmation === 'on') {
+      setBlockToDelete(blockId);
+    } else {
+      if (activeNotebookId) {
+        await deleteBlock(activeNotebookId, blockId);
+        showToast('Item apagado imediatamente.', 'info');
+      }
+    }
+  };
+
+  const executeBlockDelete = async () => {
     if (activeNotebookId && blockToDelete) {
       await deleteBlock(activeNotebookId, blockToDelete);
       setBlockToDelete(null);
@@ -164,9 +194,63 @@ export default function Home() {
 
   const closeNotebook = () => { setActiveNotebookId(null); setIsReadingMode(false); };
 
+  // ==========================================
+  // RENDERIZAÇÃO 1: TELA DE CONFIGURAÇÕES (ACESSIBILIDADE)
+  // ==========================================
+  if (isSettingsOpen) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.dashboard}>
+          <header className={styles.header} style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <button className={styles.a11yButton} onClick={() => setIsSettingsOpen(false)}>← Voltar</button>
+            <h1 className={styles.title}>⚙️ Personalizar Tela</h1>
+          </header>
+
+          <div style={{ marginTop: '24px' }}>
+            <AccessibilityPanel />
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   // ==========================================
-  // RENDERIZAÇÃO 1: PAINEL DA LIXEIRA
+  // RENDERIZAÇÃO 2: TELA DE HISTÓRICO
+  // ==========================================
+  if (isHistoryOpen) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.dashboard}>
+          <header className={styles.header} style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <button className={styles.a11yButton} onClick={() => setIsHistoryOpen(false)}>← Voltar</button>
+            <h1 className={styles.title} style={{ color: 'var(--success-main)' }}>📋 Histórico de Atividades</h1>
+          </header>
+
+          <div style={{ marginTop: '24px' }}>
+            {completedTasksList.length === 0 ? (
+              <p className={styles.emptyState}>Você ainda não concluiu nenhuma tarefa. Continue assim, um passo de cada vez!</p>
+            ) : (
+              <div className={styles.grid}>
+                {completedTasksList.map(({ notebookTitle, block }) => (
+                  <div key={block.id} className={styles.card} style={{ cursor: 'default', border: '2px solid var(--success-main)', opacity: 0.9 }}>
+                    <span className={styles.cardTitle} style={{ fontSize: 'var(--text-base)', color: 'var(--text-heading)' }}>
+                      ✅ {getBlockPreview(block)}
+                    </span>
+                    <span className={styles.cardDescription} style={{ fontStyle: 'italic', color: 'var(--success-main)', marginTop: '8px' }}>
+                      Concluído no caderno: {notebookTitle}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // ==========================================
+  // RENDERIZAÇÃO 3: TELA DA LIXEIRA
   // ==========================================
   if (isTrashOpen) {
     return (
@@ -181,8 +265,6 @@ export default function Home() {
               <span aria-hidden="true" style={{ fontSize: '20px' }}>❓</span> Ajuda
             </button>
           </header>
-
-          <AccessibilityPanel />
 
           <div id="tour-trash-content" style={{ display: 'flex', flexDirection: 'column', gap: '48px', marginTop: '24px' }}>
             {deletedNotebooks.length === 0 && deletedBlocksList.length === 0 ? (
@@ -234,7 +316,7 @@ export default function Home() {
   }
 
   // ==========================================
-  // RENDERIZAÇÃO 2: MODO EDITOR / LEITURA
+  // RENDERIZAÇÃO 4: MODO EDITOR / LEITURA
   // ==========================================
   if (activeNotebookId && activeNotebook) {
     const hasHeading = activeNotebook.blocks.some((block) => block.type === 'heading' && !block.isDeleted);
@@ -275,7 +357,7 @@ export default function Home() {
               {!isReadingMode && (
                 <div id="tour-editor-actions" className={styles.headerActions}>
                   <button className={styles.secondaryButton} onClick={openEditModal}>✏️ Editar Nome/Descrição</button>
-                  <button className={styles.dangerButton} onClick={() => setIsDeleteModalOpen(true)}>🗑️ Apagar Caderno</button>
+                  <button className={styles.dangerButton} onClick={requestNotebookDelete}>🗑️ Apagar Caderno</button>
                 </div>
               )}
             </div>
@@ -307,11 +389,30 @@ export default function Home() {
             <section>
               {activeBlocks.length === 0 ? <p className={styles.emptyState}>O seu caderno está vazio. Comece a adicionar conteúdo na barra abaixo!</p> : activeBlocks.map((block) => {
                   switch (block.type) {
-                    case 'heading': return <HeadingBlockUI key={block.id} block={block} onDelete={(id) => setBlockToDelete(id)} onChangeContent={(id, content) => updateBlock(activeNotebook.id, id, { content })} />;
-                    case 'task': return <TaskBlockUI key={block.id} block={block} onToggle={(id) => toggleTask(activeNotebook.id, id)} onDelete={(id) => setBlockToDelete(id)} onChangeContent={(id, content) => updateBlock(activeNotebook.id, id, { content })} />;
-                    case 'paragraph': return <ParagraphBlockUI key={block.id} block={block} onDelete={(id) => setBlockToDelete(id)} onChangeContent={(id, content) => updateBlock(activeNotebook.id, id, { content })} />;
-                    case 'meeting': return <MeetingBlockUI key={block.id} block={block} onDelete={(id) => setBlockToDelete(id)} onChangeContent={(id, title, meetingUrl, date) => updateBlock(activeNotebook.id, id, { title, meetingUrl, date })} />;
-                    case 'reminder': return <ReminderBlockUI key={block.id} block={block} onDelete={(id) => setBlockToDelete(id)} onChangeContent={(id, content, date) => updateBlock(activeNotebook.id, id, { content, date })} />;
+                    case 'heading': 
+                      return <HeadingBlockUI key={block.id} block={block} onDelete={(id) => requestBlockDelete(id)} 
+                        onChangeContent={(id, content) => { updateBlock(activeNotebook.id, id, { content }); showToast('Título salvo! O seu caderno está a ganhar forma. 📝', 'success'); }} 
+                      />;
+                    case 'task': 
+                      return <TaskBlockUI key={block.id} block={block} onDelete={(id) => requestBlockDelete(id)} 
+                        onToggle={async (id) => { 
+                          await toggleTask(activeNotebook.id, id); 
+                          if (!block.isCompleted) showToast('Muito bem! Tarefa concluída com sucesso. 🎉', 'success'); 
+                        }} 
+                        onChangeContent={(id, content) => { updateBlock(activeNotebook.id, id, { content }); showToast('Tarefa guardada. Vamos ao trabalho! ✅', 'success'); }} 
+                      />;
+                    case 'paragraph': 
+                      return <ParagraphBlockUI key={block.id} block={block} onDelete={(id) => requestBlockDelete(id)} 
+                        onChangeContent={(id, content) => { updateBlock(activeNotebook.id, id, { content }); showToast('Anotação guardada com segurança! ✍️', 'success'); }} 
+                      />;
+                    case 'meeting': 
+                      return <MeetingBlockUI key={block.id} block={block} onDelete={(id) => requestBlockDelete(id)} 
+                        onChangeContent={(id, title, meetingUrl, date) => { updateBlock(activeNotebook.id, id, { title, meetingUrl, date }); showToast('Reunião guardada! Tudo registado. 🎥', 'success'); }} 
+                      />;
+                    case 'reminder': 
+                      return <ReminderBlockUI key={block.id} block={block} onDelete={(id) => requestBlockDelete(id)} 
+                        onChangeContent={(id, content, date) => { updateBlock(activeNotebook.id, id, { content, date }); showToast('Lembrete guardado para não se esquecer. ⏰', 'success'); }} 
+                      />;
                     default: return null;
                   }
               })}
@@ -321,11 +422,11 @@ export default function Home() {
 
         {!isReadingMode && (
           <nav id="tour-editor-add" className={styles.bottomBar} aria-label="Adicionar elementos" style={{ flexWrap: 'wrap' }}>
-            {!hasHeading && <button className={styles.actionButton} onClick={() => { addBlock(activeNotebook.id, { type: 'heading', content: '' }); showToast('Título adicionado', 'success'); }}><span aria-hidden="true" style={{ fontSize: '24px' }}>📝</span> Título</button>}
-            <button className={styles.actionButton} onClick={() => { addBlock(activeNotebook.id, { type: 'paragraph', content: '' }); showToast('Anotação adicionada', 'success'); }}><span aria-hidden="true" style={{ fontSize: '24px' }}>✍️</span> Anotação</button>
-            <button className={styles.actionButton} onClick={() => { addBlock(activeNotebook.id, { type: 'task', content: '', isCompleted: false }); showToast('Tarefa adicionada', 'success'); }}><span aria-hidden="true" style={{ fontSize: '24px' }}>✅</span> Tarefa</button>
-            <button className={styles.actionButton} onClick={async () => { await NotificationService.requestPermission(); addBlock(activeNotebook.id, { type: 'reminder', content: '', date: '' }); showToast('Lembrete adicionado', 'success'); }}><span aria-hidden="true" style={{ fontSize: '24px' }}>⏰</span> Lembrete</button>
-            <button className={styles.actionButton} onClick={async () => { await NotificationService.requestPermission(); addBlock(activeNotebook.id, { type: 'meeting', title: '', meetingUrl: '', date: '' }); showToast('Reunião adicionada', 'success'); }}><span aria-hidden="true" style={{ fontSize: '24px' }}>🎥</span> Reunião</button>
+            {!hasHeading && <button className={styles.actionButton} onClick={() => { addBlock(activeNotebook.id, { type: 'heading', content: '' }); showToast('Novo Título! O que vamos planear?', 'success'); }}><span aria-hidden="true" style={{ fontSize: '24px' }}>📝</span> Título</button>}
+            <button className={styles.actionButton} onClick={() => { addBlock(activeNotebook.id, { type: 'paragraph', content: '' }); showToast('Nova Anotação! Pode começar a escrever.', 'success'); }}><span aria-hidden="true" style={{ fontSize: '24px' }}>✍️</span> Anotação</button>
+            <button className={styles.actionButton} onClick={() => { addBlock(activeNotebook.id, { type: 'task', content: '', isCompleted: false }); showToast('Nova Tarefa! Um passo de cada vez.', 'success'); }}><span aria-hidden="true" style={{ fontSize: '24px' }}>✅</span> Tarefa</button>
+            <button className={styles.actionButton} onClick={async () => { await NotificationService.requestPermission(); addBlock(activeNotebook.id, { type: 'reminder', content: '', date: '' }); showToast('Novo Lembrete! Eu aviso-o na hora certa.', 'success'); }}><span aria-hidden="true" style={{ fontSize: '24px' }}>⏰</span> Lembrete</button>
+            <button className={styles.actionButton} onClick={async () => { await NotificationService.requestPermission(); addBlock(activeNotebook.id, { type: 'meeting', title: '', meetingUrl: '', date: '' }); showToast('Nova Reunião adicionada.', 'success'); }}><span aria-hidden="true" style={{ fontSize: '24px' }}>🎥</span> Reunião</button>
           </nav>
         )}
 
@@ -347,7 +448,7 @@ export default function Home() {
             </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-md)' }}>
               <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>Cancelar</Button>
-              <Button variant="danger" onClick={handleConfirmDelete}>Sim, Apagar Caderno</Button>
+              <Button variant="danger" onClick={executeNotebookDelete}>Sim, Apagar Caderno</Button>
             </div>
           </div>
         </Modal>
@@ -359,7 +460,7 @@ export default function Home() {
             </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-md)' }}>
               <Button variant="ghost" onClick={() => setBlockToDelete(null)}>Cancelar</Button>
-              <Button variant="danger" onClick={confirmBlockDelete}>Sim, Apagar Item</Button>
+              <Button variant="danger" onClick={executeBlockDelete}>Sim, Apagar Item</Button>
             </div>
           </div>
         </Modal>
@@ -370,7 +471,7 @@ export default function Home() {
   }
 
   // ==========================================
-  // RENDERIZAÇÃO 3: MODO DASHBOARD (HOME)
+  // RENDERIZAÇÃO 5: MODO DASHBOARD (HOME)
   // ==========================================
   return (
     <main className={styles.main}>
@@ -379,27 +480,39 @@ export default function Home() {
         <header className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <h1 className={styles.title}>Os meus Cadernos</h1>
           
-          <div style={{ display: 'flex', gap: '16px' }}>
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             <button 
               onClick={() => setCurrentTour('dashboard')}
               style={{ backgroundColor: 'var(--primary-surface)', border: 'none', color: 'var(--primary-main)', padding: '8px 16px', borderRadius: 'var(--radius-md)', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
             >
               <span aria-hidden="true" style={{ fontSize: '20px' }}>❓</span> Ajuda
             </button>
+
+            <button 
+              id="tour-accessibility-btn"
+              onClick={() => setIsSettingsOpen(true)}
+              style={{ backgroundColor: 'transparent', border: '2px solid var(--text-body)', color: 'var(--text-heading)', padding: '8px 16px', borderRadius: 'var(--radius-md)', fontWeight: 'bold', cursor: 'pointer' }}
+            >
+              ⚙️ Personalizar Tela
+            </button>
             
+            <button 
+              id="tour-history-btn"
+              onClick={() => setIsHistoryOpen(true)}
+              style={{ backgroundColor: 'transparent', border: '2px solid var(--success-main)', color: 'var(--success-main)', padding: '8px 16px', borderRadius: 'var(--radius-md)', fontWeight: 'bold', cursor: 'pointer' }}
+            >
+              📋 Histórico de Atividades
+            </button>
+
             <button 
               id="tour-trash-btn"
               onClick={() => setIsTrashOpen(true)}
               style={{ backgroundColor: 'transparent', border: '2px solid var(--text-body)', color: 'var(--text-heading)', padding: '8px 16px', borderRadius: 'var(--radius-md)', fontWeight: 'bold', cursor: 'pointer' }}
             >
-              🗑️ Acessar Lixeira
+              🗑️ Lixeira
             </button>
           </div>
         </header>
-
-        <div id="tour-accessibility">
-          <AccessibilityPanel />
-        </div>
 
         {isLoading ? (
           <p className={styles.emptyState}>A carregar os seus cadernos...</p>

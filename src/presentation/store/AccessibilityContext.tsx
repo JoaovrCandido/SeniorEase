@@ -5,18 +5,24 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 export type FontSize = 'normal' | 'large';
 export type Contrast = 'normal' | 'high';
-export type Spacing = 'normal' | 'large'; // <-- NOVA PROPRIEDADE
+export type Spacing = 'normal' | 'large';
 export type NavigationMode = 'simple' | 'advanced';
+export type VisualFeedback = 'normal' | 'enhanced'; // NOVO: Feedback Visual
+export type ActionConfirmation = 'on' | 'off'; // NOVO: Confirmação de Segurança
 
 interface AccessibilityState {
   fontSize: FontSize;
   contrast: Contrast;
   spacing: Spacing;
   navigationMode: NavigationMode;
+  visualFeedback: VisualFeedback;
+  actionConfirmation: ActionConfirmation;
   setFontSize: (size: FontSize) => void;
   setContrast: (contrast: Contrast) => void;
   setSpacing: (spacing: Spacing) => void;
   setNavigationMode: (mode: NavigationMode) => void;
+  setVisualFeedback: (vf: VisualFeedback) => void;
+  setActionConfirmation: (ac: ActionConfirmation) => void;
 }
 
 const defaultState: AccessibilityState = {
@@ -24,10 +30,14 @@ const defaultState: AccessibilityState = {
   contrast: 'normal',
   spacing: 'normal',
   navigationMode: 'simple',
+  visualFeedback: 'normal',
+  actionConfirmation: 'on', // Por padrão, a segurança extra vem ligada!
   setFontSize: () => {},
   setContrast: () => {},
   setSpacing: () => {},
   setNavigationMode: () => {},
+  setVisualFeedback: () => {},
+  setActionConfirmation: () => {},
 };
 
 const AccessibilityContext = createContext<AccessibilityState>(defaultState);
@@ -38,6 +48,8 @@ export const AccessibilityProvider: React.FC<{children: ReactNode}> = ({ childre
   const [contrast, setContrastState] = useState<Contrast>('normal');
   const [spacing, setSpacingState] = useState<Spacing>('normal');
   const [navigationMode, setNavigationModeState] = useState<NavigationMode>('simple');
+  const [visualFeedback, setVisualFeedbackState] = useState<VisualFeedback>('normal');
+  const [actionConfirmation, setActionConfirmationState] = useState<ActionConfirmation>('on');
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -50,6 +62,8 @@ export const AccessibilityProvider: React.FC<{children: ReactNode}> = ({ childre
         if (parsed.contrast) setContrastState(parsed.contrast);
         if (parsed.spacing) setSpacingState(parsed.spacing);
         if (parsed.navigationMode) setNavigationModeState(parsed.navigationMode);
+        if (parsed.visualFeedback) setVisualFeedbackState(parsed.visualFeedback);
+        if (parsed.actionConfirmation) setActionConfirmationState(parsed.actionConfirmation);
       } catch (error) {
         console.error('Erro ao ler configurações de acessibilidade:', error);
       }
@@ -59,26 +73,28 @@ export const AccessibilityProvider: React.FC<{children: ReactNode}> = ({ childre
   useEffect(() => {
     if (!isMounted) return;
 
-    const preferences = { fontSize, contrast, spacing, navigationMode };
+    const preferences = { fontSize, contrast, spacing, navigationMode, visualFeedback, actionConfirmation };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
 
     const htmlElement = document.documentElement;
 
-    // Aplica as classes no HTML para o CSS reagir
     htmlElement.classList.toggle('font-large', fontSize === 'large');
     htmlElement.classList.toggle('contrast-high', contrast === 'high');
     htmlElement.classList.toggle('spacing-large', spacing === 'large');
+    htmlElement.classList.toggle('visual-feedback-enhanced', visualFeedback === 'enhanced');
 
-  }, [fontSize, contrast, spacing, navigationMode, isMounted]);
+  }, [fontSize, contrast, spacing, navigationMode, visualFeedback, actionConfirmation, isMounted]);
 
   return (
     <AccessibilityContext.Provider
       value={{
-        fontSize, contrast, spacing, navigationMode,
+        fontSize, contrast, spacing, navigationMode, visualFeedback, actionConfirmation,
         setFontSize: setFontSizeState,
         setContrast: setContrastState,
         setSpacing: setSpacingState,
         setNavigationMode: setNavigationModeState,
+        setVisualFeedback: setVisualFeedbackState,
+        setActionConfirmation: setActionConfirmationState,
       }}
     >
       {isMounted ? children : null}

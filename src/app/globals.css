@@ -125,3 +125,31 @@ html.spacing-large {
   --space-xl: 48px;
   --touch-target-min: 64px; /* Aumenta os botões e áreas de clique para 64px */
 }
+
+/* =========================================
+   NOVO: FEEDBACK VISUAL REFORÇADO
+   ========================================= */
+html.visual-feedback-enhanced * {
+  /* Transições mais lentas e suaves para o idoso acompanhar a mudança */
+  transition-duration: 0.3s !important; 
+}
+
+/* Bordas de foco (navegação por teclado) ficam gigantes */
+html.visual-feedback-enhanced *:focus-visible {
+  outline: 6px solid var(--primary-main) !important;
+  outline-offset: 4px !important;
+}
+
+/* Botões e Cartões saltam para a frente e ganham sombras fortes ao passar o rato */
+html.visual-feedback-enhanced button:hover:not(:disabled), 
+html.visual-feedback-enhanced [class*="card"]:hover {
+  transform: translateY(-6px) scale(1.02) !important;
+  box-shadow: 0 16px 32px rgba(0,0,0,0.2) !important;
+  border-color: var(--primary-main) !important;
+}
+
+/* Campos de texto ficam com as bordas muito mais grossas */
+html.visual-feedback-enhanced input,
+html.visual-feedback-enhanced textarea {
+  border-width: 3px !important;
+}
