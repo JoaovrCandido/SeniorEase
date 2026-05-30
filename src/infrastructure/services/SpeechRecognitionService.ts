@@ -4,21 +4,27 @@ export class SpeechRecognitionService {
   private recognition: any = null;
 
   constructor() {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       // A API tem prefixos webkit em alguns navegadores (como o Chrome)
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const SpeechRecognition =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
         this.recognition = new SpeechRecognition();
-        this.recognition.lang = 'pt-BR'; // Português
+        this.recognition.lang = "pt-BR"; // Português
         this.recognition.continuous = false; // Grava apenas uma frase por vez e para
         this.recognition.interimResults = false; // Não retorna resultados cortados pela metade
       }
     }
   }
 
-  start(onResult: (text: string) => void, onEnd: () => void, onError: (err: string) => void) {
+  start(
+    onResult: (text: string) => void,
+    onEnd: () => void,
+    onError: (err: string) => void,
+  ) {
     if (!this.recognition) {
-      onError('O seu navegador não suporta a digitação por voz.');
+      onError("O seu navegador não suporta a digitação por voz.");
       return;
     }
 

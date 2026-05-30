@@ -1,10 +1,16 @@
 // src/presentation/store/ToastContext.tsx
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import styles from '../components/ui/Toast.module.css';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode,
+} from "react";
+import styles from "../components/ui/Toast.module.css";
 
-type ToastType = 'success' | 'error' | 'info';
+type ToastType = "success" | "error" | "info";
 
 interface ToastMessage {
   id: string;
@@ -18,19 +24,24 @@ interface ToastContextProps {
 
 const ToastContext = createContext<ToastContextProps | undefined>(undefined);
 
-export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ToastProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  const showToast = useCallback((message: string, type: ToastType = 'success') => {
-    const id = crypto.randomUUID();
-    
-    setToasts((prev) => [...prev, { id, message, type }]);
+  const showToast = useCallback(
+    (message: string, type: ToastType = "success") => {
+      const id = crypto.randomUUID();
 
-    // Remove automaticamente após 5 segundos
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 5000);
-  }, []);
+      setToasts((prev) => [...prev, { id, message, type }]);
+
+      // Remove automaticamente após 5 segundos
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== id));
+      }, 5000);
+    },
+    [],
+  );
 
   const removeToast = (id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -39,15 +50,19 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      
+
       {/* Container que renderiza os Toasts no ecrã - aria-live avisa o leitor de tela imediatamente */}
       <div className={styles.toastContainer} aria-live="assertive">
         {toasts.map((toast) => (
-          <div key={toast.id} className={`${styles.toast} ${styles[toast.type]}`} role="alert">
+          <div
+            key={toast.id}
+            className={`${styles.toast} ${styles[toast.type]}`}
+            role="alert"
+          >
             <span>{toast.message}</span>
-            <button 
-              onClick={() => removeToast(toast.id)} 
-              className={styles.closeBtn} 
+            <button
+              onClick={() => removeToast(toast.id)}
+              className={styles.closeBtn}
               aria-label="Fechar aviso"
             >
               ✕
@@ -62,7 +77,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error('useToast deve ser usado dentro de um ToastProvider');
+    throw new Error("useToast deve ser usado dentro de um ToastProvider");
   }
   return context;
 };

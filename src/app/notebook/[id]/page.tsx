@@ -1,0 +1,554 @@
+// src/app/notebook/[id]/page.tsx
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useNotebookContext } from "@/presentation/store/NotebookContext";
+import { useToast } from "@/presentation/store/ToastContext";
+import { useAccessibility } from "@/presentation/store/AccessibilityContext";
+import { NotificationService } from "@/infrastructure/services/NotificationService";
+
+import { TaskBlockUI } from "@/presentation/components/blocks/TaskBlockUI";
+import { HeadingBlockUI } from "@/presentation/components/blocks/HeadingBlockUI";
+import { ParagraphBlockUI } from "@/presentation/components/blocks/ParagraphBlockUI";
+import { MeetingBlockUI } from "@/presentation/components/blocks/MeetingBlockUI";
+import { ReminderBlockUI } from "@/presentation/components/blocks/ReminderBlockUI";
+import { Modal } from "@/presentation/components/ui/Modal";
+import { Input } from "@/presentation/components/ui/Input";
+import { Button } from "@/presentation/components/ui/Button";
+import { ReadAloudButton } from "@/presentation/components/ui/ReadAloudButton";
+import {
+  OnboardingTour,
+  TourStep,
+} from "@/presentation/components/ui/OnboardingTour";
+
+// Importação dos Ícones (Sem Emojis!)
+import {
+  BackIcon,
+  HelpIcon,
+  EditIcon,
+  TrashIcon,
+  BookIcon,
+  TitleIcon,
+  WriteIcon,
+  TaskIcon,
+  ClockIcon,
+  VideoIcon,
+} from "@/presentation/components/ui/Icons";
+
+import styles from "@/app/page.module.css";
+
+const EDITOR_STEPS: TourStep[] = [
+  {
+    targetId: "tour-editor-title",
+    title: "1. O Seu Caderno",
+    description: "Aqui estão o Nome e a Descrição do seu caderno.",
+  },
+  {
+    targetId: "tour-editor-actions",
+    title: "2. Editar e Apagar",
+    description: "Você pode modificar o Nome ou apagá-lo inteiro.",
+  },
+  {
+    targetId: "tour-editor-add",
+    title: "3. Adicionar Conteúdo",
+    description: "Use esta barra para criar Anotações, Tarefas e Lembretes.",
+  },
+];
+
+export default function NotebookEditorPage() {
+  const params = useParams();
+  const router = useRouter();
+  const id = params.id as string;
+
+  const {
+    notebooks,
+    updateNotebookInfo,
+    deleteNotebook,
+    addBlock,
+    toggleTask,
+    updateBlock,
+    deleteBlock,
+  } = useNotebookContext();
+  const { showToast } = useToast();
+  const { actionConfirmation } = useAccessibility();
+
+  const [isReadingMode, setIsReadingMode] = useState(false);
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [blockToDelete, setBlockToDelete] = useState<string | null>(null);
+
+  const activeNotebook = notebooks.find((n) => n.id === id);
+
+  const [notebookTitle, setNotebookTitle] = useState(
+    activeNotebook?.title || "",
+  );
+  const [notebookDescription, setNotebookDescription] = useState(
+    activeNotebook?.description || "",
+  );
+
+  useEffect(() => {
+    if (activeNotebook && !localStorage.getItem("@SeniorEase:tour:editor")) {
+      setIsTourOpen(true);
+      localStorage.setItem("@SeniorEase:tour:editor", "true");
+    }
+  }, [activeNotebook]);
+
+  if (!activeNotebook) {
+    return <p className={styles.emptyState}>Caderno não encontrado...</p>;
+  }
+
+  const activeBlocks = activeNotebook.blocks.filter((b) => !b.isDeleted);
+  const hasHeading = activeBlocks.some((b) => b.type === "heading");
+
+  const handleConfirmEdit = async () => {
+    await updateNotebookInfo(
+      activeNotebook.id,
+      notebookTitle,
+      notebookDescription,
+    );
+    setIsEditModalOpen(false);
+    showToast("Salvo com sucesso!", "success");
+  };
+
+  const executeNotebookDelete = async () => {
+    await deleteNotebook(activeNotebook.id);
+    showToast("Caderno movido para a lixeira.", "info");
+    router.push("/");
+  };
+
+  const executeBlockDelete = async () => {
+    if (blockToDelete) {
+      await deleteBlock(activeNotebook.id, blockToDelete);
+      setBlockToDelete(null);
+      showToast("Item apagado.", "info");
+    }
+  };
+
+  const compiledTextToRead = activeBlocks
+    .map((b) => {
+      if (b.type === "heading" && b.content.trim() !== "")
+        return `Título da secção: ${b.content}`;
+      if (b.type === "paragraph" && b.content.trim() !== "")
+        return `Anotação: ${b.content}`;
+      if (b.type === "task" && b.content.trim() !== "")
+        return `Tarefa ${b.isCompleted ? "concluída" : "pendente"}: ${b.content}`;
+      if (b.type === "meeting" && b.title.trim() !== "")
+        return `Reunião: ${b.title}`;
+      if (b.type === "reminder" && (b.content?.trim() !== "" || b.date)) {
+        const textoDescricao = b.content?.trim()
+          ? b.content
+          : "Sem assunto definido";
+        const dataFormatada = b.date
+          ? new Date(b.date).toLocaleString("pt-BR")
+          : "Sem horário definido";
+        return `Lembrete: ${textoDescricao}, agendado para: ${dataFormatada}`;
+      }
+      return "";
+    })
+    .filter((text) => text !== "")
+    .join(". ");
+
+  return (
+    <main className={styles.main}>
+      <div className={styles.editor}>
+        <header className={`${styles.editorHeader} ${styles.editorHeaderWrap}`}>
+          <div className={styles.flexColGap8}>
+            <div className={styles.flexAlignCenter}>
+              <button
+                className={styles.backButton}
+                onClick={() => router.push("/")}
+              >
+                <BackIcon /> Voltar
+              </button>
+              <button
+                onClick={() => setIsTourOpen(true)}
+                className={styles.btnPrimarySurface}
+              >
+                <HelpIcon /> Ajuda
+              </button>
+            </div>
+
+            <div id="tour-editor-title" className={styles.mt16}>
+              <h1 className={styles.editorTitle}>{activeNotebook.title}</h1>
+              {activeNotebook.description && (
+                <p className={styles.editorDescription}>
+                  {activeNotebook.description}
+                </p>
+              )}
+            </div>
+
+            {!isReadingMode && (
+              <div id="tour-editor-actions" className={styles.headerActions}>
+                <button
+                  className={styles.secondaryButton}
+                  onClick={() => setIsEditModalOpen(true)}
+                >
+                  <div className={styles.iconText}>
+                    <EditIcon /> Editar Nome/Descrição
+                  </div>
+                </button>
+                <button
+                  className={styles.dangerButton}
+                  onClick={() =>
+                    actionConfirmation === "on"
+                      ? setIsDeleteModalOpen(true)
+                      : executeNotebookDelete()
+                  }
+                >
+                  <div className={styles.iconText}>
+                    <TrashIcon /> Apagar Caderno
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div id="tour-editor-a11y" className={styles.editorA11yControls}>
+            <button
+              className={`${styles.toggleReadingButton} ${isReadingMode ? styles.active : ""}`}
+              onClick={() => setIsReadingMode(!isReadingMode)}
+            >
+              <div className={styles.iconText}>
+                <BookIcon />{" "}
+                {isReadingMode ? "Sair da Leitura" : "Modo Leitura"}
+              </div>
+            </button>
+            {compiledTextToRead && (
+              <ReadAloudButton
+                textToRead={`Nome do Caderno: ${activeNotebook.title}. ${activeNotebook.description ? `Descrição: ${activeNotebook.description}.` : ""} ${compiledTextToRead}`}
+              />
+            )}
+          </div>
+        </header>
+
+        {isReadingMode ? (
+          <article className={styles.readingContainer}>
+            {activeBlocks.length === 0 ? (
+              <p className={styles.readParagraph}>Este caderno está vazio.</p>
+            ) : (
+              activeBlocks.map((block) => {
+                switch (block.type) {
+                  case "heading":
+                    return (
+                      <h2 key={block.id} className={styles.readHeading}>
+                        {block.content}
+                      </h2>
+                    );
+                  case "paragraph":
+                    return (
+                      <p key={block.id} className={styles.readParagraph}>
+                        {block.content}
+                      </p>
+                    );
+                  case "task":
+                    return (
+                      <div
+                        key={block.id}
+                        className={`${styles.readTask} ${block.isCompleted ? styles.completed : ""}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={block.isCompleted}
+                          readOnly
+                          className={styles.readCheckbox}
+                          aria-hidden="true"
+                        />
+                        <span>{block.content}</span>
+                      </div>
+                    );
+                  case "meeting":
+                    return (
+                      <div key={block.id} className={styles.readCard}>
+                        <strong>Reunião: {block.title}</strong>
+                        {block.meetingUrl && (
+                          <a
+                            href={block.meetingUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Acessar link da reunião
+                          </a>
+                        )}
+                      </div>
+                    );
+                  case "reminder":
+                    return (
+                      <div key={block.id} className={styles.readCard}>
+                        <strong>Lembrete: {block.content}</strong>
+                        {block.date && (
+                          <span>
+                            Data: {new Date(block.date).toLocaleString("pt-BR")}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  default:
+                    return null;
+                }
+              })
+            )}
+          </article>
+        ) : (
+          <section>
+            {activeBlocks.length === 0 ? (
+              <p className={styles.emptyState}>
+                O seu caderno está vazio. Comece a adicionar conteúdo abaixo!
+              </p>
+            ) : (
+              activeBlocks.map((block) => {
+                switch (block.type) {
+                  case "heading":
+                    return (
+                      <HeadingBlockUI
+                        key={block.id}
+                        block={block}
+                        onDelete={(id) =>
+                          actionConfirmation === "on"
+                            ? setBlockToDelete(id)
+                            : deleteBlock(activeNotebook.id, id)
+                        }
+                        onChangeContent={(id, content) =>
+                          updateBlock(activeNotebook.id, id, { content })
+                        }
+                      />
+                    );
+                  case "task":
+                    return (
+                      <TaskBlockUI
+                        key={block.id}
+                        block={block}
+                        onDelete={(id) =>
+                          actionConfirmation === "on"
+                            ? setBlockToDelete(id)
+                            : deleteBlock(activeNotebook.id, id)
+                        }
+                        onToggle={async (id) => {
+                          await toggleTask(activeNotebook.id, id);
+                          if (!block.isCompleted)
+                            showToast("Concluído!", "success");
+                        }}
+                        onChangeContent={(id, content) =>
+                          updateBlock(activeNotebook.id, id, { content })
+                        }
+                      />
+                    );
+                  case "paragraph":
+                    return (
+                      <ParagraphBlockUI
+                        key={block.id}
+                        block={block}
+                        onDelete={(id) =>
+                          actionConfirmation === "on"
+                            ? setBlockToDelete(id)
+                            : deleteBlock(activeNotebook.id, id)
+                        }
+                        onChangeContent={(id, content) =>
+                          updateBlock(activeNotebook.id, id, { content })
+                        }
+                      />
+                    );
+                  case "meeting":
+                    return (
+                      <MeetingBlockUI
+                        key={block.id}
+                        block={block}
+                        onDelete={(id) =>
+                          actionConfirmation === "on"
+                            ? setBlockToDelete(id)
+                            : deleteBlock(activeNotebook.id, id)
+                        }
+                        onChangeContent={(id, title, url, date) =>
+                          updateBlock(activeNotebook.id, id, {
+                            title,
+                            meetingUrl: url,
+                            date,
+                          })
+                        }
+                      />
+                    );
+                  case "reminder":
+                    return (
+                      <ReminderBlockUI
+                        key={block.id}
+                        block={block}
+                        onDelete={(id) =>
+                          actionConfirmation === "on"
+                            ? setBlockToDelete(id)
+                            : deleteBlock(activeNotebook.id, id)
+                        }
+                        onChangeContent={(id, content, date) =>
+                          updateBlock(activeNotebook.id, id, { content, date })
+                        }
+                      />
+                    );
+                  default:
+                    return null;
+                }
+              })
+            )}
+          </section>
+        )}
+      </div>
+
+      {!isReadingMode && (
+        <nav id="tour-editor-add" className={styles.bottomBar}>
+          {!hasHeading && (
+            <button
+              className={styles.actionButton}
+              onClick={() =>
+                addBlock(activeNotebook.id, { type: "heading", content: "" })
+              }
+            >
+              <TitleIcon /> Título
+            </button>
+          )}
+          <button
+            className={styles.actionButton}
+            onClick={() =>
+              addBlock(activeNotebook.id, { type: "paragraph", content: "" })
+            }
+          >
+            <WriteIcon /> Anotação
+          </button>
+          <button
+            className={styles.actionButton}
+            onClick={() =>
+              addBlock(activeNotebook.id, {
+                type: "task",
+                content: "",
+                isCompleted: false,
+              })
+            }
+          >
+            <TaskIcon /> Tarefa
+          </button>
+          <button
+            className={styles.actionButton}
+            onClick={async () => {
+              await NotificationService.requestPermission();
+              addBlock(activeNotebook.id, {
+                type: "reminder",
+                content: "",
+                date: "",
+              });
+            }}
+          >
+            <ClockIcon /> Lembrete
+          </button>
+          <button
+            className={styles.actionButton}
+            onClick={async () => {
+              await NotificationService.requestPermission();
+              addBlock(activeNotebook.id, {
+                type: "meeting",
+                title: "",
+                meetingUrl: "",
+                date: "",
+              });
+            }}
+          >
+            <VideoIcon /> Reunião
+          </button>
+        </nav>
+      )}
+
+      {/* Modal: Editar Caderno */}
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title="Editar Caderno"
+      >
+        <div className={styles.modalContent}>
+          <Input
+            label="Nome do Caderno"
+            value={notebookTitle}
+            onChange={(e) => setNotebookTitle(e.target.value)}
+            onDictate={(text) =>
+              setNotebookTitle((prev) => (prev ? `${prev} ${text}` : text))
+            }
+          />
+          <Input
+            label="Descrição (Opcional)"
+            value={notebookDescription}
+            onChange={(e) => setNotebookDescription(e.target.value)}
+            onDictate={(text) =>
+              setNotebookDescription((prev) =>
+                prev ? `${prev} ${text}` : text,
+              )
+            }
+            placeholder="Do que se trata este caderno?"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleConfirmEdit();
+            }}
+          />
+          <div className={styles.modalFooter}>
+            <Button variant="ghost" onClick={() => setIsEditModalOpen(false)}>
+              Cancelar
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleConfirmEdit}
+              disabled={!notebookTitle.trim()}
+            >
+              Salvar Alterações
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal: Apagar Caderno */}
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Apagar Caderno"
+      >
+        <div className={styles.modalContent}>
+          <p className={styles.textBaseHeading}>
+            Tem certeza que deseja apagar o caderno{" "}
+            <strong>{activeNotebook.title}</strong>? Ele será enviado para a
+            lixeira.
+          </p>
+          <div className={styles.modalFooter}>
+            <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>
+              Cancelar
+            </Button>
+            <Button variant="danger" onClick={executeNotebookDelete}>
+              Sim, Apagar
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal: Apagar Item do Caderno */}
+      <Modal
+        isOpen={!!blockToDelete}
+        onClose={() => setBlockToDelete(null)}
+        title="Apagar Item"
+      >
+        <div className={styles.modalContent}>
+          <p className={styles.textBaseHeading}>
+            Tem certeza que deseja apagar este item? Ele será enviado para a
+            lixeira.
+          </p>
+          <div className={styles.modalFooter}>
+            <Button variant="ghost" onClick={() => setBlockToDelete(null)}>
+              Cancelar
+            </Button>
+            <Button variant="danger" onClick={executeBlockDelete}>
+              Sim, Apagar
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      <OnboardingTour
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+        steps={EDITOR_STEPS}
+      />
+    </main>
+  );
+}

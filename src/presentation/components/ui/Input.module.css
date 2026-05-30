@@ -33,3 +33,14 @@
   color: var(--text-body);
   opacity: 0.7;
 }
+
+/* Adicione no final do src/presentation/components/ui/Input.module.css */
+.inputWrapper {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.inputFlex {
+  flex-grow: 1;
+}

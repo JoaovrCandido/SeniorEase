@@ -1,0 +1,23 @@
+/* src/presentation/components/ui/AccessibilityPanel.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.sectionTitle {
+  font-size: var(--text-base);
+  margin-bottom: var(--space-sm);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.description {
+  font-size: var(--text-sm);
+  color: var(--text-body);
+  margin-bottom: 8px;
+}

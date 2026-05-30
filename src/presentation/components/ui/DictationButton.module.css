@@ -1,0 +1,22 @@
+/* src/presentation/components/ui/DictationButton.module.css */
+.button {
+  background: transparent;
+  border: 2px solid transparent;
+  color: var(--text-body);
+  cursor: pointer;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* Classe dinâmica quando está a gravar */
+.listening {
+  background: #fee2e2;
+  border-color: var(--danger-main);
+  color: var(--danger-main);
+}

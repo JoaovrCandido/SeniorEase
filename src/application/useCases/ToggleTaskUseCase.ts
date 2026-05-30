@@ -1,5 +1,5 @@
 // src/application/useCases/ToggleTaskUseCase.ts
-import { INotebookRepository } from '../../domain/repositories/INotebookRepository';
+import { INotebookRepository } from "../../domain/repositories/INotebookRepository";
 
 export class ToggleTaskUseCase {
   constructor(private readonly notebookRepository: INotebookRepository) {}
@@ -8,18 +8,18 @@ export class ToggleTaskUseCase {
     const notebook = await this.notebookRepository.getById(notebookId);
 
     if (!notebook) {
-      throw new Error('Caderno não encontrado.');
+      throw new Error("Caderno não encontrado.");
     }
 
-    const blockIndex = notebook.blocks.findIndex(b => b.id === blockId);
+    const blockIndex = notebook.blocks.findIndex((b) => b.id === blockId);
 
     if (blockIndex === -1) {
-      throw new Error('Bloco não encontrado no caderno.');
+      throw new Error("Bloco não encontrado no caderno.");
     }
 
     const block = notebook.blocks[blockIndex];
 
-    if (block.type !== 'task') {
+    if (block.type !== "task") {
       throw new Error('Apenas blocos do tipo "task" podem ser alternados.');
     }
 

@@ -5,7 +5,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.75); /* Fundo escuro para destacar o modal */
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.75
+  ); /* Fundo escuro para destacar o modal */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,8 +58,9 @@
   transition: all 0.2s;
 }
 
-.closeButton:hover, .closeButton:focus-visible {
-  background-color: #FEE2E2;
+.closeButton:hover,
+.closeButton:focus-visible {
+  background-color: #fee2e2;
   color: var(--danger-main);
   outline: none;
 }

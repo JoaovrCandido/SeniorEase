@@ -1,9 +1,9 @@
 // src/application/useCases/AddBlockUseCase.ts
-import { ContentBlock } from '../../domain/entities/Block';
-import { INotebookRepository } from '../../domain/repositories/INotebookRepository';
+import { ContentBlock } from "../../domain/entities/Block";
+import { INotebookRepository } from "../../domain/repositories/INotebookRepository";
 
 // Usamos Omit para criar o bloco sem precisar passar um ID (o Use Case gera o ID)
-export type CreateBlockDTO = Omit<ContentBlock, 'id'>;
+export type CreateBlockDTO = Omit<ContentBlock, "id">;
 
 export class AddBlockUseCase {
   constructor(private readonly notebookRepository: INotebookRepository) {}

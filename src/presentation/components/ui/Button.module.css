@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: var(--touch-target-min); /* Garante os 48px mínimos */
+  min-height: var(--touch-target-min);
   min-width: var(--touch-target-min);
   padding: 0 24px;
   border-radius: var(--radius-md);
@@ -14,7 +14,6 @@
   transition: all 0.2s ease-in-out;
 }
 
-/* O estado de Focus é crucial para idosos que navegam por teclado */
 .button:focus-visible {
   outline: 4px solid var(--text-heading);
   outline-offset: 2px;
@@ -25,7 +24,6 @@
   cursor: not-allowed;
 }
 
-/* Variantes do Botão */
 .primary {
   background-color: var(--primary-main);
   color: var(--bg-surface);

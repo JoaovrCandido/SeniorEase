@@ -1,0 +1,30 @@
+/* src/presentation/components/ui/ReadAloudButton.module.css */
+.button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--primary-surface);
+  color: var(--primary-main);
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: var(--text-base);
+  min-height: var(--touch-target-min);
+  transition: all 0.2s ease;
+}
+.button:hover,
+.button:focus-visible {
+  filter: brightness(0.95);
+  outline: none;
+}
+.speaking {
+  background-color: #fee2e2;
+  color: var(--danger-main);
+}
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

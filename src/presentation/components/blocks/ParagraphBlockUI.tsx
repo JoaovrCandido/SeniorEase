@@ -1,7 +1,8 @@
-// src/presentation/components/blocks/ParagraphBlockUI.tsx
-import React, { useState, useEffect } from 'react';
-import { ParagraphBlock } from '../../../domain/entities/Block';
-import { DictationButton } from '../ui/DictationButton';
+import React, { useState, useEffect } from "react";
+import { ParagraphBlock } from "../../../domain/entities/Block";
+import { DictationButton } from "../ui/DictationButton";
+import { TrashIcon } from "../ui/Icons";
+import styles from "./ParagraphBlockUI.module.css";
 
 interface Props {
   block: ParagraphBlock;
@@ -9,7 +10,11 @@ interface Props {
   onDelete: (id: string) => void;
 }
 
-export const ParagraphBlockUI: React.FC<Props> = ({ block, onChangeContent, onDelete }) => {
+export const ParagraphBlockUI: React.FC<Props> = ({
+  block,
+  onChangeContent,
+  onDelete,
+}) => {
   const [localContent, setLocalContent] = useState(block.content);
   useEffect(() => setLocalContent(block.content), [block.content]);
 
@@ -20,16 +25,25 @@ export const ParagraphBlockUI: React.FC<Props> = ({ block, onChangeContent, onDe
   };
 
   return (
-    <div style={{ display: 'flex', gap: '16px', marginBottom: '16px', padding: '16px', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-soft)' }}>
+    <div className={styles.container}>
       <textarea
+        className={styles.textarea}
         value={localContent}
         onChange={(e) => setLocalContent(e.target.value)}
-        onBlur={() => localContent !== block.content && onChangeContent(block.id, localContent)}
+        onBlur={() =>
+          localContent !== block.content &&
+          onChangeContent(block.id, localContent)
+        }
         placeholder="Digite sua anotação aqui..."
-        style={{ flexGrow: 1, minHeight: '80px', border: 'none', background: 'transparent', fontSize: 'var(--text-base)', color: 'var(--text-body)', fontFamily: 'var(--font-sans)', resize: 'vertical' }}
       />
       <DictationButton onDictate={handleDictate} />
-      <button onClick={() => onDelete(block.id)} style={{ background: 'none', border: 'none', color: 'var(--danger-main)', cursor: 'pointer', height: '48px', width: '48px' }}>🗑️</button>
+      <button
+        className={styles.deleteButton}
+        onClick={() => onDelete(block.id)}
+        aria-label="Apagar anotação"
+      >
+        <TrashIcon />
+      </button>
     </div>
   );
 };

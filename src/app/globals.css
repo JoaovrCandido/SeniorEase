@@ -5,45 +5,41 @@
      1. CORES (Alto Contraste e Conforto)
      ========================================= */
   /* Fundos e Superfícies */
-  --bg-canvas: #FAFAF9; /* Branco quente, corta o brilho do monitor */
-  --bg-surface: #FFFFFF; /* Branco puro para os cartões e blocos */
-  
-  /* Ação Principal e Marca (Teal - Verde Azuladado Elegante) */
-  --primary-main: #115E59; 
-  --primary-hover: #0F766E;
-  --primary-surface: #CCFBF1; /* Fundo de destaque suave */
-  
+  --bg-canvas: #fafaf9;
+  --bg-surface: #ffffff;
+
+  /* Ação Principal e Marca */
+  --primary-main: #115e59;
+  --primary-hover: #0f766e;
+  --primary-surface: #ccfbf1;
+
   /* Tipografia */
-  --text-heading: #1C1917; /* Quase preto */
-  --text-body: #44403C; /* Cinza denso para leitura longa */
-  
+  --text-heading: #1c1917;
+  --text-body: #44403c;
+
   /* Apoio e Feedback */
-  --danger-main: #B91C1C; /* Lixeira e exclusão */
-  --success-main: #15803D; /* Tarefa concluída */
+  --danger-main: #b91c1c;
+  --danger-surface: #fee2e2; /* Fundo suave para o botão vermelho */
+  --success-main: #15803d;
+  --success-surface: #ecfccb; /* Fundo suave para o botão verde */
 
   /* =========================================
      2. TIPOGRAFIA (Escala Acessível)
      ========================================= */
-  /* O "normal" (1rem) na web é 16px, mas usaremos 18px como base */
-  --text-sm: 1rem;       /* 16px - Apenas para rodapés ou dicas curtas */
-  --text-base: 1.125rem; /* 18px - Corpo de texto padrão */
-  --text-lg: 1.5rem;     /* 24px - Botões grandes e subtítulos */
-  --text-xl: 2rem;       /* 32px - Títulos principais */
+  --text-sm: 1rem; /* 16px */
+  --text-base: 1.125rem; /* 18px */
+  --text-lg: 1.5rem; /* 24px */
+  --text-xl: 2rem; /* 32px */
 
   /* =========================================
      3. ERGONOMIA E ESPAÇAMENTO
      ========================================= */
-  /* Área mínima de clique para pessoas com tremor nas mãos */
   --touch-target-min: 48px;
-  
-  /* Bordas e Sombras */
+
   --radius-md: 12px;
   --radius-lg: 20px;
   --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 
-  /* =========================================
-     4. VARIÁVEIS DE ESPAÇAMENTO (Novas)
-     ========================================= */
   --space-sm: 8px;
   --space-md: 16px;
   --space-lg: 24px;
@@ -69,23 +65,27 @@ body {
 body {
   background-color: var(--bg-canvas);
   color: var(--text-body);
-  /* A fonte será injetada pelo Next.js no layout, usamos o fallback aqui */
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--text-heading);
   font-weight: 700;
 }
 
-a, button {
+a,
+button {
   cursor: pointer;
   font-family: inherit;
 }
 
-/* Garante que os botões não fiquem minúsculos */
 button {
   min-height: var(--touch-target-min);
   min-width: var(--touch-target-min);
@@ -95,61 +95,80 @@ button {
    MODIFICADORES DE ACESSIBILIDADE
    ========================================= */
 
-/* Quando o usuário ativar a "Fonte Grande" */
+/* Tamanho de Fonte Grande */
 html.font-large {
-  --text-sm: 1.125rem;   /* 18px */
-  --text-base: 1.5rem;   /* 24px */
-  --text-lg: 2rem;       /* 32px */
-  --text-xl: 2.5rem;     /* 40px */
+  --text-sm: 1.125rem; /* 18px */
+  --text-base: 1.5rem; /* 24px */
+  --text-lg: 2rem; /* 32px */
+  --text-xl: 2.5rem; /* 40px */
 }
 
-/* Quando o usuário ativar o "Alto Contraste" */
+/* Alto Contraste (Cores perfeitamente calibradas) */
 html.contrast-high {
   --bg-canvas: #000000;
-  --bg-surface: #1A1A1A;
-  --text-body: #FFFFFF;
-  --text-heading: #FFFF00; /* Amarelo puro ajuda muito na leitura em alto contraste */
-  --primary-main: #FFFFFF; /* Botões ficam brancos para chamar máxima atenção */
-  --primary-surface: #333333;
+  --bg-surface: #121212; /* Cinza super escuro para distinguir os cartões do fundo */
+  --text-body: #ffffff;
+  --text-heading: #ffff00; /* Amarelo puro, legibilidade máxima no preto */
+
+  --primary-main: #ffff00;
+  --primary-hover: #e6c200;
+  --primary-surface: #2a2a00; /* Fundo amarelo muito escuro para botões soft */
+
+  --danger-main: #ff6b6b; /* Vermelho claro sobressai melhor no preto */
+  --danger-surface: #4a0000;
+
+  --success-main: #4ade80; /* Verde claro sobressai melhor no preto */
+  --success-surface: #003300;
 }
 
-html.contrast-high button {
-  color: #000000;
-  border: 2px solid #FFFFFF;
+/* Bordas evidentes em modo de alto contraste para separar os elementos */
+html.contrast-high [class*="card"],
+html.contrast-high input,
+html.contrast-high textarea,
+html.contrast-high [class*="readCard"] {
+  border: 2px solid #ffffff !important;
 }
 
+/* Espaçamento Largo */
 html.spacing-large {
   --space-sm: 12px;
   --space-md: 24px;
   --space-lg: 32px;
   --space-xl: 48px;
-  --touch-target-min: 64px; /* Aumenta os botões e áreas de clique para 64px */
+  --touch-target-min: 64px;
 }
 
-/* =========================================
-   NOVO: FEEDBACK VISUAL REFORÇADO
-   ========================================= */
+/* Feedback Visual Reforçado */
 html.visual-feedback-enhanced * {
-  /* Transições mais lentas e suaves para o idoso acompanhar a mudança */
-  transition-duration: 0.3s !important; 
+  transition-duration: 0.3s !important;
 }
 
-/* Bordas de foco (navegação por teclado) ficam gigantes */
 html.visual-feedback-enhanced *:focus-visible {
   outline: 6px solid var(--primary-main) !important;
   outline-offset: 4px !important;
 }
 
-/* Botões e Cartões saltam para a frente e ganham sombras fortes ao passar o rato */
-html.visual-feedback-enhanced button:hover:not(:disabled), 
+html.visual-feedback-enhanced button:hover:not(:disabled),
 html.visual-feedback-enhanced [class*="card"]:hover {
   transform: translateY(-6px) scale(1.02) !important;
-  box-shadow: 0 16px 32px rgba(0,0,0,0.2) !important;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2) !important;
   border-color: var(--primary-main) !important;
 }
 
-/* Campos de texto ficam com as bordas muito mais grossas */
 html.visual-feedback-enhanced input,
 html.visual-feedback-enhanced textarea {
   border-width: 3px !important;
+}
+
+/* =========================================
+   CORREÇÃO: ÍCONES NATIVOS DE INPUT (ALTO CONTRASTE)
+   ========================================= */
+html.contrast-high
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(
+    1
+  ) !important; /* Transforma o ícone preto do navegador em branco brilhante */
+  cursor: pointer;
+  min-width: 24px;
+  min-height: 24px;
 }

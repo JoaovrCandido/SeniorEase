@@ -2,7 +2,7 @@
 
 .main {
   min-height: 100vh;
-  padding-bottom: 100px; /* Espaço para a barra inferior não sobrepor o texto */
+  padding-bottom: 100px;
 }
 
 /* =========================================
@@ -52,7 +52,8 @@
   gap: 8px;
 }
 
-.card:hover, .card:focus-visible {
+.card:hover,
+.card:focus-visible {
   border-color: var(--primary-main);
   transform: translateY(-4px);
   outline: none;
@@ -99,14 +100,13 @@
   font-size: var(--text-lg);
 }
 
-/* A Barra Mágica do Rodapé */
 .bottomBar {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   background-color: var(--bg-surface);
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: center;
   gap: 16px;
@@ -131,49 +131,63 @@
   font-size: var(--text-base);
 }
 
-.actionButton:hover, .actionButton:focus-visible {
+.actionButton:hover,
+.actionButton:focus-visible {
   background-color: var(--primary-surface);
   outline: none;
 }
 
-/* Botão de acessibilidade global */
-.a11yButton {
-  background-color: var(--text-heading);
-  color: var(--bg-surface);
-  border: none;
+/* Substitua a antiga classe .a11yButton por esta no src/app/page.module.css */
+.backButton {
+  background-color: var(--bg-surface);
+  border: 2px solid var(--text-body);
+  color: var(--text-heading);
   padding: 12px 24px;
   border-radius: var(--radius-md);
   font-weight: bold;
   font-size: var(--text-base);
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.backButton:hover,
+.backButton:focus-visible {
+  background-color: var(--primary-surface);
+  border-color: var(--primary-main);
+  color: var(--primary-main);
+  outline: none;
 }
 
 /* =========================================
    MODO LEITURA (FOCUS MODE)
    ========================================= */
 .readingContainer {
-  /* 1. Padronização Mestra: Fonte, Tamanho e Peso únicos para TUDO */
   font-family: var(--font-serif);
-  font-size: 1.5rem; /* Letra um pouco maior que o padrão */
-  font-weight: 400;  /* Peso normal e uniforme */
+  font-size: 1.5rem;
+  font-weight: 400;
   color: var(--text-heading);
-  
-  /* 2. Espaçamento mais confortável (entrelinhas maiores) */
-  line-height: 2; 
-  
-  /* 3. Remoção do max-width (ocupa a tela toda agora) */
+  line-height: 2;
   padding: var(--space-xl) 16px;
   animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .readHeading {
-  font-size: 2rem; /* Devolve um tamanho maior e de destaque */
-  font-weight: 700; /* Devolve o negrito para criar hierarquia visual */
+  font-size: 2rem;
+  font-weight: 700;
   margin-top: var(--space-xl);
   margin-bottom: var(--space-lg);
 }
@@ -181,13 +195,13 @@
 .readParagraph {
   font-size: inherit;
   font-weight: inherit;
-  margin-bottom: var(--space-lg); /* Espaçamento inferior aumentado */
+  margin-bottom: var(--space-lg);
 }
 
 .readTask {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-lg); /* Mais espaço entre a caixa e o texto */
+  gap: var(--space-lg);
   font-size: inherit;
   font-weight: inherit;
   margin-bottom: var(--space-lg);
@@ -198,7 +212,6 @@
   opacity: 0.6;
 }
 
-/* Checkbox levemente maior para acompanhar a fonte maior */
 .readCheckbox {
   width: 28px;
   height: 28px;
@@ -209,20 +222,17 @@
 
 .readCard {
   background-color: var(--bg-canvas);
-  padding: var(--space-lg); /* Respiro interno aumentado */
+  padding: var(--space-lg);
   border-radius: var(--radius-md);
   margin-bottom: var(--space-lg);
   border: 1px solid var(--text-body);
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-  
-  /* Força a herança para ficar idêntico ao parágrafo */
   font-size: inherit;
   font-weight: inherit;
 }
 
-/* Força os textos em negrito dentro dos cartões a perderem o peso para padronizar */
 .readCard strong {
   font-weight: inherit;
 }
@@ -275,7 +285,9 @@
   cursor: pointer;
 }
 
-.secondaryButton:hover { background: var(--bg-canvas); }
+.secondaryButton:hover {
+  background: var(--bg-canvas);
+}
 
 .dangerButton {
   background: transparent;
@@ -287,4 +299,197 @@
   cursor: pointer;
 }
 
-.dangerButton:hover { background: #FEE2E2; }
+/* Modificado para usar a variável em vez de HEX fixo */
+.dangerButton:hover {
+  background: var(--danger-surface);
+}
+
+/* =========================================
+   CLASSES UTILITÁRIAS
+   ========================================= */
+
+.pageHeader {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.pageHeaderBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.contentWrapper {
+  margin-top: 24px;
+}
+.flexAlignCenter {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.flexWrapGap16 {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.flexColGap8 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mt16 {
+  margin-top: 16px;
+}
+
+.textSuccess {
+  color: var(--success-main);
+}
+.textBaseHeading {
+  font-size: var(--text-base);
+  color: var(--text-heading);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.textBaseBody {
+  font-size: var(--text-base);
+  color: var(--text-body);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.textItalicSuccess {
+  font-style: italic;
+  color: var(--success-main);
+  margin-top: 8px;
+  display: block;
+}
+.textItalicPrimary {
+  font-style: italic;
+  color: var(--primary-main);
+}
+.textLgBoldHeading {
+  font-size: var(--text-lg);
+  font-weight: bold;
+  color: var(--text-heading);
+  margin-top: 8px;
+  display: block;
+}
+.iconText {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.cardSuccess {
+  cursor: default;
+  border: 2px solid var(--success-main);
+  opacity: 0.9;
+}
+.cardDanger {
+  cursor: default;
+  border: 2px solid var(--danger-main);
+  opacity: 0.9;
+}
+.cardDashed {
+  cursor: default;
+  border: 2px dashed var(--text-body);
+  opacity: 0.9;
+}
+.cardDashedCreate {
+  border-style: dashed;
+  background-color: transparent;
+}
+
+.btnPrimarySurface {
+  background-color: var(--primary-surface);
+  border: none;
+  color: var(--primary-main);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.btnPrimarySurface:hover {
+  filter: brightness(0.95);
+  transform: translateY(-2px);
+}
+
+.btnOutline {
+  background-color: transparent;
+  border: 2px solid var(--text-body);
+  color: var(--text-heading);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.btnOutline:hover {
+  background-color: var(--bg-canvas);
+  transform: translateY(-2px);
+}
+
+.btnOutlineSuccess {
+  background-color: transparent;
+  border: 2px solid var(--success-main);
+  color: var(--success-main);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+/* Modificado para usar a variável em vez de HEX fixo */
+.btnOutlineSuccess:hover {
+  background-color: var(--success-surface);
+  transform: translateY(-2px);
+}
+
+.trashContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  margin-top: 24px;
+}
+.sectionTitle {
+  font-size: var(--text-xl);
+  margin-bottom: 16px;
+  color: var(--text-heading);
+}
+.editorHeaderWrap {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.editorA11yControls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--text-body);
+}
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-md);
+}

@@ -1,4 +1,4 @@
-import { ContentBlock } from './Block';
+import { ContentBlock } from "./Block";
 
 export interface Notebook {
   id: string;

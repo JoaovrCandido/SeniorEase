@@ -23,9 +23,9 @@
   min-height: var(--touch-target-min);
   border: none;
   background: transparent;
-  
+
   /* A magia do título: tipografia gigante e pesada */
-  font-size: var(--text-xl); 
+  font-size: var(--text-xl);
   font-weight: 800;
   color: var(--text-heading);
   font-family: var(--font-sans);
@@ -64,6 +64,6 @@
 .deleteButton:focus-visible {
   opacity: 1;
   color: var(--danger-main);
-  background-color: #FEE2E2; /* Fundo de aviso suave */
+  background-color: #fee2e2; /* Fundo de aviso suave */
   outline: none;
 }

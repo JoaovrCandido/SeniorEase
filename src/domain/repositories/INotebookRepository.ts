@@ -1,5 +1,5 @@
 // src/domain/repositories/INotebookRepository.ts
-import { Notebook } from '../entities/Notebook';
+import { Notebook } from "../entities/Notebook";
 
 export interface INotebookRepository {
   getAll(): Promise<Notebook[]>;
