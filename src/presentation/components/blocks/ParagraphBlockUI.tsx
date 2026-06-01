@@ -1,3 +1,4 @@
+// src/presentation/components/blocks/ParagraphBlockUI.tsx
 import React, { useState, useEffect } from "react";
 import { ParagraphBlock } from "../../../domain/entities/Block";
 import { DictationButton } from "../ui/DictationButton";
@@ -6,12 +7,14 @@ import styles from "./ParagraphBlockUI.module.css";
 
 interface Props {
   block: ParagraphBlock;
+  isFirst?: boolean; // Propriedade nova para o Tour de Ajuda
   onChangeContent: (id: string, content: string) => void;
   onDelete: (id: string) => void;
 }
 
 export const ParagraphBlockUI: React.FC<Props> = ({
   block,
+  isFirst,
   onChangeContent,
   onDelete,
 }) => {
@@ -36,14 +39,20 @@ export const ParagraphBlockUI: React.FC<Props> = ({
         }
         placeholder="Digite sua anotação aqui..."
       />
-      <DictationButton onDictate={handleDictate} />
-      <button
-        className={styles.deleteButton}
-        onClick={() => onDelete(block.id)}
-        aria-label="Apagar anotação"
+      {/* NOVO: Div isolando as ações para o foco da ajuda */}
+      <div
+        id={isFirst ? "tour-first-block-actions" : undefined}
+        style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}
       >
-        <TrashIcon />
-      </button>
+        <DictationButton onDictate={handleDictate} />
+        <button
+          className={styles.deleteButton}
+          onClick={() => onDelete(block.id)}
+          aria-label="Apagar anotação"
+        >
+          <TrashIcon />
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,3 +1,4 @@
+// src/presentation/components/blocks/MeetingBlockUI.tsx
 import React, { useState, useEffect } from "react";
 import { MeetingBlock } from "../../../domain/entities/Block";
 import { Button } from "../ui/Button";
@@ -7,6 +8,7 @@ import styles from "./MeetingBlockUI.module.css";
 
 interface Props {
   block: MeetingBlock;
+  isFirst?: boolean; // Propriedade nova para o Tour de Ajuda
   onChangeContent: (
     id: string,
     title: string,
@@ -18,6 +20,7 @@ interface Props {
 
 export const MeetingBlockUI: React.FC<Props> = ({
   block,
+  isFirst,
   onChangeContent,
   onDelete,
 }) => {
@@ -63,7 +66,7 @@ export const MeetingBlockUI: React.FC<Props> = ({
               onBlur={handleBlur}
               placeholder="Assunto da reunião"
             />
-            <DictationButton onDictate={handleDictate} />
+            {/* O Microfone subiu para agrupar-se com a Lixeira no bloco de ações */}
           </div>
           <input
             className={styles.inputBase}
@@ -82,13 +85,20 @@ export const MeetingBlockUI: React.FC<Props> = ({
           />
         </div>
 
-        <button
-          className={styles.deleteButton}
-          onClick={() => onDelete(block.id)}
-          aria-label="Apagar Reunião"
+        {/* NOVO: Div isolando as ações para o foco da ajuda */}
+        <div
+          id={isFirst ? "tour-first-block-actions" : undefined}
+          style={{ display: "flex", flexDirection: "column", gap: "8px" }}
         >
-          <TrashIcon />
-        </button>
+          <DictationButton onDictate={handleDictate} />
+          <button
+            className={styles.deleteButton}
+            onClick={() => onDelete(block.id)}
+            aria-label="Apagar Reunião"
+          >
+            <TrashIcon />
+          </button>
+        </div>
       </div>
       {url && (
         <a

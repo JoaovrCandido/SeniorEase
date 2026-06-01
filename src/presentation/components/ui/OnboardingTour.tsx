@@ -8,13 +8,8 @@ import styles from "./OnboardingTour.module.css";
 export interface TourStep {
   targetId: string;
   title: string;
-  description: string;
-}
-
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-  steps: TourStep[];
+  description: React.ReactNode; // Agora aceita HTML/Ícones!
+  audioText?: string; // Texto específico para o leitor de voz
 }
 
 type DialogPosition =
@@ -30,7 +25,6 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const { isSpeaking, readText, stop } = useSpeech();
 
-  // Estado que controla o quadrante exato do modal
   const [dialogPosition, setDialogPosition] =
     useState<DialogPosition>("bottomCenter");
 
@@ -62,7 +56,6 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
           targetElement.dataset.tourPosFixed = "true";
         }
 
-        // LÓGICA DE POSICIONAMENTO EM QUADRANTES
         const rect = targetElement.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
         const viewportWidth = window.innerWidth;
@@ -71,7 +64,6 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
         let hPos = "Center";
         let scrollBlock: ScrollLogicalPosition = "start";
 
-        // 1. Eixo Vertical (Cima / Baixo)
         if (
           rect.top + rect.height / 2 > viewportHeight / 2 ||
           step.targetId.includes("add") ||
@@ -84,15 +76,11 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
           scrollBlock = "start";
         }
 
-        // 2. Eixo Horizontal (Esquerda / Direita)
-        // Se a tela for pequena (telemóvel) ou o elemento for muito largo (barras), mantemos centrado
         if (viewportWidth < 768 || rect.width > viewportWidth * 0.6) {
           hPos = "Center";
         } else if (rect.left + rect.width / 2 < viewportWidth / 2) {
-          // O elemento está na Esquerda -> O Modal foge para a Direita
           hPos = "Right";
         } else {
-          // O elemento está na Direita -> O Modal foge para a Esquerda
           hPos = "Left";
         }
 
@@ -137,11 +125,15 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
     setDialogPosition("bottomCenter");
   };
 
-  // Mapeamento dinâmico da classe CSS
   const positionClass =
     styles[
       `dialog${dialogPosition.charAt(0).toUpperCase() + dialogPosition.slice(1)}`
     ];
+
+  // Define o que será lido em voz alta (usa o audioText se existir, senão usa a string normal)
+  const textToRead = step.audioText
+    ? `${step.title}. ${step.audioText}`
+    : `${step.title}. ${typeof step.description === "string" ? step.description : ""}`;
 
   return (
     <>
@@ -156,11 +148,13 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
         <h2 id="tour-title" className={styles.title}>
           {step.title}
         </h2>
-        <p className={styles.description}>{step.description}</p>
+
+        {/* Agora renderizamos a descrição dentro de uma div em vez de <p> para suportar formatações complexas */}
+        <div className={styles.description}>{step.description}</div>
 
         <div className={styles.audioControls}>
           <button
-            onClick={() => readText(`${step.title}. ${step.description}`)}
+            onClick={() => readText(textToRead)}
             className={`${styles.audioButton} ${isSpeaking ? styles.audioButtonSpeaking : ""}`}
           >
             <div className={styles.iconWrapper}>

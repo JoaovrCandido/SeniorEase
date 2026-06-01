@@ -1,3 +1,4 @@
+// src/presentation/components/blocks/ReminderBlockUI.tsx
 import React, { useState, useEffect } from "react";
 import { ReminderBlock } from "../../../domain/entities/Block";
 import { DictationButton } from "../ui/DictationButton";
@@ -6,12 +7,14 @@ import styles from "./ReminderBlockUI.module.css";
 
 interface Props {
   block: ReminderBlock;
+  isFirst?: boolean; // Propriedade nova para o Tour de Ajuda
   onChangeContent: (id: string, content: string, date: string) => void;
   onDelete: (id: string) => void;
 }
 
 export const ReminderBlockUI: React.FC<Props> = ({
   block,
+  isFirst,
   onChangeContent,
   onDelete,
 }) => {
@@ -51,7 +54,6 @@ export const ReminderBlockUI: React.FC<Props> = ({
               onBlur={handleBlur}
               placeholder="Do que você precisa se lembrar?"
             />
-            <DictationButton onDictate={handleDictate} />
           </div>
           <input
             className={styles.inputBase}
@@ -62,13 +64,20 @@ export const ReminderBlockUI: React.FC<Props> = ({
           />
         </div>
 
-        <button
-          className={styles.deleteButton}
-          onClick={() => onDelete(block.id)}
-          aria-label="Apagar Lembrete"
+        {/* NOVO: Div isolando as ações para o foco da ajuda */}
+        <div
+          id={isFirst ? "tour-first-block-actions" : undefined}
+          style={{ display: "flex", flexDirection: "column", gap: "8px" }}
         >
-          <TrashIcon />
-        </button>
+          <DictationButton onDictate={handleDictate} />
+          <button
+            className={styles.deleteButton}
+            onClick={() => onDelete(block.id)}
+            aria-label="Apagar Lembrete"
+          >
+            <TrashIcon />
+          </button>
+        </div>
       </div>
     </div>
   );

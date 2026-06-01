@@ -2,11 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { TaskBlock } from "../../../domain/entities/Block";
 import { DictationButton } from "../ui/DictationButton";
-import { TrashIcon } from "../ui/Icons"; // <-- Importando o SVG padronizado
+import { TrashIcon } from "../ui/Icons";
 import styles from "./TaskBlockUI.module.css";
 
 interface TaskBlockUIProps {
   block: TaskBlock;
+  isFirst?: boolean; // Propriedade nova para o Tour de Ajuda
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onChangeContent: (id: string, newContent: string) => void;
@@ -14,6 +15,7 @@ interface TaskBlockUIProps {
 
 export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
   block,
+  isFirst,
   onToggle,
   onDelete,
   onChangeContent,
@@ -69,16 +71,22 @@ export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
         onBlur={handleBlur}
         placeholder="Escreva a sua tarefa aqui..."
       />
-      <DictationButton onDictate={handleDictate} />
 
-      <button
-        type="button"
-        className={styles.deleteButton}
-        onClick={() => onDelete(block.id)}
-        aria-label="Apagar Tarefa"
+      {/* NOVO: Div isolando as ações para o foco da ajuda */}
+      <div
+        id={isFirst ? "tour-first-block-actions" : undefined}
+        style={{ display: "flex", gap: "8px", alignItems: "center" }}
       >
-        <TrashIcon />
-      </button>
+        <DictationButton onDictate={handleDictate} />
+        <button
+          type="button"
+          className={styles.deleteButton}
+          onClick={() => onDelete(block.id)}
+          aria-label="Apagar Tarefa"
+        >
+          <TrashIcon />
+        </button>
+      </div>
     </div>
   );
 };

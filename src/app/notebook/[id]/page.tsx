@@ -22,6 +22,7 @@ import {
   TourStep,
 } from "@/presentation/components/ui/OnboardingTour";
 
+// Importação dos Ícones
 import {
   BackIcon,
   HelpIcon,
@@ -33,32 +34,10 @@ import {
   TaskIcon,
   ClockIcon,
   VideoIcon,
+  MicIcon, // NOVO!
 } from "@/presentation/components/ui/Icons";
 
 import styles from "@/app/page.module.css";
-
-const EDITOR_STEPS: TourStep[] = [
-  {
-    targetId: "tour-help-btn",
-    title: "1. Precisa de Ajuda?",
-    description: "Sempre que se esquecer de como usar o caderno, clique aqui.",
-  },
-  {
-    targetId: "tour-editor-title",
-    title: "2. O Seu Caderno",
-    description: "Aqui estão o Nome e a Descrição do seu caderno.",
-  },
-  {
-    targetId: "tour-editor-actions",
-    title: "3. Editar e Apagar",
-    description: "Você pode modificar o Nome ou apagá-lo inteiro.",
-  },
-  {
-    targetId: "tour-editor-add",
-    title: "4. Adicionar Conteúdo",
-    description: "Use esta barra para criar Anotações, Tarefas e Lembretes.",
-  },
-];
 
 export default function NotebookEditorPage() {
   const params = useParams();
@@ -109,6 +88,82 @@ export default function NotebookEditorPage() {
   const activeBlocks = activeNotebook.blocks.filter((b) => !b.isDeleted);
   const hasHeading = activeBlocks.some((b) => b.type === "heading");
 
+  // ==========================================
+  // TOUR DINÂMICO RICA (Com ícones e áudio)
+  // ==========================================
+  const editorSteps: TourStep[] = [
+    {
+      targetId: "tour-help-btn",
+      title: "1. Precisa de Ajuda?",
+      description:
+        "Sempre que se esquecer de como usar o caderno, clique aqui.",
+    },
+    {
+      targetId: "tour-editor-title",
+      title: "2. O Seu Caderno",
+      description: "Aqui estão o Nome e a Descrição do seu caderno.",
+    },
+    {
+      targetId: "tour-editor-actions",
+      title: "3. Editar e Apagar",
+      description: "Você pode modificar o Nome ou apagá-lo inteiro.",
+    },
+    ...(activeBlocks.length > 0
+      ? [
+          {
+            targetId: "tour-first-block-actions", // Novo Alvo Focado
+            title: "4. Ditar e Apagar Itens",
+            description: (
+              <div className={styles.flexColGap8}>
+                <span>
+                  Em cada item criado, você tem botões mágicos ao lado:
+                </span>
+                <span className={styles.textBaseBody}>
+                  <MicIcon /> <strong>Microfone:</strong> Fale e o sistema
+                  escreve por si.
+                </span>
+                <span className={styles.textBaseBody}>
+                  <TrashIcon /> <strong>Lixeira:</strong> Apaga apenas este
+                  item.
+                </span>
+              </div>
+            ),
+            audioText:
+              "Em cada item criado, você tem botões mágicos ao lado. O Microfone permite que você fale e o sistema escreve por você. A Lixeira apaga apenas aquele item específico.",
+          },
+          {
+            targetId: "tour-editor-add",
+            title: "5. Adicionar Mais",
+            description:
+              "Use esta barra para continuar a adicionar novas Anotações, Tarefas e Lembretes ao seu caderno.",
+          },
+        ]
+      : [
+          {
+            targetId: "tour-editor-add",
+            title: "4. Adicionar Conteúdo",
+            description: (
+              <div className={styles.flexColGap8}>
+                <span>
+                  Use esta barra para criar Anotações, Tarefas e Lembretes.
+                  DICA: Assim que criar o seu primeiro item, vão aparecer dois
+                  botões:
+                </span>
+                <span className={styles.textBaseBody}>
+                  <MicIcon /> <strong>Microfone:</strong> para ditar o texto com
+                  a voz.
+                </span>
+                <span className={styles.textBaseBody}>
+                  <TrashIcon /> <strong>Lixeira:</strong> para apagar o item.
+                </span>
+              </div>
+            ),
+            audioText:
+              "Use esta barra para criar Anotações, Tarefas e Lembretes. Dica: Assim que criar o seu primeiro item, vão aparecer dois botões. Um microfone, para ditar o texto com a voz, e uma lixeira para apagar o item.",
+          },
+        ]),
+  ];
+
   const handleOpenEditModal = () => {
     if (activeNotebook) {
       setNotebookTitle(activeNotebook.title);
@@ -143,7 +198,7 @@ export default function NotebookEditorPage() {
 
   const handleAddBlock = async (
     type: "heading" | "paragraph" | "task" | "meeting" | "reminder",
-    initialData: any,
+    initialData: Record<string, unknown>, // Tipagem forte corrigida
     toastMessage: string,
   ) => {
     if (type === "reminder" || type === "meeting") {
@@ -336,95 +391,109 @@ export default function NotebookEditorPage() {
                 O seu caderno está vazio. Comece a adicionar conteúdo abaixo!
               </p>
             ) : (
-              activeBlocks.map((block) => {
-                switch (block.type) {
-                  case "heading":
-                    return (
-                      <HeadingBlockUI
-                        key={block.id}
-                        block={block}
-                        onDelete={(id) =>
-                          actionConfirmation === "on"
-                            ? setBlockToDelete(id)
-                            : deleteBlock(activeNotebook.id, id)
-                        }
-                        onChangeContent={(id, content) =>
-                          updateBlock(activeNotebook.id, id, { content })
-                        }
-                      />
-                    );
-                  case "task":
-                    return (
-                      <TaskBlockUI
-                        key={block.id}
-                        block={block}
-                        onDelete={(id) =>
-                          actionConfirmation === "on"
-                            ? setBlockToDelete(id)
-                            : deleteBlock(activeNotebook.id, id)
-                        }
-                        onToggle={async (id) => {
-                          await toggleTask(activeNotebook.id, id);
-                          if (!block.isCompleted)
-                            showToast("Concluído!", "success");
-                        }}
-                        onChangeContent={(id, content) =>
-                          updateBlock(activeNotebook.id, id, { content })
-                        }
-                      />
-                    );
-                  case "paragraph":
-                    return (
-                      <ParagraphBlockUI
-                        key={block.id}
-                        block={block}
-                        onDelete={(id) =>
-                          actionConfirmation === "on"
-                            ? setBlockToDelete(id)
-                            : deleteBlock(activeNotebook.id, id)
-                        }
-                        onChangeContent={(id, content) =>
-                          updateBlock(activeNotebook.id, id, { content })
-                        }
-                      />
-                    );
-                  case "meeting":
-                    return (
-                      <MeetingBlockUI
-                        key={block.id}
-                        block={block}
-                        onDelete={(id) =>
-                          actionConfirmation === "on"
-                            ? setBlockToDelete(id)
-                            : deleteBlock(activeNotebook.id, id)
-                        }
-                        onChangeContent={(id, title, url, date) =>
-                          updateBlock(activeNotebook.id, id, {
-                            title,
-                            meetingUrl: url,
-                            date,
-                          })
-                        }
-                      />
-                    );
-                  case "reminder":
-                    return (
-                      <ReminderBlockUI
-                        key={block.id}
-                        block={block}
-                        onDelete={(id) =>
-                          actionConfirmation === "on"
-                            ? setBlockToDelete(id)
-                            : deleteBlock(activeNotebook.id, id)
-                        }
-                        onChangeContent={(id, content, date) =>
-                          updateBlock(activeNotebook.id, id, { content, date })
-                        }
-                      />
-                    );
-                  default:
-                    return null;
-                }
+              activeBlocks.map((block, index) => {
+                // Removemos o ID tour-first-block da wrapper principal
+                const isFirstBlock = index === 0;
+
+                const blockContent = (() => {
+                  switch (block.type) {
+                    case "heading":
+                      return (
+                        <HeadingBlockUI
+                          block={block}
+                          isFirst={isFirstBlock} // Prop adicionada
+                          onDelete={(id) =>
+                            actionConfirmation === "on"
+                              ? setBlockToDelete(id)
+                              : deleteBlock(activeNotebook.id, id)
+                          }
+                          onChangeContent={(id, content) =>
+                            updateBlock(activeNotebook.id, id, { content })
+                          }
+                        />
+                      );
+                    case "task":
+                      return (
+                        <TaskBlockUI
+                          block={block}
+                          isFirst={isFirstBlock} // Prop adicionada
+                          onDelete={(id) =>
+                            actionConfirmation === "on"
+                              ? setBlockToDelete(id)
+                              : deleteBlock(activeNotebook.id, id)
+                          }
+                          onToggle={async (id) => {
+                            await toggleTask(activeNotebook.id, id);
+                            if (!block.isCompleted)
+                              showToast("Concluído!", "success");
+                          }}
+                          onChangeContent={(id, content) =>
+                            updateBlock(activeNotebook.id, id, { content })
+                          }
+                        />
+                      );
+                    case "paragraph":
+                      return (
+                        <ParagraphBlockUI
+                          block={block}
+                          isFirst={isFirstBlock} // Prop adicionada
+                          onDelete={(id) =>
+                            actionConfirmation === "on"
+                              ? setBlockToDelete(id)
+                              : deleteBlock(activeNotebook.id, id)
+                          }
+                          onChangeContent={(id, content) =>
+                            updateBlock(activeNotebook.id, id, { content })
+                          }
+                        />
+                      );
+                    case "meeting":
+                      return (
+                        <MeetingBlockUI
+                          block={block}
+                          isFirst={isFirstBlock} // Prop adicionada
+                          onDelete={(id) =>
+                            actionConfirmation === "on"
+                              ? setBlockToDelete(id)
+                              : deleteBlock(activeNotebook.id, id)
+                          }
+                          onChangeContent={(id, title, url, date) =>
+                            updateBlock(activeNotebook.id, id, {
+                              title,
+                              meetingUrl: url,
+                              date,
+                            })
+                          }
+                        />
+                      );
+                    case "reminder":
+                      return (
+                        <ReminderBlockUI
+                          block={block}
+                          isFirst={isFirstBlock} // Prop adicionada
+                          onDelete={(id) =>
+                            actionConfirmation === "on"
+                              ? setBlockToDelete(id)
+                              : deleteBlock(activeNotebook.id, id)
+                          }
+                          onChangeContent={(id, content, date) =>
+                            updateBlock(activeNotebook.id, id, {
+                              content,
+                              date,
+                            })
+                          }
+                        />
+                      );
+                    default:
+                      return null;
+                  }
+                })();
+
+                return (
+                  <div key={block.id} style={{ width: "100%" }}>
+                    {blockContent}
+                  </div>
+                );
               })
             )}
 
@@ -496,7 +565,6 @@ export default function NotebookEditorPage() {
         </nav>
       )}
 
-      {/* Modal: Editar Caderno */}
       <Modal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
@@ -540,7 +608,6 @@ export default function NotebookEditorPage() {
         </div>
       </Modal>
 
-      {/* Modal: Apagar Caderno */}
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
@@ -563,7 +630,6 @@ export default function NotebookEditorPage() {
         </div>
       </Modal>
 
-      {/* Modal: Apagar Item do Caderno */}
       <Modal
         isOpen={!!blockToDelete}
         onClose={() => setBlockToDelete(null)}
@@ -588,7 +654,7 @@ export default function NotebookEditorPage() {
       <OnboardingTour
         isOpen={isTourOpen}
         onClose={() => setIsTourOpen(false)}
-        steps={EDITOR_STEPS}
+        steps={editorSteps}
       />
     </main>
   );
