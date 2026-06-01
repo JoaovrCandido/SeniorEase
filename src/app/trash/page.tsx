@@ -34,7 +34,7 @@ const TRASH_STEPS: TourStep[] = [
     targetId: "tour-trash-content",
     title: "3. Como Recuperar",
     description:
-      "Nesta área ficam os itens apagados. Clique no botão Restaurar para que voltem ao lugar original, com total segurança.",
+      'Usando este primeiro item como exemplo: veja que ele tem um botão "Restaurar". Basta clicar nele para que o item volte ao seu local original com total segurança. Os restantes itens apagados funcionam exatamente da mesma forma!',
   },
 ];
 
@@ -85,7 +85,8 @@ export default function TrashPage() {
           </button>
         </header>
 
-        <div id="tour-trash-content" className={styles.trashContainer}>
+        {/* O ID FOI REMOVIDO DAQUI */}
+        <div className={styles.trashContainer}>
           {deletedNotebooks.length === 0 && deletedBlocksList.length === 0 ? (
             <p className={styles.emptyState}>A sua lixeira está vazia.</p>
           ) : (
@@ -94,14 +95,20 @@ export default function TrashPage() {
                 <section>
                   <h2 className={styles.sectionTitle}>Cadernos Apagados</h2>
                   <div className={styles.grid}>
-                    {deletedNotebooks.map((notebook) => (
+                    {deletedNotebooks.map((notebook, index) => (
                       <div
                         key={notebook.id}
+                        id={index === 0 ? "tour-trash-content" : undefined}
                         className={`${styles.card} ${styles.cardDanger}`}
                       >
                         <span className={styles.cardTitle}>
                           {notebook.title}
                         </span>
+                        {notebook.description && (
+                          <span className={styles.cardDescription}>
+                            {notebook.description}
+                          </span>
+                        )}
                         <Button
                           variant="primary"
                           onClick={async () => {
@@ -123,9 +130,14 @@ export default function TrashPage() {
                   <h2 className={styles.sectionTitle}>Itens Apagados</h2>
                   <div className={styles.grid}>
                     {deletedBlocksList.map(
-                      ({ notebookId, notebookTitle, block }) => (
+                      ({ notebookId, notebookTitle, block }, index) => (
                         <div
                           key={block.id}
+                          id={
+                            deletedNotebooks.length === 0 && index === 0
+                              ? "tour-trash-content"
+                              : undefined
+                          }
                           className={`${styles.card} ${styles.cardDashed}`}
                         >
                           <span className={styles.textBaseBody}>

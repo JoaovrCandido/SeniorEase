@@ -8,8 +8,8 @@ import styles from "./OnboardingTour.module.css";
 export interface TourStep {
   targetId: string;
   title: string;
-  description: React.ReactNode; // Agora aceita HTML/Ícones!
-  audioText?: string; // Texto específico para o leitor de voz
+  description: React.ReactNode;
+  audioText?: string;
 }
 
 type DialogPosition =
@@ -21,12 +21,19 @@ type DialogPosition =
   | "bottomLeft"
   | "bottomRight";
 
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  steps: TourStep[];
+}
+
 export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const { isSpeaking, readText, stop } = useSpeech();
 
   const [dialogPosition, setDialogPosition] =
     useState<DialogPosition>("bottomCenter");
+  const [dynamicMaxWidth, setDynamicMaxWidth] = useState<string>("500px");
 
   useEffect(() => {
     if (!isOpen || !steps || steps.length === 0) return;
@@ -59,6 +66,9 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
         const rect = targetElement.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
         const viewportWidth = window.innerWidth;
+
+        const calculatedMaxWidth = Math.min(Math.max(450, rect.width), 800);
+        setDynamicMaxWidth(`${calculatedMaxWidth}px`);
 
         let vPos = "bottom";
         let hPos = "Center";
@@ -93,6 +103,7 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
         });
       } else {
         setDialogPosition("center");
+        setDynamicMaxWidth("500px");
       }
     }
 
@@ -130,7 +141,6 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
       `dialog${dialogPosition.charAt(0).toUpperCase() + dialogPosition.slice(1)}`
     ];
 
-  // Define o que será lido em voz alta (usa o audioText se existir, senão usa a string normal)
   const textToRead = step.audioText
     ? `${step.title}. ${step.audioText}`
     : `${step.title}. ${typeof step.description === "string" ? step.description : ""}`;
@@ -144,12 +154,35 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
         role="dialog"
         aria-modal="true"
         aria-labelledby="tour-title"
+        style={{ maxWidth: dynamicMaxWidth }}
       >
+        {/* NOVO BOTÃO DE FECHAR (X) */}
+        <button
+          className={styles.closeButton}
+          onClick={handleClose}
+          aria-label="Fechar ajuda"
+          title="Fechar ajuda"
+        >
+          <svg
+            width="28"
+            height="28"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+
         <h2 id="tour-title" className={styles.title}>
           {step.title}
         </h2>
 
-        {/* Agora renderizamos a descrição dentro de uma div em vez de <p> para suportar formatações complexas */}
         <div className={styles.description}>{step.description}</div>
 
         <div className={styles.audioControls}>

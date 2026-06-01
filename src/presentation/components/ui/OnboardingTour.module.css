@@ -17,18 +17,69 @@
   border-radius: var(--radius-lg);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   z-index: 10000;
+
   width: 90%;
-  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-  /* Transição suave ao flutuar entre quadrantes */
   transition:
     top 0.4s ease,
     bottom 0.4s ease,
     left 0.4s ease,
     right 0.4s ease,
-    transform 0.4s ease;
+    transform 0.4s ease,
+    max-width 0.3s ease;
+
+  /* Padronização Firefox para o scrollbar colorido */
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-main) var(--bg-canvas);
+}
+
+/* =========================================
+   CUSTOMIZAÇÃO DO SCROLLBAR (Chrome/Safari/Edge)
+   ========================================= */
+.dialog::-webkit-scrollbar {
+  width: 10px;
+}
+
+.dialog::-webkit-scrollbar-track {
+  background: var(--bg-canvas);
+  border-radius: var(--radius-md);
+}
+
+.dialog::-webkit-scrollbar-thumb {
+  background-color: var(--primary-main);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--bg-canvas);
+}
+
+/* =========================================
+   BOTÃO FECHAR (X) NO CANTO SUPERIOR
+   ========================================= */
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: var(--primary-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover,
+.closeButton:focus-visible {
+  background-color: var(--primary-surface);
+  transform: scale(1.1);
+  outline: none;
 }
 
 /* =========================================
@@ -179,6 +230,7 @@
   font-size: var(--text-xl);
   color: var(--primary-main);
   font-weight: 800;
+  padding-right: 40px; /* Garante que o título longo não fique por baixo do X */
 }
 
 .description {

@@ -30,7 +30,7 @@ const HISTORY_STEPS: TourStep[] = [
     targetId: "tour-history-list",
     title: "3. O Seu Registo",
     description:
-      "Aqui ficarão guardadas todas as tarefas que você marcou como concluídas nos seus cadernos. É o seu arquivo de sucessos!",
+      "Usando este primeiro item como exemplo: veja que aqui estão as informações do que você completou. Todos os outros itens da lista abaixo funcionam exatamente da mesma forma e representam o seu arquivo de sucessos!",
   },
 ];
 
@@ -80,7 +80,8 @@ export default function HistoryPage() {
           </button>
         </header>
 
-        <div id="tour-history-list" className={styles.contentWrapper}>
+        {/* O ID FOI REMOVIDO DAQUI */}
+        <div className={styles.contentWrapper}>
           {completedTasksList.length === 0 ? (
             <p className={styles.emptyState}>
               Você ainda não concluiu nenhuma tarefa. Continue assim, um passo
@@ -88,9 +89,10 @@ export default function HistoryPage() {
             </p>
           ) : (
             <div className={styles.grid}>
-              {completedTasksList.map(({ notebookTitle, block }) => (
+              {completedTasksList.map(({ notebookTitle, block }, index) => (
                 <div
                   key={block.id}
+                  id={index === 0 ? "tour-history-list" : undefined}
                   className={`${styles.card} ${styles.cardSuccess}`}
                 >
                   <span className={styles.textBaseHeading}>
