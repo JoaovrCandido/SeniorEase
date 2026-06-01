@@ -19,16 +19,22 @@ import styles from "@/app/page.module.css";
 
 const TRASH_STEPS: TourStep[] = [
   {
-    targetId: "tour-trash-header",
-    title: "1. Área de Segurança",
+    targetId: "tour-help-btn",
+    title: "1. Precisa de Ajuda?",
     description:
-      "Bem-vindo à Lixeira. Tudo o que você apaga vem para cá e fica guardado com segurança.",
+      "Sempre que tiver dúvidas sobre como recuperar algo, clique neste botão.",
+  },
+  {
+    targetId: "tour-back-btn",
+    title: "2. Voltar",
+    description:
+      "Clique aqui quando quiser sair da Lixeira e voltar ao ecrã inicial.",
   },
   {
     targetId: "tour-trash-content",
-    title: "2. Como Recuperar",
+    title: "3. Como Recuperar",
     description:
-      "Basta clicar no botão Restaurar ao lado do item, e ele voltará imediatamente para o lugar de onde saiu!",
+      "Nesta área ficam os itens apagados. Clique no botão Restaurar para que voltem ao lugar original, com total segurança.",
   },
 ];
 
@@ -59,14 +65,24 @@ export default function TrashPage() {
   return (
     <main className={styles.main}>
       <div className={styles.dashboard}>
-        <header className={styles.pageHeader}>
+        <header className={styles.pageHeaderBetween}>
+          <div className={styles.flexAlignCenter}>
+            <button
+              id="tour-back-btn"
+              className={styles.backButton}
+              onClick={() => router.push("/")}
+            >
+              <BackIcon /> Voltar
+            </button>
+            <h1 className={styles.title}>Lixeira</h1>
+          </div>
           <button
-            className={styles.backButton}
-            onClick={() => router.push("/")}
+            id="tour-help-btn"
+            onClick={() => setIsTourOpen(true)}
+            className={styles.btnPrimarySurface}
           >
-            <BackIcon /> Voltar
+            <HelpIcon /> Ajuda
           </button>
-          <h1 className={styles.title}>Personalizar Tela</h1>
         </header>
 
         <div id="tour-trash-content" className={styles.trashContainer}>

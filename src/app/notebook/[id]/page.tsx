@@ -1,7 +1,7 @@
 // src/app/notebook/[id]/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useNotebookContext } from "@/presentation/store/NotebookContext";
 import { useToast } from "@/presentation/store/ToastContext";
@@ -22,7 +22,6 @@ import {
   TourStep,
 } from "@/presentation/components/ui/OnboardingTour";
 
-// Importação dos Ícones (Sem Emojis!)
 import {
   BackIcon,
   HelpIcon,
@@ -40,18 +39,23 @@ import styles from "@/app/page.module.css";
 
 const EDITOR_STEPS: TourStep[] = [
   {
+    targetId: "tour-help-btn",
+    title: "1. Precisa de Ajuda?",
+    description: "Sempre que se esquecer de como usar o caderno, clique aqui.",
+  },
+  {
     targetId: "tour-editor-title",
-    title: "1. O Seu Caderno",
+    title: "2. O Seu Caderno",
     description: "Aqui estão o Nome e a Descrição do seu caderno.",
   },
   {
     targetId: "tour-editor-actions",
-    title: "2. Editar e Apagar",
+    title: "3. Editar e Apagar",
     description: "Você pode modificar o Nome ou apagá-lo inteiro.",
   },
   {
     targetId: "tour-editor-add",
-    title: "3. Adicionar Conteúdo",
+    title: "4. Adicionar Conteúdo",
     description: "Use esta barra para criar Anotações, Tarefas e Lembretes.",
   },
 ];
@@ -72,6 +76,8 @@ export default function NotebookEditorPage() {
   } = useNotebookContext();
   const { showToast } = useToast();
   const { actionConfirmation } = useAccessibility();
+
+  const endOfListRef = useRef<HTMLDivElement>(null);
 
   const [isReadingMode, setIsReadingMode] = useState(false);
   const [isTourOpen, setIsTourOpen] = useState(false);
@@ -103,6 +109,14 @@ export default function NotebookEditorPage() {
   const activeBlocks = activeNotebook.blocks.filter((b) => !b.isDeleted);
   const hasHeading = activeBlocks.some((b) => b.type === "heading");
 
+  const handleOpenEditModal = () => {
+    if (activeNotebook) {
+      setNotebookTitle(activeNotebook.title);
+      setNotebookDescription(activeNotebook.description || "");
+      setIsEditModalOpen(true);
+    }
+  };
+
   const handleConfirmEdit = async () => {
     await updateNotebookInfo(
       activeNotebook.id,
@@ -125,6 +139,26 @@ export default function NotebookEditorPage() {
       setBlockToDelete(null);
       showToast("Item apagado.", "info");
     }
+  };
+
+  const handleAddBlock = async (
+    type: "heading" | "paragraph" | "task" | "meeting" | "reminder",
+    initialData: any,
+    toastMessage: string,
+  ) => {
+    if (type === "reminder" || type === "meeting") {
+      await NotificationService.requestPermission();
+    }
+
+    addBlock(activeNotebook.id, { type, ...initialData });
+    showToast(toastMessage, "success");
+
+    setTimeout(() => {
+      endOfListRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 100);
   };
 
   const compiledTextToRead = activeBlocks
@@ -164,63 +198,67 @@ export default function NotebookEditorPage() {
                 <BackIcon /> Voltar
               </button>
               <button
+                id="tour-help-btn"
                 onClick={() => setIsTourOpen(true)}
                 className={styles.btnPrimarySurface}
               >
                 <HelpIcon /> Ajuda
               </button>
-            </div>
 
-            <div id="tour-editor-title" className={styles.mt16}>
-              <h1 className={styles.editorTitle}>{activeNotebook.title}</h1>
-              {activeNotebook.description && (
-                <p className={styles.editorDescription}>
-                  {activeNotebook.description}
-                </p>
+              <button
+                className={`${styles.toggleReadingButton} ${isReadingMode ? styles.active : ""}`}
+                onClick={() => setIsReadingMode(!isReadingMode)}
+              >
+                <div className={styles.iconText}>
+                  <BookIcon />{" "}
+                  {isReadingMode ? "Sair da Leitura" : "Modo Leitura"}
+                </div>
+              </button>
+              {compiledTextToRead && (
+                <ReadAloudButton
+                  textToRead={`Nome do Caderno: ${activeNotebook.title}. ${activeNotebook.description ? `Descrição: ${activeNotebook.description}.` : ""} ${compiledTextToRead}`}
+                />
               )}
             </div>
 
-            {!isReadingMode && (
-              <div id="tour-editor-actions" className={styles.headerActions}>
-                <button
-                  className={styles.secondaryButton}
-                  onClick={() => setIsEditModalOpen(true)}
-                >
-                  <div className={styles.iconText}>
-                    <EditIcon /> Editar Nome/Descrição
-                  </div>
-                </button>
-                <button
-                  className={styles.dangerButton}
-                  onClick={() =>
-                    actionConfirmation === "on"
-                      ? setIsDeleteModalOpen(true)
-                      : executeNotebookDelete()
-                  }
-                >
-                  <div className={styles.iconText}>
-                    <TrashIcon /> Apagar Caderno
-                  </div>
-                </button>
+            <div className={styles.divider}>
+              <div
+                id="tour-editor-title"
+                className={styles.headerTitleandDescriptionSection}
+              >
+                <h1 className={styles.editorTitle}>{activeNotebook.title}</h1>
+                {activeNotebook.description && (
+                  <p className={styles.editorDescription}>
+                    {activeNotebook.description}
+                  </p>
+                )}
               </div>
-            )}
-          </div>
 
-          <div id="tour-editor-a11y" className={styles.editorA11yControls}>
-            <button
-              className={`${styles.toggleReadingButton} ${isReadingMode ? styles.active : ""}`}
-              onClick={() => setIsReadingMode(!isReadingMode)}
-            >
-              <div className={styles.iconText}>
-                <BookIcon />{" "}
-                {isReadingMode ? "Sair da Leitura" : "Modo Leitura"}
-              </div>
-            </button>
-            {compiledTextToRead && (
-              <ReadAloudButton
-                textToRead={`Nome do Caderno: ${activeNotebook.title}. ${activeNotebook.description ? `Descrição: ${activeNotebook.description}.` : ""} ${compiledTextToRead}`}
-              />
-            )}
+              {!isReadingMode && (
+                <div id="tour-editor-actions" className={styles.headerActions}>
+                  <button
+                    className={styles.secondaryButton}
+                    onClick={handleOpenEditModal}
+                  >
+                    <div className={styles.iconText}>
+                      <EditIcon /> Editar Nome/Descrição
+                    </div>
+                  </button>
+                  <button
+                    className={styles.dangerButton}
+                    onClick={() =>
+                      actionConfirmation === "on"
+                        ? setIsDeleteModalOpen(true)
+                        : executeNotebookDelete()
+                    }
+                  >
+                    <div className={styles.iconText}>
+                      <TrashIcon /> Apagar Caderno
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
@@ -389,6 +427,8 @@ export default function NotebookEditorPage() {
                 }
               })
             )}
+
+            <div ref={endOfListRef} aria-hidden="true" />
           </section>
         )}
       </div>
@@ -399,7 +439,7 @@ export default function NotebookEditorPage() {
             <button
               className={styles.actionButton}
               onClick={() =>
-                addBlock(activeNotebook.id, { type: "heading", content: "" })
+                handleAddBlock("heading", { content: "" }, "Novo Título criado")
               }
             >
               <TitleIcon /> Título
@@ -408,7 +448,11 @@ export default function NotebookEditorPage() {
           <button
             className={styles.actionButton}
             onClick={() =>
-              addBlock(activeNotebook.id, { type: "paragraph", content: "" })
+              handleAddBlock(
+                "paragraph",
+                { content: "" },
+                "Nova Anotação criada",
+              )
             }
           >
             <WriteIcon /> Anotação
@@ -416,39 +460,36 @@ export default function NotebookEditorPage() {
           <button
             className={styles.actionButton}
             onClick={() =>
-              addBlock(activeNotebook.id, {
-                type: "task",
-                content: "",
-                isCompleted: false,
-              })
+              handleAddBlock(
+                "task",
+                { content: "", isCompleted: false },
+                "Nova Tarefa criada",
+              )
             }
           >
             <TaskIcon /> Tarefa
           </button>
           <button
             className={styles.actionButton}
-            onClick={async () => {
-              await NotificationService.requestPermission();
-              addBlock(activeNotebook.id, {
-                type: "reminder",
-                content: "",
-                date: "",
-              });
-            }}
+            onClick={() =>
+              handleAddBlock(
+                "reminder",
+                { content: "", date: "" },
+                "Novo Lembrete criado",
+              )
+            }
           >
             <ClockIcon /> Lembrete
           </button>
           <button
             className={styles.actionButton}
-            onClick={async () => {
-              await NotificationService.requestPermission();
-              addBlock(activeNotebook.id, {
-                type: "meeting",
-                title: "",
-                meetingUrl: "",
-                date: "",
-              });
-            }}
+            onClick={() =>
+              handleAddBlock(
+                "meeting",
+                { title: "", meetingUrl: "", date: "" },
+                "Nova Reunião criada",
+              )
+            }
           >
             <VideoIcon /> Reunião
           </button>

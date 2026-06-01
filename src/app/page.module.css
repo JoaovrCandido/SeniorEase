@@ -9,9 +9,9 @@
    DASHBOARD (Lista de Cadernos)
    ========================================= */
 .dashboard {
-  max-width: 800px;
+  max-width: 1024px;
   margin: 0 auto;
-  padding: 32px 16px;
+  padding: 24px 0;
 }
 
 .header {
@@ -30,6 +30,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
+  margin-top: 24px;
 }
 
 @media (min-width: 600px) {
@@ -74,9 +75,9 @@
    EDITOR (O Micro-Notion)
    ========================================= */
 .editor {
-  max-width: 800px;
+  max-width: 1024px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 24px 0;
 }
 
 .editorHeader {
@@ -91,6 +92,7 @@
 .editorTitle {
   font-size: var(--text-xl);
   font-family: var(--font-serif);
+  overflow-wrap: break-word;
 }
 
 .emptyState {
@@ -261,18 +263,27 @@
   margin-top: 4px;
   margin-bottom: 8px;
   display: block;
+  overflow-wrap: break-word;
 }
 
 .editorDescription {
   font-size: var(--text-lg);
   color: var(--text-body);
   margin-top: 8px;
+  overflow-wrap: break-word;
+}
+
+.headerTitleandDescriptionSection {
+  margin-top: 16px;
+  flex: 1;
+  min-width: 0;
 }
 
 .headerActions {
   display: flex;
   gap: 16px;
   margin-top: 16px;
+  width: auto;
 }
 
 .secondaryButton {
@@ -337,6 +348,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 }
 .mt16 {
   margin-top: 16px;
@@ -492,4 +504,11 @@
   display: flex;
   justify-content: flex-end;
   gap: var(--space-md);
+}
+
+.divider {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
 }

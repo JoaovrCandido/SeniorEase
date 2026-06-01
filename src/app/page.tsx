@@ -14,7 +14,6 @@ import {
   TourStep,
 } from "@/presentation/components/ui/OnboardingTour";
 
-// Importação dos Ícones
 import {
   HelpIcon,
   SettingsIcon,
@@ -26,23 +25,30 @@ import styles from "./page.module.css";
 
 const DASHBOARD_STEPS: TourStep[] = [
   {
+    targetId: "tour-help-btn",
+    title: "1. Precisa de Ajuda?",
+    description:
+      "Sempre que tiver dúvidas sobre o que fazer nesta tela, clique neste botão e eu explicarei tudo!",
+  },
+  {
     targetId: "tour-accessibility-btn",
-    title: "1. Conforto Visual",
-    description: "Ajuste o tamanho da letra e o contraste.",
+    title: "2. Conforto Visual",
+    description:
+      "Ajuste o tamanho da letra e o contraste para facilitar a leitura.",
   },
   {
     targetId: "tour-create",
-    title: "2. Criar Cadernos",
+    title: "3. Criar Cadernos",
     description: "Crie cadernos para guardar tarefas e notas.",
   },
   {
     targetId: "tour-history-btn",
-    title: "3. Histórico",
+    title: "4. Histórico",
     description: "Veja tudo o que já concluiu aqui.",
   },
   {
     targetId: "tour-trash-btn",
-    title: "4. Lixeira",
+    title: "5. Lixeira",
     description: "Recupere itens apagados com facilidade.",
   },
 ];
@@ -82,6 +88,7 @@ export default function Home() {
 
           <div className={styles.flexWrapGap16}>
             <button
+              id="tour-help-btn"
               onClick={() => setIsTourOpen(true)}
               className={styles.btnPrimarySurface}
             >

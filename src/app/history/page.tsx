@@ -1,15 +1,50 @@
 // src/app/history/page.tsx
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useNotebookContext } from "@/presentation/store/NotebookContext";
-import { BackIcon, CheckIcon } from "@/presentation/components/ui/Icons";
+import {
+  BackIcon,
+  CheckIcon,
+  HelpIcon,
+} from "@/presentation/components/ui/Icons";
+import {
+  OnboardingTour,
+  TourStep,
+} from "@/presentation/components/ui/OnboardingTour";
 import styles from "@/app/page.module.css";
+
+const HISTORY_STEPS: TourStep[] = [
+  {
+    targetId: "tour-help-btn",
+    title: "1. Precisa de Ajuda?",
+    description: "Sempre que tiver dúvidas, clique neste botão.",
+  },
+  {
+    targetId: "tour-back-btn",
+    title: "2. Voltar",
+    description: "Use este botão para voltar à tela principal.",
+  },
+  {
+    targetId: "tour-history-list",
+    title: "3. O Seu Registo",
+    description:
+      "Aqui ficarão guardadas todas as tarefas que você marcou como concluídas nos seus cadernos. É o seu arquivo de sucessos!",
+  },
+];
 
 export default function HistoryPage() {
   const router = useRouter();
   const { notebooks } = useNotebookContext();
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  useEffect(() => {
+    if (!localStorage.getItem("@SeniorEase:tour:history")) {
+      setIsTourOpen(true);
+      localStorage.setItem("@SeniorEase:tour:history", "true");
+    }
+  }, []);
 
   const completedTasksList = notebooks.flatMap((notebook) =>
     notebook.blocks
@@ -23,17 +58,29 @@ export default function HistoryPage() {
   return (
     <main className={styles.main}>
       <div className={styles.dashboard}>
-        <header className={styles.pageHeader}>
+        <header className={styles.pageHeaderBetween}>
+          <div className={styles.flexAlignCenter}>
+            <button
+              id="tour-back-btn"
+              className={styles.backButton}
+              onClick={() => router.push("/")}
+            >
+              <BackIcon /> Voltar
+            </button>
+            <h1 className={`${styles.title} ${styles.textSuccess}`}>
+              Histórico de Atividades
+            </h1>
+          </div>
           <button
-            className={styles.backButton}
-            onClick={() => router.push("/")}
+            id="tour-help-btn"
+            onClick={() => setIsTourOpen(true)}
+            className={styles.btnPrimarySurface}
           >
-            <BackIcon /> Voltar
+            <HelpIcon /> Ajuda
           </button>
-          <h1 className={styles.title}>Personalizar Tela</h1>
         </header>
 
-        <div className={styles.contentWrapper}>
+        <div id="tour-history-list" className={styles.contentWrapper}>
           {completedTasksList.length === 0 ? (
             <p className={styles.emptyState}>
               Você ainda não concluiu nenhuma tarefa. Continue assim, um passo
@@ -58,6 +105,12 @@ export default function HistoryPage() {
           )}
         </div>
       </div>
+
+      <OnboardingTour
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+        steps={HISTORY_STEPS}
+      />
     </main>
   );
 }
