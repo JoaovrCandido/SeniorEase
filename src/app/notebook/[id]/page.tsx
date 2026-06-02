@@ -34,7 +34,7 @@ import {
   TaskIcon,
   ClockIcon,
   VideoIcon,
-  MicIcon, // NOVO!
+  MicIcon,
 } from "@/presentation/components/ui/Icons";
 
 import styles from "@/app/page.module.css";
@@ -52,6 +52,7 @@ export default function NotebookEditorPage() {
     toggleTask,
     updateBlock,
     deleteBlock,
+    moveBlock,
   } = useNotebookContext();
   const { showToast } = useToast();
   const { actionConfirmation } = useAccessibility();
@@ -88,9 +89,6 @@ export default function NotebookEditorPage() {
   const activeBlocks = activeNotebook.blocks.filter((b) => !b.isDeleted);
   const hasHeading = activeBlocks.some((b) => b.type === "heading");
 
-  // ==========================================
-  // TOUR DINÂMICO RICA (Com ícones e áudio)
-  // ==========================================
   const editorSteps: TourStep[] = [
     {
       targetId: "tour-help-btn",
@@ -111,7 +109,7 @@ export default function NotebookEditorPage() {
     ...(activeBlocks.length > 0
       ? [
           {
-            targetId: "tour-first-block-actions", // Novo Alvo Focado
+            targetId: "tour-first-block-actions",
             title: "4. Ditar e Apagar Itens",
             description: (
               <div className={styles.flexColGap8}>
@@ -198,7 +196,7 @@ export default function NotebookEditorPage() {
 
   const handleAddBlock = async (
     type: "heading" | "paragraph" | "task" | "meeting" | "reminder",
-    initialData: Record<string, unknown>, // Tipagem forte corrigida
+    initialData: Record<string, unknown>,
     toastMessage: string,
   ) => {
     if (type === "reminder" || type === "meeting") {
@@ -392,8 +390,9 @@ export default function NotebookEditorPage() {
               </p>
             ) : (
               activeBlocks.map((block, index) => {
-                // Removemos o ID tour-first-block da wrapper principal
                 const isFirstBlock = index === 0;
+                const disableUp = index === 0;
+                const disableDown = index === activeBlocks.length - 1;
 
                 const blockContent = (() => {
                   switch (block.type) {
@@ -401,7 +400,11 @@ export default function NotebookEditorPage() {
                       return (
                         <HeadingBlockUI
                           block={block}
-                          isFirst={isFirstBlock} // Prop adicionada
+                          isFirst={isFirstBlock}
+                          disableUp={disableUp}
+                          disableDown={disableDown}
+                          onMoveUp={() => moveBlock(activeNotebook.id, block.id, 'up')}
+                          onMoveDown={() => moveBlock(activeNotebook.id, block.id, 'down')}
                           onDelete={(id) =>
                             actionConfirmation === "on"
                               ? setBlockToDelete(id)
@@ -416,7 +419,11 @@ export default function NotebookEditorPage() {
                       return (
                         <TaskBlockUI
                           block={block}
-                          isFirst={isFirstBlock} // Prop adicionada
+                          isFirst={isFirstBlock}
+                          disableUp={disableUp}
+                          disableDown={disableDown}
+                          onMoveUp={() => moveBlock(activeNotebook.id, block.id, 'up')}
+                          onMoveDown={() => moveBlock(activeNotebook.id, block.id, 'down')}
                           onDelete={(id) =>
                             actionConfirmation === "on"
                               ? setBlockToDelete(id)
@@ -425,7 +432,7 @@ export default function NotebookEditorPage() {
                           onToggle={async (id) => {
                             await toggleTask(activeNotebook.id, id);
                             if (!block.isCompleted)
-                              showToast("Concluído!", "success");
+                              showToast("Parabéns concluído sucesso!", "success");
                           }}
                           onChangeContent={(id, content) =>
                             updateBlock(activeNotebook.id, id, { content })
@@ -436,7 +443,11 @@ export default function NotebookEditorPage() {
                       return (
                         <ParagraphBlockUI
                           block={block}
-                          isFirst={isFirstBlock} // Prop adicionada
+                          isFirst={isFirstBlock}
+                          disableUp={disableUp}
+                          disableDown={disableDown}
+                          onMoveUp={() => moveBlock(activeNotebook.id, block.id, 'up')}
+                          onMoveDown={() => moveBlock(activeNotebook.id, block.id, 'down')}
                           onDelete={(id) =>
                             actionConfirmation === "on"
                               ? setBlockToDelete(id)
@@ -451,7 +462,11 @@ export default function NotebookEditorPage() {
                       return (
                         <MeetingBlockUI
                           block={block}
-                          isFirst={isFirstBlock} // Prop adicionada
+                          isFirst={isFirstBlock}
+                          disableUp={disableUp}
+                          disableDown={disableDown}
+                          onMoveUp={() => moveBlock(activeNotebook.id, block.id, 'up')}
+                          onMoveDown={() => moveBlock(activeNotebook.id, block.id, 'down')}
                           onDelete={(id) =>
                             actionConfirmation === "on"
                               ? setBlockToDelete(id)
@@ -470,7 +485,11 @@ export default function NotebookEditorPage() {
                       return (
                         <ReminderBlockUI
                           block={block}
-                          isFirst={isFirstBlock} // Prop adicionada
+                          isFirst={isFirstBlock}
+                          disableUp={disableUp}
+                          disableDown={disableDown}
+                          onMoveUp={() => moveBlock(activeNotebook.id, block.id, 'up')}
+                          onMoveDown={() => moveBlock(activeNotebook.id, block.id, 'down')}
                           onDelete={(id) =>
                             actionConfirmation === "on"
                               ? setBlockToDelete(id)
@@ -578,6 +597,7 @@ export default function NotebookEditorPage() {
             onDictate={(text) =>
               setNotebookTitle((prev) => (prev ? `${prev} ${text}` : text))
             }
+            onEmoji={(emoji) => setNotebookTitle((prev) => (prev ? `${prev} ${emoji}` : emoji))}
           />
           <Input
             label="Descrição (Opcional)"
@@ -592,6 +612,7 @@ export default function NotebookEditorPage() {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleConfirmEdit();
             }}
+            onEmoji={(emoji) => setNotebookTitle((prev) => (prev ? `${prev} ${emoji}` : emoji))}
           />
           <div className={styles.modalFooter}>
             <Button variant="ghost" onClick={() => setIsEditModalOpen(false)}>

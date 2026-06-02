@@ -180,17 +180,59 @@ export const useNotebook = () => {
   };
 
   // =====================================
+  // LÓGICA DE REORDENAÇÃO SEGURA
+  // =====================================
+  const moveBlock = async (notebookId: string, blockId: string, direction: "up" | "down") => {
+    try {
+      // 1. Puxa os dados atualizados diretamente do repositório
+      const notebook = await repository.getById(notebookId);
+      if (!notebook) return;
+
+      // 2. Filtra os blocos visualmente ativos para garantir uma troca fluída
+      const activeBlocks = notebook.blocks.filter((b) => !b.isDeleted);
+      const visualIndex = activeBlocks.findIndex((b) => b.id === blockId);
+
+      if (visualIndex < 0) return;
+
+      // 3. Descobre com qual bloco ativo vamos trocar de posição
+      let targetBlockId: string | null = null;
+      if (direction === "up" && visualIndex > 0) {
+        targetBlockId = activeBlocks[visualIndex - 1].id;
+      } else if (direction === "down" && visualIndex < activeBlocks.length - 1) {
+        targetBlockId = activeBlocks[visualIndex + 1].id;
+      }
+
+      if (targetBlockId) {
+        // 4. Troca as posições usando a referência principal no array real
+        const realIndexA = notebook.blocks.findIndex((b) => b.id === blockId);
+        const realIndexB = notebook.blocks.findIndex((b) => b.id === targetBlockId);
+
+        if (realIndexA >= 0 && realIndexB >= 0) {
+          const temp = notebook.blocks[realIndexA];
+          notebook.blocks[realIndexA] = notebook.blocks[realIndexB];
+          notebook.blocks[realIndexB] = temp;
+
+          // 5. Atualiza a data do caderno e guarda tudo de forma segura
+          notebook.updatedAt = new Date();
+          
+          await repository.save(notebook);
+          await fetchNotebooks();
+        }
+      }
+    } catch (err) {
+      console.error("Erro ao mover bloco", err);
+    }
+  };
+
+  // =====================================
   // FILTROS PARA A INTERFACE
   // =====================================
-  // Filtramos os cadernos que não estão apagados para mostrar na Home
   const activeNotebooks = notebooks.filter((n) => !n.isDeleted);
-
-  // Filtramos os cadernos apagados para a Lixeira
   const deletedNotebooks = notebooks.filter((n) => n.isDeleted);
 
   return {
-    notebooks: activeNotebooks, // A aplicação principal usa este
-    deletedNotebooks, // O painel da lixeira usará este
+    notebooks: activeNotebooks,
+    deletedNotebooks,
     isLoading,
     error,
     createNotebook,
@@ -202,6 +244,7 @@ export const useNotebook = () => {
     updateBlock,
     deleteBlock,
     restoreBlock,
+    moveBlock, // Exposto aqui com sucesso!
     refresh: fetchNotebooks,
   };
 };

@@ -2,12 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { TaskBlock } from "../../../domain/entities/Block";
 import { DictationButton } from "../ui/DictationButton";
-import { TrashIcon } from "../ui/Icons";
+import { TrashIcon, UpArrowIcon, DownArrowIcon } from "../ui/Icons";
+import { EmojiPicker } from "../ui/EmojiPicker";
 import styles from "./TaskBlockUI.module.css";
 
 interface TaskBlockUIProps {
   block: TaskBlock;
-  isFirst?: boolean; // Propriedade nova para o Tour de Ajuda
+  isFirst?: boolean;
+  disableUp?: boolean;
+  disableDown?: boolean;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onChangeContent: (id: string, newContent: string) => void;
@@ -16,6 +21,10 @@ interface TaskBlockUIProps {
 export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
   block,
   isFirst,
+  disableUp,
+  disableDown,
+  onMoveUp,
+  onMoveDown,
   onToggle,
   onDelete,
   onChangeContent,
@@ -36,10 +45,37 @@ export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
     onChangeContent(block.id, newContent);
   };
 
+  const handleEmoji = (emoji: string) => {
+  const newContent = localContent ? `${localContent} ${emoji}` : emoji;
+  setLocalContent(newContent);
+  onChangeContent(block.id, newContent);
+};
+
   return (
     <div
       className={`${styles.container} ${block.isCompleted ? styles.completed : ""}`}
     >
+      <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginRight: "8px" }}>
+        <button
+          type="button"
+          onClick={onMoveUp}
+          disabled={disableUp}
+          style={{ background: "transparent", border: "none", cursor: disableUp ? "not-allowed" : "pointer", opacity: disableUp ? 0.3 : 1, color: "var(--primary-main)" }}
+          aria-label="Mover para cima"
+        >
+          <UpArrowIcon />
+        </button>
+        <button
+          type="button"
+          onClick={onMoveDown}
+          disabled={disableDown}
+          style={{ background: "transparent", border: "none", cursor: disableDown ? "not-allowed" : "pointer", opacity: disableDown ? 0.3 : 1, color: "var(--primary-main)" }}
+          aria-label="Mover para baixo"
+        >
+          <DownArrowIcon />
+        </button>
+      </div>
+
       <button
         type="button"
         className={styles.checkboxButton}
@@ -72,11 +108,11 @@ export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
         placeholder="Escreva a sua tarefa aqui..."
       />
 
-      {/* NOVO: Div isolando as ações para o foco da ajuda */}
       <div
         id={isFirst ? "tour-first-block-actions" : undefined}
         style={{ display: "flex", gap: "8px", alignItems: "center" }}
       >
+        <EmojiPicker onSelect={handleEmoji} />
         <DictationButton onDictate={handleDictate} />
         <button
           type="button"

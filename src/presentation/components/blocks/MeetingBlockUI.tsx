@@ -3,12 +3,17 @@ import React, { useState, useEffect } from "react";
 import { MeetingBlock } from "../../../domain/entities/Block";
 import { Button } from "../ui/Button";
 import { DictationButton } from "../ui/DictationButton";
-import { TrashIcon, VideoIcon } from "../ui/Icons";
+import { EmojiPicker } from "../ui/EmojiPicker";
+import { TrashIcon, VideoIcon, UpArrowIcon, DownArrowIcon } from "../ui/Icons";
 import styles from "./MeetingBlockUI.module.css";
 
 interface Props {
   block: MeetingBlock;
-  isFirst?: boolean; // Propriedade nova para o Tour de Ajuda
+  isFirst?: boolean;
+  disableUp?: boolean;
+  disableDown?: boolean;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
   onChangeContent: (
     id: string,
     title: string,
@@ -21,6 +26,10 @@ interface Props {
 export const MeetingBlockUI: React.FC<Props> = ({
   block,
   isFirst,
+  disableUp,
+  disableDown,
+  onMoveUp,
+  onMoveDown,
   onChangeContent,
   onDelete,
 }) => {
@@ -49,9 +58,36 @@ export const MeetingBlockUI: React.FC<Props> = ({
     onChangeContent(block.id, newTitle, url, date);
   };
 
+  const handleEmoji = (emoji: string) => {
+    const newTitle = title ? `${title} ${emoji}` : emoji;
+    setTitle(newTitle);
+    onChangeContent(block.id, newTitle, url, date);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.headerRow}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginRight: "8px", justifyContent: "center" }}>
+          <button
+            type="button"
+            onClick={onMoveUp}
+            disabled={disableUp}
+            style={{ background: "transparent", border: "none", cursor: disableUp ? "not-allowed" : "pointer", opacity: disableUp ? 0.3 : 1, color: "var(--primary-main)" }}
+            aria-label="Mover para cima"
+          >
+            <UpArrowIcon />
+          </button>
+          <button
+            type="button"
+            onClick={onMoveDown}
+            disabled={disableDown}
+            style={{ background: "transparent", border: "none", cursor: disableDown ? "not-allowed" : "pointer", opacity: disableDown ? 0.3 : 1, color: "var(--primary-main)" }}
+            aria-label="Mover para baixo"
+          >
+            <DownArrowIcon />
+          </button>
+        </div>
+
         <div className={styles.iconWrapper}>
           <VideoIcon />
         </div>
@@ -66,7 +102,6 @@ export const MeetingBlockUI: React.FC<Props> = ({
               onBlur={handleBlur}
               placeholder="Assunto da reunião"
             />
-            {/* O Microfone subiu para agrupar-se com a Lixeira no bloco de ações */}
           </div>
           <input
             className={styles.inputBase}
@@ -85,11 +120,11 @@ export const MeetingBlockUI: React.FC<Props> = ({
           />
         </div>
 
-        {/* NOVO: Div isolando as ações para o foco da ajuda */}
         <div
           id={isFirst ? "tour-first-block-actions" : undefined}
           style={{ display: "flex", flexDirection: "column", gap: "8px" }}
         >
+          <EmojiPicker onSelect={handleEmoji} />
           <DictationButton onDictate={handleDictate} />
           <button
             className={styles.deleteButton}

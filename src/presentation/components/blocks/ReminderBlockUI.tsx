@@ -2,12 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { ReminderBlock } from "../../../domain/entities/Block";
 import { DictationButton } from "../ui/DictationButton";
-import { TrashIcon, ClockIcon } from "../ui/Icons";
+import { EmojiPicker } from "../ui/EmojiPicker";
+import { TrashIcon, ClockIcon, UpArrowIcon, DownArrowIcon } from "../ui/Icons";
 import styles from "./ReminderBlockUI.module.css";
 
 interface Props {
   block: ReminderBlock;
-  isFirst?: boolean; // Propriedade nova para o Tour de Ajuda
+  isFirst?: boolean;
+  disableUp?: boolean;
+  disableDown?: boolean;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
   onChangeContent: (id: string, content: string, date: string) => void;
   onDelete: (id: string) => void;
 }
@@ -15,6 +20,10 @@ interface Props {
 export const ReminderBlockUI: React.FC<Props> = ({
   block,
   isFirst,
+  disableUp,
+  disableDown,
+  onMoveUp,
+  onMoveDown,
   onChangeContent,
   onDelete,
 }) => {
@@ -37,9 +46,36 @@ export const ReminderBlockUI: React.FC<Props> = ({
     onChangeContent(block.id, newContent, date);
   };
 
+  const handleEmoji = (emoji: string) => {
+    const newContent = content ? `${content} ${emoji}` : emoji;
+    setContent(newContent);
+    onChangeContent(block.id, newContent, date);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.headerRow}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginRight: "8px", justifyContent: "center" }}>
+          <button
+            type="button"
+            onClick={onMoveUp}
+            disabled={disableUp}
+            style={{ background: "transparent", border: "none", cursor: disableUp ? "not-allowed" : "pointer", opacity: disableUp ? 0.3 : 1, color: "var(--primary-main)" }}
+            aria-label="Mover para cima"
+          >
+            <UpArrowIcon />
+          </button>
+          <button
+            type="button"
+            onClick={onMoveDown}
+            disabled={disableDown}
+            style={{ background: "transparent", border: "none", cursor: disableDown ? "not-allowed" : "pointer", opacity: disableDown ? 0.3 : 1, color: "var(--primary-main)" }}
+            aria-label="Mover para baixo"
+          >
+            <DownArrowIcon />
+          </button>
+        </div>
+
         <div className={styles.iconWrapper}>
           <ClockIcon />
         </div>
@@ -64,11 +100,11 @@ export const ReminderBlockUI: React.FC<Props> = ({
           />
         </div>
 
-        {/* NOVO: Div isolando as ações para o foco da ajuda */}
         <div
           id={isFirst ? "tour-first-block-actions" : undefined}
           style={{ display: "flex", flexDirection: "column", gap: "8px" }}
         >
+          <EmojiPicker onSelect={handleEmoji} />
           <DictationButton onDictate={handleDictate} />
           <button
             className={styles.deleteButton}

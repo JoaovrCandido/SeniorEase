@@ -2,12 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { ParagraphBlock } from "../../../domain/entities/Block";
 import { DictationButton } from "../ui/DictationButton";
-import { TrashIcon } from "../ui/Icons";
+import { EmojiPicker } from "../ui/EmojiPicker";
+import { TrashIcon, UpArrowIcon, DownArrowIcon } from "../ui/Icons";
 import styles from "./ParagraphBlockUI.module.css";
 
 interface Props {
   block: ParagraphBlock;
-  isFirst?: boolean; // Propriedade nova para o Tour de Ajuda
+  isFirst?: boolean;
+  disableUp?: boolean;
+  disableDown?: boolean;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
   onChangeContent: (id: string, content: string) => void;
   onDelete: (id: string) => void;
 }
@@ -15,6 +20,10 @@ interface Props {
 export const ParagraphBlockUI: React.FC<Props> = ({
   block,
   isFirst,
+  disableUp,
+  disableDown,
+  onMoveUp,
+  onMoveDown,
   onChangeContent,
   onDelete,
 }) => {
@@ -27,8 +36,35 @@ export const ParagraphBlockUI: React.FC<Props> = ({
     onChangeContent(block.id, newContent);
   };
 
+  const handleEmoji = (emoji: string) => {
+    const newContent = localContent ? `${localContent} ${emoji}` : emoji;
+    setLocalContent(newContent);
+    onChangeContent(block.id, newContent);
+  };
+
   return (
     <div className={styles.container}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginRight: "8px", paddingTop: "8px" }}>
+        <button
+          type="button"
+          onClick={onMoveUp}
+          disabled={disableUp}
+          style={{ background: "transparent", border: "none", cursor: disableUp ? "not-allowed" : "pointer", opacity: disableUp ? 0.3 : 1, color: "var(--primary-main)" }}
+          aria-label="Mover para cima"
+        >
+          <UpArrowIcon />
+        </button>
+        <button
+          type="button"
+          onClick={onMoveDown}
+          disabled={disableDown}
+          style={{ background: "transparent", border: "none", cursor: disableDown ? "not-allowed" : "pointer", opacity: disableDown ? 0.3 : 1, color: "var(--primary-main)" }}
+          aria-label="Mover para baixo"
+        >
+          <DownArrowIcon />
+        </button>
+      </div>
+
       <textarea
         className={styles.textarea}
         value={localContent}
@@ -39,11 +75,11 @@ export const ParagraphBlockUI: React.FC<Props> = ({
         }
         placeholder="Digite sua anotação aqui..."
       />
-      {/* NOVO: Div isolando as ações para o foco da ajuda */}
       <div
         id={isFirst ? "tour-first-block-actions" : undefined}
         style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}
       >
+        <EmojiPicker onSelect={handleEmoji} />
         <DictationButton onDictate={handleDictate} />
         <button
           className={styles.deleteButton}

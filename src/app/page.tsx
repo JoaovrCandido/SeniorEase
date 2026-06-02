@@ -170,6 +170,7 @@ export default function Home() {
               setNotebookTitle((prev) => (prev ? `${prev} ${text}` : text))
             }
             autoFocus
+            onEmoji={(emoji) => setNotebookTitle((prev) => (prev ? `${prev} ${emoji}` : emoji))}
           />
           <Input
             label="Descrição (Opcional)"
@@ -183,6 +184,7 @@ export default function Home() {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleConfirmCreate();
             }}
+            onEmoji={(emoji) => setNotebookTitle((prev) => (prev ? `${prev} ${emoji}` : emoji))}
           />
           <div className={styles.modalFooter}>
             <Button variant="ghost" onClick={() => setIsCreateModalOpen(false)}>

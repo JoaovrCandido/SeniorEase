@@ -1,0 +1,111 @@
+/* src/presentation/components/ui/EmojiPicker.module.css */
+.triggerButton {
+  background: transparent;
+  border: 2px solid transparent;
+  color: var(--text-body);
+  cursor: pointer;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.triggerButton:hover, .triggerButton:focus-visible {
+  background: var(--primary-surface);
+  color: var(--primary-main);
+  outline: none;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 100000; /* Z-index altíssimo para ficar por cima de qualquer modal */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog {
+  background-color: var(--bg-surface);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  animation: popIn 0.2s ease-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.title {
+  font-size: var(--text-lg);
+  color: var(--primary-main);
+  font-weight: bold;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: var(--primary-main);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background: var(--primary-surface);
+  transform: scale(1.1);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 400px) {
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.emojiButton {
+  background: transparent;
+  border: 2px solid transparent;
+  font-size: 28px; /* Emoji grande e fácil de ver */
+  padding: 8px 4px;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: transform 0.1s, background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emojiButton:hover, .emojiButton:focus-visible {
+  background: var(--primary-surface);
+  transform: scale(1.2);
+  outline: none;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
