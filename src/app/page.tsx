@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useNotebookContext } from "@/presentation/store/NotebookContext";
 import { useToast } from "@/presentation/store/ToastContext";
+import { useUserProfile } from '@/presentation/store/UserProfileContext'; // NOVO
 
 import { Modal } from "@/presentation/components/ui/Modal";
 import { Input } from "@/presentation/components/ui/Input";
@@ -16,7 +17,8 @@ import {
 
 import {
   HelpIcon,
-  SettingsIcon,
+  UserIcon,
+  PhoneIcon,
   HistoryIcon,
   TrashIcon,
 } from "@/presentation/components/ui/Icons";
@@ -32,9 +34,9 @@ const DASHBOARD_STEPS: TourStep[] = [
   },
   {
     targetId: "tour-accessibility-btn",
-    title: "2. Conforto Visual",
+    title: "2. O Seu Perfil", // <-- Modificado
     description:
-      "Ajuste o tamanho da letra e o contraste para facilitar a leitura.",
+      "Acesse esta tela para preencher os seus contatos, ajustar o tamanho da letra e o contraste.", // <-- Modificado
   },
   {
     targetId: "tour-create",
@@ -56,6 +58,7 @@ const DASHBOARD_STEPS: TourStep[] = [
 export default function Home() {
   const router = useRouter();
   const { notebooks, isLoading, createNotebook } = useNotebookContext();
+  const { emergencyContact } = useUserProfile(); // NOVO
   const { showToast } = useToast();
 
   const [isTourOpen, setIsTourOpen] = useState(false);
@@ -87,6 +90,17 @@ export default function Home() {
           <h1 className={styles.title}>Os meus Cadernos</h1>
 
           <div className={styles.flexWrapGap16}>
+            {/* NOVO: Botão S.O.S Inteligente */}
+            {emergencyContact && (
+              <a 
+                href={`tel:${emergencyContact.replace(/\D/g, '')}`} 
+                className={styles.btnPrimarySurface}
+                style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderColor: '#f87171' }}
+              >
+                <PhoneIcon /> Ligar S.O.S
+              </a>
+            )}
+
             <button
               id="tour-help-btn"
               onClick={() => setIsTourOpen(true)}
@@ -96,10 +110,10 @@ export default function Home() {
             </button>
             <button
               id="tour-accessibility-btn"
-              onClick={() => router.push("/settings")}
+              onClick={() => router.push("/profile")} // <-- Modificado para /profile
               className={styles.btnOutline}
             >
-              <SettingsIcon /> Personalizar Tela
+              <UserIcon /> Meu Perfil {/* <-- Modificado */}
             </button>
             <button
               id="tour-history-btn"

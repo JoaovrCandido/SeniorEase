@@ -2,7 +2,7 @@
 import React from "react";
 import { useAccessibility } from "../../store/AccessibilityContext";
 import { Button } from "./Button";
-import styles from "./AccessibilityPanel.module.css"; // <-- Importado
+import styles from "./AccessibilityPanel.module.css";
 
 export const AccessibilityPanel: React.FC = () => {
   const {
@@ -16,6 +16,8 @@ export const AccessibilityPanel: React.FC = () => {
     setVisualFeedback,
     actionConfirmation,
     setActionConfirmation,
+    personalizedMessages, // <-- NOVO
+    setPersonalizedMessages, // <-- NOVO
   } = useAccessibility();
 
   return (
@@ -116,6 +118,28 @@ export const AccessibilityPanel: React.FC = () => {
             onClick={() => setActionConfirmation("off")}
           >
             Apagar Imediatamente
+          </Button>
+        </div>
+      </div>
+
+      {/* NOVO: SECÇÃO 6 (Sem apagar as outras) */}
+      <div>
+        <h3 className={styles.sectionTitle}>6. Elogios Pessoais</h3>
+        <p className={styles.description}>
+          O sistema usará o seu nome para dar os parabéns nas mensagens de sucesso.
+        </p>
+        <div className={styles.buttonGroup}>
+          <Button
+            variant={personalizedMessages === "on" ? "primary" : "ghost"}
+            onClick={() => setPersonalizedMessages("on")}
+          >
+            Ligado
+          </Button>
+          <Button
+            variant={personalizedMessages === "off" ? "danger" : "ghost"}
+            onClick={() => setPersonalizedMessages("off")}
+          >
+            Desligado
           </Button>
         </div>
       </div>

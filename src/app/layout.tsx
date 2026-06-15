@@ -3,6 +3,7 @@ import { Inter, Lora } from "next/font/google";
 import { AccessibilityProvider } from "@/presentation/store/AccessibilityContext";
 import { ToastProvider } from "@/presentation/store/ToastContext";
 import { NotebookProvider } from "@/presentation/store/NotebookContext"; // <-- NOVO
+import { UserProfileProvider } from "@/presentation/store/UserProfileContext";
 import "./globals.css";
 
 // Configurando as fontes para gerarem as variáveis CSS
@@ -33,9 +34,11 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${inter.variable} ${lora.variable}`}>
       <body>
         <AccessibilityProvider>
-          <ToastProvider>
-            <NotebookProvider>{children}</NotebookProvider>
-          </ToastProvider>
+          <UserProfileProvider>
+            <ToastProvider>
+              <NotebookProvider>{children}</NotebookProvider>
+            </ToastProvider>
+          </UserProfileProvider>
         </AccessibilityProvider>
       </body>
     </html>
