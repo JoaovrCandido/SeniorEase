@@ -4,6 +4,7 @@ import { TaskBlock } from "../../../domain/entities/Block";
 import { DictationButton } from "../ui/DictationButton";
 import { TrashIcon, UpArrowIcon, DownArrowIcon } from "../ui/Icons";
 import { EmojiPicker } from "../ui/EmojiPicker";
+import { useToast } from "../../store/ToastContext"; // <-- NOVO IMPORT
 import styles from "./TaskBlockUI.module.css";
 
 interface TaskBlockUIProps {
@@ -30,6 +31,7 @@ export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
   onChangeContent,
 }) => {
   const [localContent, setLocalContent] = useState(block.content);
+  const { showToast } = useToast(); // <-- Usando o Toast para os avisos
 
   useEffect(() => {
     setLocalContent(block.content);
@@ -46,10 +48,19 @@ export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
   };
 
   const handleEmoji = (emoji: string) => {
-  const newContent = localContent ? `${localContent} ${emoji}` : emoji;
-  setLocalContent(newContent);
-  onChangeContent(block.id, newContent);
-};
+    const newContent = localContent ? `${localContent} ${emoji}` : emoji;
+    setLocalContent(newContent);
+    onChangeContent(block.id, newContent);
+  };
+
+  // <-- NOVA FUNÇÃO DE VALIDAÇÃO -->
+  const handleToggle = () => {
+    if (!localContent || localContent.trim() === "") {
+      showToast("Escreva qual é a tarefa antes de marcá-la como concluída.", "error");
+      return;
+    }
+    onToggle(block.id);
+  };
 
   return (
     <div
@@ -79,7 +90,7 @@ export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
       <button
         type="button"
         className={styles.checkboxButton}
-        onClick={() => onToggle(block.id)}
+        onClick={handleToggle} // <-- Usando a função com validação
         aria-label="Concluir tarefa"
       >
         <div className={styles.checkboxBox} aria-hidden="true">

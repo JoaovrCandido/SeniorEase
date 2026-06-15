@@ -5,6 +5,7 @@ import { Button } from "../ui/Button";
 import { DictationButton } from "../ui/DictationButton";
 import { EmojiPicker } from "../ui/EmojiPicker";
 import { TrashIcon, VideoIcon, UpArrowIcon, DownArrowIcon } from "../ui/Icons";
+import { useToast } from "../../store/ToastContext"; // <-- NOVO IMPORT
 import styles from "./MeetingBlockUI.module.css";
 
 interface Props {
@@ -36,6 +37,7 @@ export const MeetingBlockUI: React.FC<Props> = ({
   const [title, setTitle] = useState(block.title);
   const [url, setUrl] = useState(block.meetingUrl);
   const [date, setDate] = useState(block.date || "");
+  const { showToast } = useToast(); // <-- Usando o Toast
 
   useEffect(() => {
     setTitle(block.title);
@@ -43,13 +45,22 @@ export const MeetingBlockUI: React.FC<Props> = ({
     setDate(block.date || "");
   }, [block.title, block.meetingUrl, block.date]);
 
+  // <-- NOVA VALIDAÇÃO DE URL -->
   const handleBlur = () => {
-    if (
-      title !== block.title ||
-      url !== block.meetingUrl ||
-      date !== block.date
-    )
-      onChangeContent(block.id, title, url, date);
+    let validUrl = url.trim();
+    let hasChanges = false;
+
+    // Se a pessoa preencheu o link, mas esqueceu do 'http', adicionamos automaticamente
+    if (validUrl !== "" && !validUrl.startsWith("http")) {
+      validUrl = "https://" + validUrl;
+      setUrl(validUrl);
+      hasChanges = true;
+      showToast("Adicionamos 'https://' ao link para garantir que funcione.", "info");
+    }
+
+    if (title !== block.title || validUrl !== block.meetingUrl || date !== block.date || hasChanges) {
+      onChangeContent(block.id, title, validUrl, date);
+    }
   };
 
   const handleDictate = (text: string) => {

@@ -4,6 +4,7 @@ import { ReminderBlock } from "../../../domain/entities/Block";
 import { DictationButton } from "../ui/DictationButton";
 import { EmojiPicker } from "../ui/EmojiPicker";
 import { TrashIcon, ClockIcon, UpArrowIcon, DownArrowIcon } from "../ui/Icons";
+import { useToast } from "../../store/ToastContext"; // <-- NOVO IMPORT
 import styles from "./ReminderBlockUI.module.css";
 
 interface Props {
@@ -29,13 +30,25 @@ export const ReminderBlockUI: React.FC<Props> = ({
 }) => {
   const [content, setContent] = useState(block.content || "");
   const [date, setDate] = useState(block.date);
+  const { showToast } = useToast(); // <-- Usando o Toast
 
   useEffect(() => {
     setContent(block.content || "");
     setDate(block.date);
   }, [block.content, block.date]);
 
+  // <-- NOVA VALIDAÇÃO DE DATA NO PASSADO -->
   const handleBlur = () => {
+    if (date) {
+      const selectedDate = new Date(date);
+      const now = new Date();
+      if (selectedDate < now) {
+        showToast("O lembrete não pode ser marcado no passado.", "error");
+        setDate(block.date || ""); // Reverte para a data anterior válida
+        return;
+      }
+    }
+
     if (content !== block.content || date !== block.date)
       onChangeContent(block.id, content, date);
   };
