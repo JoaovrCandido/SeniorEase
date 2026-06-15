@@ -36,7 +36,13 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
   const [dynamicMaxWidth, setDynamicMaxWidth] = useState<string>("500px");
 
   useEffect(() => {
-    if (!isOpen || !steps || steps.length === 0) return;
+    if (!isOpen || !steps || steps.length === 0) {
+      document.body.classList.remove("tour-prevent-click");
+      return;
+    }
+
+    // Impede que o utilizador clique nos elementos de fundo enquanto a tour está ativa
+    document.body.classList.add("tour-prevent-click");
 
     const cleanupHighlights = () => {
       document.querySelectorAll(".tour-highlight").forEach((el) => {
@@ -46,6 +52,15 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
           htmlEl.style.position = "";
           delete htmlEl.dataset.tourPosFixed;
         }
+      });
+
+      // Limpa as elevações mágicas do Modal
+      document.querySelectorAll(".tour-elevate").forEach((el) => {
+        el.classList.remove("tour-elevate");
+      });
+
+      document.querySelectorAll(".tour-overflow-visible").forEach((el) => {
+        el.classList.remove("tour-overflow-visible");
       });
     };
 
@@ -61,6 +76,35 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
         if (computedStyle.position === "static") {
           targetElement.style.position = "relative";
           targetElement.dataset.tourPosFixed = "true";
+        }
+
+        // ========================================================
+        // MAGIA: Eleva o Modal e permite que o destaque saia da caixa
+        // ========================================================
+        let current = targetElement.parentElement;
+        while (current && current !== document.body) {
+          const style = window.getComputedStyle(current);
+          
+          // Se for um container restrito (como o overlay do Modal), eleva-o!
+          if (
+            style.zIndex !== "auto" ||
+            style.position === "fixed" ||
+            style.position === "sticky" ||
+            style.backdropFilter !== "none" ||
+            style.transform !== "none"
+          ) {
+            current.classList.add("tour-elevate");
+          }
+          
+          // Se tiver overflow escondido (como o scroll do Modal), liberta-o para a sombra passar!
+          if (
+            style.overflow !== "visible" ||
+            style.overflowX !== "visible" ||
+            style.overflowY !== "visible"
+          ) {
+            current.classList.add("tour-overflow-visible");
+          }
+          current = current.parentElement;
         }
 
         const rect = targetElement.getBoundingClientRect();
@@ -108,6 +152,7 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
     }
 
     return () => {
+      document.body.classList.remove("tour-prevent-click");
       cleanupHighlights();
       stop();
     };
@@ -156,7 +201,6 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
         aria-labelledby="tour-title"
         style={{ maxWidth: dynamicMaxWidth }}
       >
-        {/* NOVO BOTÃO DE FECHAR (X) */}
         <button
           className={styles.closeButton}
           onClick={handleClose}

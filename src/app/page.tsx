@@ -5,11 +5,12 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useNotebookContext } from "@/presentation/store/NotebookContext";
 import { useToast } from "@/presentation/store/ToastContext";
-import { useUserProfile } from '@/presentation/store/UserProfileContext'; // NOVO
+import { useUserProfile } from "@/presentation/store/UserProfileContext";
 
 import { Modal } from "@/presentation/components/ui/Modal";
 import { Input } from "@/presentation/components/ui/Input";
 import { Button } from "@/presentation/components/ui/Button";
+import { AccessibilityPanel } from "@/presentation/components/ui/AccessibilityPanel";
 import {
   OnboardingTour,
   TourStep,
@@ -21,6 +22,7 @@ import {
   PhoneIcon,
   HistoryIcon,
   TrashIcon,
+  SettingsIcon,
 } from "@/presentation/components/ui/Icons";
 
 import styles from "./page.module.css";
@@ -29,40 +31,60 @@ const DASHBOARD_STEPS: TourStep[] = [
   {
     targetId: "tour-help-btn",
     title: "1. Precisa de Ajuda?",
-    description:
-      "Sempre que tiver dúvidas sobre o que fazer nesta tela, clique neste botão e eu explicarei tudo!",
+    description: "Sempre que tiver dúvidas sobre o que fazer nesta tela, clique neste botão e eu explicarei tudo!",
   },
   {
     targetId: "tour-accessibility-btn",
-    title: "2. O Seu Perfil", // <-- Modificado
-    description:
-      "Acesse esta tela para preencher os seus contatos, ajustar o tamanho da letra e o contraste.", // <-- Modificado
+    title: "2. O Seu Perfil",
+    description: "Acesse esta tela para preencher os seus contatos pessoais.",
+  },
+  {
+    targetId: "tour-settings-btn",
+    title: "3. Personalizar Tela",
+    description: "Ajuste o tamanho da letra, o contraste e outras opções para tornar tudo mais fácil de ler.",
   },
   {
     targetId: "tour-create",
-    title: "3. Criar Cadernos",
+    title: "4. Criar Cadernos",
     description: "Crie cadernos para guardar tarefas e notas.",
   },
   {
     targetId: "tour-history-btn",
-    title: "4. Histórico",
+    title: "5. Histórico",
     description: "Veja tudo o que já concluiu aqui.",
   },
   {
     targetId: "tour-trash-btn",
-    title: "5. Lixeira",
+    title: "6. Lixeira",
     description: "Recupere itens apagados com facilidade.",
   },
+];
+
+// Configuração perfeita e padronizada da Tour de Personalização
+const SETTINGS_STEPS: TourStep[] = [
+  {
+    targetId: "tour-modal-help-btn",
+    title: "1. Precisa de Ajuda?",
+    description: "Sempre que tiver dúvidas sobre o que fazer nesta tela, clique neste botão e eu explicarei tudo!",
+  },
+  {
+    targetId: "tour-accessibility-panel", // Aponta para toda a área de personalização!
+    title: "2. Personalização",
+    description: "Altere o tamanho da letra, as cores e a segurança para deixar tudo perfeitamente confortável para si.",
+  }
 ];
 
 export default function Home() {
   const router = useRouter();
   const { notebooks, isLoading, createNotebook } = useNotebookContext();
-  const { emergencyContact } = useUserProfile(); // NOVO
+  const { emergencyContact } = useUserProfile();
   const { showToast } = useToast();
 
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const [isSettingsTourOpen, setIsSettingsTourOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  
   const [notebookTitle, setNotebookTitle] = useState("");
   const [notebookDescription, setNotebookDescription] = useState("");
 
@@ -90,7 +112,6 @@ export default function Home() {
           <h1 className={styles.title}>Os meus Cadernos</h1>
 
           <div className={styles.flexWrapGap16}>
-            {/* NOVO: Botão S.O.S Inteligente */}
             {emergencyContact && (
               <a 
                 href={`tel:${emergencyContact.replace(/\D/g, '')}`} 
@@ -110,11 +131,20 @@ export default function Home() {
             </button>
             <button
               id="tour-accessibility-btn"
-              onClick={() => router.push("/profile")} // <-- Modificado para /profile
+              onClick={() => router.push("/profile")}
               className={styles.btnOutline}
             >
-              <UserIcon /> Meu Perfil {/* <-- Modificado */}
+              <UserIcon /> Meu Perfil
             </button>
+
+            <button
+              id="tour-settings-btn"
+              onClick={() => setIsSettingsModalOpen(true)}
+              className={styles.btnOutline}
+            >
+              <SettingsIcon /> Personalizar
+            </button>
+
             <button
               id="tour-history-btn"
               onClick={() => router.push("/history")}
@@ -173,6 +203,7 @@ export default function Home() {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         title="Criar Novo Caderno"
+        position="center"
       >
         <div className={styles.modalContent}>
           <Input
@@ -215,10 +246,26 @@ export default function Home() {
         </div>
       </Modal>
 
+      <Modal
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        title="Personalizar Tela"
+        position="left" 
+        onHelp={() => setIsSettingsTourOpen(true)}
+      >
+        <AccessibilityPanel />
+      </Modal>
+
       <OnboardingTour
         isOpen={isTourOpen}
         onClose={() => setIsTourOpen(false)}
         steps={DASHBOARD_STEPS}
+      />
+
+      <OnboardingTour
+        isOpen={isSettingsTourOpen}
+        onClose={() => setIsSettingsTourOpen(false)}
+        steps={SETTINGS_STEPS}
       />
     </main>
   );

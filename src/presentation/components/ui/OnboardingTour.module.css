@@ -6,8 +6,9 @@
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.75);
-  z-index: 9998;
+  z-index: 9998; /* Fica abaixo do destaque e do dialog */
   transition: all 0.3s ease;
+  pointer-events: auto;
 }
 
 .dialog {
@@ -16,7 +17,7 @@
   padding: var(--space-xl);
   border-radius: var(--radius-lg);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  z-index: 10000;
+  z-index: 999999; /* <-- CORREÇÃO: O Dialog é SEMPRE a camada mais alta (Rainha) */
 
   width: 90%;
   max-height: 85vh;
@@ -33,14 +34,12 @@
     transform 0.4s ease,
     max-width 0.3s ease;
 
-  /* Padronização Firefox para o scrollbar colorido */
   scrollbar-width: thin;
   scrollbar-color: var(--primary-main) var(--bg-canvas);
+  
+  pointer-events: auto;
 }
 
-/* =========================================
-   CUSTOMIZAÇÃO DO SCROLLBAR (Chrome/Safari/Edge)
-   ========================================= */
 .dialog::-webkit-scrollbar {
   width: 10px;
 }
@@ -56,9 +55,6 @@
   border: 2px solid var(--bg-canvas);
 }
 
-/* =========================================
-   BOTÃO FECHAR (X) NO CANTO SUPERIOR
-   ========================================= */
 .closeButton {
   position: absolute;
   top: 16px;
@@ -82,10 +78,7 @@
   outline: none;
 }
 
-/* =========================================
-   POSICIONAMENTOS (QUADRANTES)
-   ========================================= */
-
+/* POSICIONAMENTOS (QUADRANTES) */
 .dialogCenter {
   top: 50%;
   left: 50%;
@@ -147,90 +140,42 @@
   animation: popInBottomRight 0.3s ease-out;
 }
 
-/* =========================================
-   ANIMAÇÕES SUAVES DE ENTRADA
-   ========================================= */
-
+/* ANIMAÇÕES SUAVES DE ENTRADA */
 @keyframes popInCenter {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -45%);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
+  from { opacity: 0; transform: translate(-50%, -45%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
 }
 @keyframes popInTopCenter {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%);
-  }
+  from { opacity: 0; transform: translate(-50%, -20px); }
+  to { opacity: 1; transform: translateX(-50%); }
 }
 @keyframes popInBottomCenter {
-  from {
-    opacity: 0;
-    transform: translate(-50%, 20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%);
-  }
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translateX(-50%); }
 }
 @keyframes popInTopLeft {
-  from {
-    opacity: 0;
-    transform: translate(-20px, -20px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
+  from { opacity: 0; transform: translate(-20px, -20px); }
+  to { opacity: 1; transform: translate(0, 0); }
 }
 @keyframes popInTopRight {
-  from {
-    opacity: 0;
-    transform: translate(20px, -20px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
+  from { opacity: 0; transform: translate(20px, -20px); }
+  to { opacity: 1; transform: translate(0, 0); }
 }
 @keyframes popInBottomLeft {
-  from {
-    opacity: 0;
-    transform: translate(-20px, 20px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
+  from { opacity: 0; transform: translate(-20px, 20px); }
+  to { opacity: 1; transform: translate(0, 0); }
 }
 @keyframes popInBottomRight {
-  from {
-    opacity: 0;
-    transform: translate(20px, 20px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
+  from { opacity: 0; transform: translate(20px, 20px); }
+  to { opacity: 1; transform: translate(0, 0); }
 }
 
-/* =========================================
-   RESTANTE DO CSS
-   ========================================= */
-
+/* RESTANTE DO CSS */
 .title {
   font-size: var(--text-xl);
   color: var(--primary-main);
   font-weight: 800;
-  padding-right: 40px; /* Garante que o título longo não fique por baixo do X */
+  padding-right: 40px;
 }
 
 .description {
@@ -252,18 +197,6 @@
   font-size: var(--text-base);
   font-weight: bold;
   color: var(--text-body);
-}
-
-:global(.tour-highlight) {
-  z-index: 9999 !important;
-  background-color: var(--bg-surface) !important;
-  box-shadow:
-    0 0 0 8px var(--bg-surface),
-    0 0 20px rgba(0, 0, 0, 0.5) !important;
-  border-radius: var(--radius-md) !important;
-  pointer-events: none !important;
-  scroll-margin-top: 140px !important;
-  scroll-margin-bottom: 140px !important;
 }
 
 .audioControls {
@@ -301,4 +234,38 @@
 .actionButtons {
   display: flex;
   gap: 16px;
+}
+
+/* =========================================
+   MAGIA DE ACESSIBILIDADE E DESTAQUE (MODAIS)
+   ========================================= */
+
+/* Impede o clique nos elementos escuros do ecrã */
+:global(.tour-prevent-click) {
+  pointer-events: none !important;
+}
+
+:global(.tour-highlight) {
+  z-index: 99999 !important; /* Forte, mas mais fraco que o Dialog */
+  background-color: var(--bg-surface) !important;
+  box-shadow:
+    0 0 0 8px var(--bg-surface),
+    0 0 0 9999px rgba(0, 0, 0, 0.75) !important;
+  border-radius: var(--radius-md) !important;
+  pointer-events: none !important;
+  scroll-margin-top: 140px !important;
+  scroll-margin-bottom: 140px !important;
+  position: relative !important;
+}
+
+/* Eleva as caixas do Modal por cima das outras */
+:global(.tour-elevate) {
+  z-index: 9999 !important;
+}
+
+/* Liberta as sombras para não serem cortadas pelas scrollbars do Modal */
+:global(.tour-overflow-visible) {
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
 }

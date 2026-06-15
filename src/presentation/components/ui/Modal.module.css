@@ -5,30 +5,91 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.75
-  ); /* Fundo escuro para destacar o modal */
+  background-color: rgba(0, 0, 0, 0.75);
   display: flex;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+
+.overlayCenter {
   align-items: center;
   justify-content: center;
-  z-index: 100;
   padding: var(--space-md);
-  backdrop-filter: blur(4px); /* Efeito de desfoque moderno */
+}
+
+.overlayLeft {
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: var(--space-md);
+}
+
+.overlayRight {
+  align-items: stretch;
+  justify-content: flex-end;
+  padding: var(--space-md);
 }
 
 .modal {
   background-color: var(--bg-surface);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
   width: 100%;
   max-width: 500px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  
+  scrollbar-color: var(--primary-main) transparent;
+  scrollbar-width: thin;
+}
+
+.modal::-webkit-scrollbar {
+  width: 8px;
+}
+.modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal::-webkit-scrollbar-thumb {
+  background-color: var(--primary-main);
+  border-radius: var(--radius-lg);
+}
+
+.modalCenter {
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  animation: popIn 0.3s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalLeft {
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  max-height: 100%;
+  overflow-y: auto;
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.modalRight {
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  max-height: 100%;
+  overflow-y: auto;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 
 .header {
@@ -43,25 +104,51 @@
   font-weight: 700;
 }
 
-/* Botão de fechar com a regra dos 48px de toque */
+.headerActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* O Botão de Ajuda Perfeito (Amarelo e com borda) */
+.helpButton {
+  background-color: var(--primary-surface);
+  border: none;
+  color: var(--primary-main);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.helpButton:hover,
+.helpButton:focus-visible {
+  filter: brightness(0.95);
+  transform: translateY(-2px);
+}
+
+/* O Botão de Fechar Consistente com a Plataforma */
 .closeButton {
   background: transparent;
   border: none;
-  color: var(--text-body);
+  color: var(--primary-main);
   cursor: pointer;
-  min-width: var(--touch-target-min);
-  min-height: var(--touch-target-min);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-md);
-  transition: all 0.2s;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
 }
 
 .closeButton:hover,
 .closeButton:focus-visible {
-  background-color: #fee2e2;
-  color: var(--danger-main);
+  background-color: var(--primary-surface);
+  transform: scale(1.1);
   outline: none;
 }
 
@@ -72,7 +159,6 @@
   margin-top: var(--space-sm);
 }
 
-/* Em telas pequenas, os botões ficam um em cima do outro e ocupam a tela toda */
 @media (max-width: 600px) {
   .footer {
     flex-direction: column;

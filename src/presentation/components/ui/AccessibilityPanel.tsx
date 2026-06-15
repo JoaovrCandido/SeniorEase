@@ -16,12 +16,13 @@ export const AccessibilityPanel: React.FC = () => {
     setVisualFeedback,
     actionConfirmation,
     setActionConfirmation,
-    personalizedMessages, // <-- NOVO
-    setPersonalizedMessages, // <-- NOVO
+    personalizedMessages,
+    setPersonalizedMessages,
   } = useAccessibility();
 
   return (
     <section
+      id="tour-accessibility-panel" // <-- NOVO: ID para a Ajuda focar aqui!
       aria-label="Painel de Personalização de Acessibilidade"
       className={styles.container}
     >
@@ -122,7 +123,6 @@ export const AccessibilityPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* NOVO: SECÇÃO 6 (Sem apagar as outras) */}
       <div>
         <h3 className={styles.sectionTitle}>6. Elogios Pessoais</h3>
         <p className={styles.description}>
