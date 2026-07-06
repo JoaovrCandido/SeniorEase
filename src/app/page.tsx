@@ -23,6 +23,8 @@ import {
   HistoryIcon,
   TrashIcon,
   SettingsIcon,
+  BookIcon,
+  TaskIcon, // <-- IMPORTADO PARA DIFERENCIAR NA LISTA
 } from "@/presentation/components/ui/Icons";
 
 import styles from "./page.module.css";
@@ -45,8 +47,8 @@ const DASHBOARD_STEPS: TourStep[] = [
   },
   {
     targetId: "tour-create",
-    title: "4. Criar Cadernos",
-    description: "Crie cadernos para guardar tarefas e notas.",
+    title: "4. Criar Cadernos ou Listas",
+    description: "Crie cadernos para textos completos ou listas apenas para tarefas.",
   },
   {
     targetId: "tour-history-btn",
@@ -57,10 +59,9 @@ const DASHBOARD_STEPS: TourStep[] = [
     targetId: "tour-trash-btn",
     title: "6. Lixeira",
     description: "Recupere itens apagados com facilidade.",
-  },
+  }
 ];
 
-// Configuração perfeita e padronizada da Tour de Personalização
 const SETTINGS_STEPS: TourStep[] = [
   {
     targetId: "tour-modal-help-btn",
@@ -68,7 +69,7 @@ const SETTINGS_STEPS: TourStep[] = [
     description: "Sempre que tiver dúvidas sobre o que fazer nesta tela, clique neste botão e eu explicarei tudo!",
   },
   {
-    targetId: "tour-accessibility-panel", // Aponta para toda a área de personalização!
+    targetId: "tour-accessibility-panel",
     title: "2. Personalização",
     description: "Altere o tamanho da letra, as cores e a segurança para deixar tudo perfeitamente confortável para si.",
   }
@@ -85,6 +86,9 @@ export default function Home() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   
+  // <-- NOVO: Estado para saber qual o tipo a criar
+  const [createType, setCreateType] = useState<"notebook" | "todo">("notebook");
+  
   const [notebookTitle, setNotebookTitle] = useState("");
   const [notebookDescription, setNotebookDescription] = useState("");
 
@@ -97,19 +101,24 @@ export default function Home() {
 
   const handleConfirmCreate = async () => {
     if (notebookTitle.trim()) {
-      await createNotebook(notebookTitle, notebookDescription);
+      await createNotebook(notebookTitle, notebookDescription, createType); // <-- NOVO TIPO ENVIADO
       setIsCreateModalOpen(false);
-      showToast("Caderno criado!", "success");
+      showToast(createType === "todo" ? "Lista criada com sucesso!" : "Caderno criado!", "success");
       setNotebookTitle("");
       setNotebookDescription("");
     }
+  };
+
+  const openCreateModal = (type: "notebook" | "todo") => {
+    setCreateType(type);
+    setIsCreateModalOpen(true);
   };
 
   return (
     <main className={styles.main}>
       <div className={styles.dashboard}>
         <header className={styles.pageHeaderBetween}>
-          <h1 className={styles.title}>Os meus Cadernos</h1>
+          <h1 className={styles.title}>Meus Cadernos & Listas</h1>
 
           <div className={styles.flexWrapGap16}>
             {emergencyContact && (
@@ -165,15 +174,28 @@ export default function Home() {
         {isLoading ? (
           <p className={styles.emptyState}>A carregar...</p>
         ) : (
-          <div className={styles.grid}>
+          <div id="tour-create" className={styles.grid}>
+            
+            {/* BOTÃO 1: Criar Caderno Normal */}
             <button
-              id="tour-create"
               className={`${styles.card} ${styles.cardDashedCreate}`}
-              onClick={() => setIsCreateModalOpen(true)}
+              onClick={() => openCreateModal("notebook")}
             >
-              <span className={styles.cardTitle}>+ Criar Novo Caderno</span>
+              <span className={styles.cardTitle}>+ Criar Caderno</span>
               <span className={styles.cardDate}>
-                Clique aqui para começar um novo projeto.
+                Para anotações, reuniões e textos.
+              </span>
+            </button>
+
+            {/* BOTÃO 2: Criar Apenas Lista de Tarefas */}
+            <button
+              className={`${styles.card} ${styles.cardDashedCreate}`}
+              onClick={() => openCreateModal("todo")}
+              style={{ borderColor: "var(--primary-main)", borderStyle: "dashed" }}
+            >
+              <span className={styles.cardTitle}>+ Criar Lista de Tarefas</span>
+              <span className={styles.cardDate}>
+                Apenas para listas rápidas e tarefas.
               </span>
             </button>
 
@@ -183,7 +205,12 @@ export default function Home() {
                 className={styles.card}
                 onClick={() => router.push(`/notebook/${notebook.id}`)}
               >
-                <span className={styles.cardTitle}>{notebook.title}</span>
+                {/* Diferenciação Visual por Ícone */}
+                <div className={styles.flexAlignCenter} style={{ marginBottom: "8px", color: "var(--primary-main)" }}>
+                  {notebook.type === "todo" ? <TaskIcon /> : <BookIcon />}
+                  <span className={styles.cardTitle} style={{ margin: 0 }}>{notebook.title}</span>
+                </div>
+                
                 {notebook.description && (
                   <span className={styles.cardDescription}>
                     {notebook.description}
@@ -202,13 +229,13 @@ export default function Home() {
       <Modal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        title="Criar Novo Caderno"
+        title={createType === "todo" ? "Criar Nova Lista" : "Criar Novo Caderno"}
         position="center"
       >
         <div className={styles.modalContent}>
           <Input
-            label="Nome do Caderno"
-            placeholder="Ex: Aulas..."
+            label={createType === "todo" ? "Nome da Lista" : "Nome do Caderno"}
+            placeholder={createType === "todo" ? "Ex: Compras do Supermercado..." : "Ex: Aulas..."}
             value={notebookTitle}
             onChange={(e) => setNotebookTitle(e.target.value)}
             onDictate={(text) =>
@@ -229,7 +256,7 @@ export default function Home() {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleConfirmCreate();
             }}
-            onEmoji={(emoji) => setNotebookTitle((prev) => (prev ? `${prev} ${emoji}` : emoji))}
+            onEmoji={(emoji) => setNotebookDescription((prev) => (prev ? `${prev} ${emoji}` : emoji))}
           />
           <div className={styles.modalFooter}>
             <Button variant="ghost" onClick={() => setIsCreateModalOpen(false)}>
@@ -240,7 +267,7 @@ export default function Home() {
               onClick={handleConfirmCreate}
               disabled={!notebookTitle.trim()}
             >
-              Criar Caderno
+              Criar
             </Button>
           </div>
         </div>

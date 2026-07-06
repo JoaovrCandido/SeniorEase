@@ -172,3 +172,89 @@ html.contrast-high
   min-width: 24px;
   min-height: 24px;
 }
+
+
+/* =========================================
+   MODO IMPRESSÃO SEGURA (Print-Friendly)
+   ========================================= */
+@media print {
+  /* 1. Esconde a interface inteira (Barras, Botões e Modais) */
+  nav,
+  [class*="bottomBar"],
+  [class*="toastContainer"],
+  [role="dialog"],
+  [id^="tour-"],
+  button[aria-label="Mover para cima"],
+  button[aria-label="Mover para baixo"],
+  [class*="deleteButton"],
+  [class*="backButton"],
+  [class*="toggleReadingButton"],
+  [class*="audioButton"],
+  [class*="secondaryButton"],
+  [class*="dangerButton"],
+  [class*="EmojiPicker_triggerButton"],
+  [class*="DictationButton_button"],
+  a button { /* Esconde o botão de 'Entrar na Reunião' */
+    display: none !important;
+  }
+
+  /* 2. Força o fundo a branco e texto a preto (Poupa Tinta) */
+  body, main, html, [class*="dashboard"], [class*="editor"] {
+    background-color: #ffffff !important;
+    background: none !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+  }
+
+  /* 3. Limpa as caixas dos blocos para parecerem uma folha contínua */
+  [class*="container"] {
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    padding: 8px 0 !important;
+    margin-bottom: 8px !important;
+    page-break-inside: avoid !important; /* Evita que uma tarefa seja cortada a meio da página */
+  }
+
+  /* 4. Transforma os campos de digitação (Inputs) em texto normal de papel */
+  input, textarea {
+    border: none !important;
+    background: transparent !important;
+    color: #000000 !important;
+    resize: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Esconde placeholders vazios para não imprimir "Escreva aqui..." */
+  input::placeholder, textarea::placeholder {
+    color: transparent !important; 
+  }
+
+  /* 5. Destaca a caixa de Checkbox da Tarefa para ser preenchida à caneta */
+  [class*="checkboxBox"] {
+    border: 2px solid #000000 !important;
+    background-color: #ffffff !important;
+    print-color-adjust: exact; 
+  }
+
+  /* Tarefas concluídas ficam a cinza na impressão */
+  [class*="completed"] [class*="checkboxBox"] {
+    background-color: #e5e7eb !important;
+    border-color: #000000 !important;
+  }
+  [class*="completed"] [class*="checkIcon"] {
+    color: #000000 !important;
+    opacity: 1 !important;
+  }
+
+  /* 6. Formatação do Título do Caderno */
+  [class*="editorTitle"] {
+    font-size: 28pt !important;
+    color: #000000 !important;
+  }
+  
+  [class*="editorDescription"] {
+    color: #333333 !important;
+    margin-bottom: 32px !important;
+  }
+}

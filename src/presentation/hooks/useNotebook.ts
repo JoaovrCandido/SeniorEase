@@ -87,9 +87,13 @@ export const useNotebook = () => {
   // =====================================
   // AÇÕES DE CADERNO
   // =====================================
-  const createNotebook = async (title: string, description: string = "") => {
+  const createNotebook = async (
+    title: string, 
+    description: string = "", 
+    type: "notebook" | "todo" = "notebook" // <-- NOVO
+  ) => {
     try {
-      await createNotebookUseCase.execute(title, description);
+      await createNotebookUseCase.execute(title, description, type);
       await fetchNotebooks();
     } catch (err) {
       if (err instanceof Error) setError(err.message);
