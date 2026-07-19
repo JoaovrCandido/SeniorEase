@@ -4,6 +4,7 @@ import { useSpeech } from "../../hooks/useSpeech";
 import { Button } from "./Button";
 import { SoundIcon, StopIcon } from "./Icons";
 import styles from "./OnboardingTour.module.css";
+import { useAccessibility } from "../../store/AccessibilityContext"; // <-- NOVO
 
 export interface TourStep {
   targetId: string;
@@ -30,18 +31,24 @@ interface Props {
 export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const { isSpeaking, readText, stop } = useSpeech();
+  const { navigationMode } = useAccessibility(); // <-- OUVIMOS O MODO AQUI!
 
   const [dialogPosition, setDialogPosition] =
     useState<DialogPosition>("bottomCenter");
   const [dynamicMaxWidth, setDynamicMaxWidth] = useState<string>("500px");
 
   useEffect(() => {
-    if (!isOpen || !steps || steps.length === 0) {
+    // MAGIA: Se o modo for 'advanced', ele ignora completamente a Tour!
+    if (
+      !isOpen ||
+      !steps ||
+      steps.length === 0 ||
+      navigationMode === "advanced"
+    ) {
       document.body.classList.remove("tour-prevent-click");
       return;
     }
 
-    // Impede que o utilizador clique nos elementos de fundo enquanto a tour está ativa
     document.body.classList.add("tour-prevent-click");
 
     const cleanupHighlights = () => {
@@ -53,15 +60,12 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
           delete htmlEl.dataset.tourPosFixed;
         }
       });
-
-      // Limpa as elevações mágicas do Modal
-      document.querySelectorAll(".tour-elevate").forEach((el) => {
-        el.classList.remove("tour-elevate");
-      });
-
-      document.querySelectorAll(".tour-overflow-visible").forEach((el) => {
-        el.classList.remove("tour-overflow-visible");
-      });
+      document
+        .querySelectorAll(".tour-elevate")
+        .forEach((el) => el.classList.remove("tour-elevate"));
+      document
+        .querySelectorAll(".tour-overflow-visible")
+        .forEach((el) => el.classList.remove("tour-overflow-visible"));
     };
 
     cleanupHighlights();
@@ -78,14 +82,9 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
           targetElement.dataset.tourPosFixed = "true";
         }
 
-        // ========================================================
-        // MAGIA: Eleva o Modal e permite que o destaque saia da caixa
-        // ========================================================
         let current = targetElement.parentElement;
         while (current && current !== document.body) {
           const style = window.getComputedStyle(current);
-          
-          // Se for um container restrito (como o overlay do Modal), eleva-o!
           if (
             style.zIndex !== "auto" ||
             style.position === "fixed" ||
@@ -95,8 +94,6 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
           ) {
             current.classList.add("tour-elevate");
           }
-          
-          // Se tiver overflow escondido (como o scroll do Modal), liberta-o para a sombra passar!
           if (
             style.overflow !== "visible" ||
             style.overflowX !== "visible" ||
@@ -138,9 +135,7 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
           hPos = "Left";
         }
 
-        const calculatedPosition = `${vPos}${hPos}` as DialogPosition;
-        setDialogPosition(calculatedPosition);
-
+        setDialogPosition(`${vPos}${hPos}` as DialogPosition);
         targetElement.scrollIntoView({
           behavior: "smooth",
           block: scrollBlock,
@@ -156,9 +151,11 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
       cleanupHighlights();
       stop();
     };
-  }, [currentStep, isOpen, steps, stop]);
+  }, [currentStep, isOpen, steps, stop, navigationMode]); // <-- Dependência atualizada
 
-  if (!isOpen || !steps || steps.length === 0) return null;
+  // MAGIA: Renderização nula se for modo avançado
+  if (!isOpen || !steps || steps.length === 0 || navigationMode === "advanced")
+    return null;
 
   const step = steps[currentStep];
   const isLastStep = currentStep === steps.length - 1;
@@ -185,7 +182,6 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
     styles[
       `dialog${dialogPosition.charAt(0).toUpperCase() + dialogPosition.slice(1)}`
     ];
-
   const textToRead = step.audioText
     ? `${step.title}. ${step.audioText}`
     : `${step.title}. ${typeof step.description === "string" ? step.description : ""}`;
@@ -193,7 +189,6 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
   return (
     <>
       <div className={styles.overlay} onClick={handleClose} />
-
       <div
         className={`${styles.dialog} ${positionClass}`}
         role="dialog"
@@ -222,13 +217,10 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
             />
           </svg>
         </button>
-
         <h2 id="tour-title" className={styles.title}>
           {step.title}
         </h2>
-
         <div className={styles.description}>{step.description}</div>
-
         <div className={styles.audioControls}>
           <button
             onClick={() => readText(textToRead)}
@@ -240,7 +232,6 @@ export const OnboardingTour: React.FC<Props> = ({ isOpen, onClose, steps }) => {
             {isSpeaking ? "Parar Áudio" : "Ouvir Instrução"}
           </button>
         </div>
-
         <div className={styles.footer}>
           <span className={styles.stepIndicator}>
             Passo {currentStep + 1} de {steps.length}

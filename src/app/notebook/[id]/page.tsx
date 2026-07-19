@@ -21,6 +21,7 @@ import {
   OnboardingTour,
   TourStep,
 } from "@/presentation/components/ui/OnboardingTour";
+import { CommandPalette } from "@/presentation/components/ui/CommandPalette";
 
 import {
   BackIcon,
@@ -321,7 +322,8 @@ export default function NotebookEditorPage() {
                   }
                 })();
 
-                return <div key={block.id} style={{ width: "100%" }}>{blockContent}</div>;
+                {/* NOVO: Div Wrapper com a classe 'advanced-block-container' */}
+                return <div key={block.id} className="advanced-block-container" style={{ width: "100%", padding: "4px" }}>{blockContent}</div>;
               })
             )}
             <div ref={endOfListRef} aria-hidden="true" />
@@ -367,11 +369,9 @@ export default function NotebookEditorPage() {
       <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title={`Editar ${isTodoList ? 'Lista' : 'Caderno'}`}>
         <div className={styles.modalContent}>
           <Input label="Nome" value={notebookTitle} onChange={(e) => setNotebookTitle(e.target.value)} onDictate={(text) => setNotebookTitle((prev) => (prev ? `${prev} ${text}` : text))} onEmoji={(emoji) => setNotebookTitle((prev) => (prev ? `${prev} ${emoji}` : emoji))} />
-          {/* CORREÇÃO: handleConfirmEdit adicionado aqui em baixo */}
           <Input label="Descrição (Opcional)" value={notebookDescription} onChange={(e) => setNotebookDescription(e.target.value)} onDictate={(text) => setNotebookDescription((prev) => prev ? `${prev} ${text}` : text)} onKeyDown={(e) => { if (e.key === "Enter") handleConfirmEdit(); }} onEmoji={(emoji) => setNotebookDescription((prev) => (prev ? `${prev} ${emoji}` : emoji))} />
           <div className={styles.modalFooter}>
             <Button variant="ghost" onClick={() => setIsEditModalOpen(false)}>Cancelar</Button>
-            {/* CORREÇÃO: handleConfirmEdit adicionado aqui em baixo */}
             <Button variant="primary" onClick={handleConfirmEdit} disabled={!notebookTitle.trim()}>Salvar Alterações</Button>
           </div>
         </div>
@@ -398,6 +398,8 @@ export default function NotebookEditorPage() {
       </Modal>
 
       <OnboardingTour isOpen={isTourOpen} onClose={() => setIsTourOpen(false)} steps={editorSteps} />
+
+      <CommandPalette />
     </main>
   );
 }

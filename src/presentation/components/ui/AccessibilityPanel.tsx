@@ -18,14 +18,70 @@ export const AccessibilityPanel: React.FC = () => {
     setActionConfirmation,
     personalizedMessages,
     setPersonalizedMessages,
+    navigationMode, // <-- NOVO
+    setNavigationMode, // <-- NOVO
   } = useAccessibility();
 
   return (
     <section
-      id="tour-accessibility-panel" // <-- NOVO: ID para a Ajuda focar aqui!
+      id="tour-accessibility-panel"
       aria-label="Painel de Personalização de Acessibilidade"
       className={styles.container}
     >
+      {/* NOVO: INTERRUPTOR MESTRE */}
+      <div
+        style={{
+          backgroundColor: "var(--primary-surface)",
+          padding: "24px",
+          borderRadius: "var(--radius-lg)",
+          border: "2px solid var(--primary-main)",
+        }}
+      >
+        <h3
+          className={styles.sectionTitle}
+          style={{ color: "var(--primary-main)", fontWeight: "bold" }}
+        >
+          Modo de Uso Principal
+        </h3>
+        <p
+          className={styles.description}
+          style={{ color: "var(--primary-main)", marginBottom: "16px" }}
+        >
+          Escolha a experiência que melhor se adapta a si. O modo Avançado foca
+          em produtividade e remove as ajudas automáticas.
+        </p>
+        <div className={styles.buttonGroup}>
+          <Button
+            variant={navigationMode === "simple" ? "primary" : "ghost"}
+            onClick={() => setNavigationMode("simple")}
+            style={
+              navigationMode === "simple"
+                ? {}
+                : {
+                    borderColor: "var(--primary-main)",
+                    color: "var(--primary-main)",
+                  }
+            }
+          >
+            Modo Sênior (Acessível)
+          </Button>
+          <Button
+            variant={navigationMode === "advanced" ? "primary" : "ghost"}
+            onClick={() => setNavigationMode("advanced")}
+            style={
+              navigationMode === "advanced"
+                ? {}
+                : {
+                    borderColor: "var(--primary-main)",
+                    color: "var(--primary-main)",
+                  }
+            }
+          >
+            Modo Avançado (Produtividade)
+          </Button>
+        </div>
+      </div>
+
       <div>
         <h3 className={styles.sectionTitle}>1. Tamanho da Letra</h3>
         <div className={styles.buttonGroup}>
@@ -126,7 +182,8 @@ export const AccessibilityPanel: React.FC = () => {
       <div>
         <h3 className={styles.sectionTitle}>6. Elogios Pessoais</h3>
         <p className={styles.description}>
-          O sistema usará o seu nome para dar os parabéns nas mensagens de sucesso.
+          O sistema usará o seu nome para dar os parabéns nas mensagens de
+          sucesso.
         </p>
         <div className={styles.buttonGroup}>
           <Button

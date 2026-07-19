@@ -55,10 +55,18 @@ export const MeetingBlockUI: React.FC<Props> = ({
       validUrl = "https://" + validUrl;
       setUrl(validUrl);
       hasChanges = true;
-      showToast("Adicionamos 'https://' ao link para garantir que funcione.", "info");
+      showToast(
+        "Adicionamos 'https://' ao link para garantir que funcione.",
+        "info",
+      );
     }
 
-    if (title !== block.title || validUrl !== block.meetingUrl || date !== block.date || hasChanges) {
+    if (
+      title !== block.title ||
+      validUrl !== block.meetingUrl ||
+      date !== block.date ||
+      hasChanges
+    ) {
       onChangeContent(block.id, title, validUrl, date);
     }
   };
@@ -78,12 +86,26 @@ export const MeetingBlockUI: React.FC<Props> = ({
   return (
     <div className={styles.container}>
       <div className={styles.headerRow}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginRight: "8px", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "4px",
+            marginRight: "8px",
+            justifyContent: "center",
+          }}
+        >
           <button
             type="button"
             onClick={onMoveUp}
             disabled={disableUp}
-            style={{ background: "transparent", border: "none", cursor: disableUp ? "not-allowed" : "pointer", opacity: disableUp ? 0.3 : 1, color: "var(--primary-main)" }}
+            style={{
+              background: "transparent",
+              border: "none",
+              cursor: disableUp ? "not-allowed" : "pointer",
+              opacity: disableUp ? 0.3 : 1,
+              color: "var(--primary-main)",
+            }}
             aria-label="Mover para cima"
           >
             <UpArrowIcon />
@@ -92,7 +114,13 @@ export const MeetingBlockUI: React.FC<Props> = ({
             type="button"
             onClick={onMoveDown}
             disabled={disableDown}
-            style={{ background: "transparent", border: "none", cursor: disableDown ? "not-allowed" : "pointer", opacity: disableDown ? 0.3 : 1, color: "var(--primary-main)" }}
+            style={{
+              background: "transparent",
+              border: "none",
+              cursor: disableDown ? "not-allowed" : "pointer",
+              opacity: disableDown ? 0.3 : 1,
+              color: "var(--primary-main)",
+            }}
             aria-label="Mover para baixo"
           >
             <DownArrowIcon />

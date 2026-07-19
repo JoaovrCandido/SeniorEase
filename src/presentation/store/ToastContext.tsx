@@ -46,14 +46,23 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
 
         if (type === "success") {
           // Elogios vibrantes para conquistas
-          const successGreetings = ["Muito bem", "Excelente", "Fantástico", "Isso aí", "Parabéns"];
-          const randomGreeting = successGreetings[Math.floor(Math.random() * successGreetings.length)];
+          const successGreetings = [
+            "Muito bem",
+            "Excelente",
+            "Fantástico",
+            "Isso aí",
+            "Parabéns",
+          ];
+          const randomGreeting =
+            successGreetings[
+              Math.floor(Math.random() * successGreetings.length)
+            ];
           finalMessage = `${randomGreeting}, ${firstName}! ${message}`;
-          
         } else if (type === "info") {
           // Elogios neutros/tranquilos para ações do dia a dia (como apagar ou mover)
           const infoGreetings = ["Feito", "Tudo certo", "Anotado", "Pronto"];
-          const randomGreeting = infoGreetings[Math.floor(Math.random() * infoGreetings.length)];
+          const randomGreeting =
+            infoGreetings[Math.floor(Math.random() * infoGreetings.length)];
           finalMessage = `${randomGreeting}, ${firstName}. ${message}`;
         }
       }
@@ -67,7 +76,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
         setToasts((prev) => prev.filter((t) => t.id !== id));
       }, 5000);
     },
-    [personalizedMessages, name]
+    [personalizedMessages, name],
   );
 
   const removeToast = (id: string) => {

@@ -14,7 +14,8 @@
   flex-shrink: 0;
 }
 
-.triggerButton:hover, .triggerButton:focus-visible {
+.triggerButton:hover,
+.triggerButton:focus-visible {
   background: var(--primary-surface);
   color: var(--primary-main);
   outline: none;
@@ -93,19 +94,28 @@
   padding: 8px 4px;
   cursor: pointer;
   border-radius: var(--radius-md);
-  transition: transform 0.1s, background-color 0.2s;
+  transition:
+    transform 0.1s,
+    background-color 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.emojiButton:hover, .emojiButton:focus-visible {
+.emojiButton:hover,
+.emojiButton:focus-visible {
   background: var(--primary-surface);
   transform: scale(1.2);
   outline: none;
 }
 
 @keyframes popIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

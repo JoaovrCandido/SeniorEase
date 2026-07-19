@@ -1,7 +1,13 @@
 // src/presentation/store/UserProfileContext.tsx
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface UserProfileState {
   name: string;
@@ -24,7 +30,9 @@ const defaultState: UserProfileState = {
 const UserProfileContext = createContext<UserProfileState>(defaultState);
 const STORAGE_KEY = "@SeniorEase:userProfile";
 
-export const UserProfileProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const UserProfileProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [name, setNameState] = useState("");
   const [age, setAgeState] = useState("");
   const [emergencyContact, setEmergencyContactState] = useState("");
@@ -35,10 +43,15 @@ export const UserProfileProvider: React.FC<{ children: ReactNode }> = ({ childre
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        const parsed = JSON.parse(stored) as { name?: string; age?: string; emergencyContact?: string };
+        const parsed = JSON.parse(stored) as {
+          name?: string;
+          age?: string;
+          emergencyContact?: string;
+        };
         if (parsed.name) setNameState(parsed.name);
         if (parsed.age) setAgeState(parsed.age);
-        if (parsed.emergencyContact) setEmergencyContactState(parsed.emergencyContact);
+        if (parsed.emergencyContact)
+          setEmergencyContactState(parsed.emergencyContact);
       } catch (error) {
         console.error("Erro ao carregar o perfil", error);
       }
@@ -47,18 +60,21 @@ export const UserProfileProvider: React.FC<{ children: ReactNode }> = ({ childre
 
   useEffect(() => {
     if (!isMounted) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ name, age, emergencyContact }));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ name, age, emergencyContact }),
+    );
   }, [name, age, emergencyContact, isMounted]);
 
   return (
-    <UserProfileContext.Provider 
-      value={{ 
-        name, 
+    <UserProfileContext.Provider
+      value={{
+        name,
         age,
-        emergencyContact, 
-        setName: setNameState, 
+        emergencyContact,
+        setName: setNameState,
         setAge: setAgeState,
-        setEmergencyContact: setEmergencyContactState 
+        setEmergencyContact: setEmergencyContactState,
       }}
     >
       {isMounted ? children : null}
@@ -68,6 +84,9 @@ export const UserProfileProvider: React.FC<{ children: ReactNode }> = ({ childre
 
 export const useUserProfile = () => {
   const context = useContext(UserProfileContext);
-  if (!context) throw new Error("useUserProfile deve ser usado dentro do UserProfileProvider");
+  if (!context)
+    throw new Error(
+      "useUserProfile deve ser usado dentro do UserProfileProvider",
+    );
   return context;
 };

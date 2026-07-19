@@ -1,11 +1,7 @@
 // src/domain/entities/Block.ts
 
 export type BlockType =
-  | "heading"
-  | "paragraph"
-  | "task"
-  | "meeting"
-  | "reminder";
+  "heading" | "paragraph" | "task" | "meeting" | "reminder";
 
 export interface BaseBlock {
   id: string;
@@ -43,8 +39,4 @@ export interface ReminderBlock extends BaseBlock {
 }
 
 export type ContentBlock =
-  | HeadingBlock
-  | ParagraphBlock
-  | TaskBlock
-  | MeetingBlock
-  | ReminderBlock;
+  HeadingBlock | ParagraphBlock | TaskBlock | MeetingBlock | ReminderBlock;

@@ -173,7 +173,6 @@ html.contrast-high
   min-height: 24px;
 }
 
-
 /* =========================================
    MODO IMPRESSÃO SEGURA (Print-Friendly)
    ========================================= */
@@ -194,12 +193,17 @@ html.contrast-high
   [class*="dangerButton"],
   [class*="EmojiPicker_triggerButton"],
   [class*="DictationButton_button"],
-  a button { /* Esconde o botão de 'Entrar na Reunião' */
+  a button {
+    /* Esconde o botão de 'Entrar na Reunião' */
     display: none !important;
   }
 
   /* 2. Força o fundo a branco e texto a preto (Poupa Tinta) */
-  body, main, html, [class*="dashboard"], [class*="editor"] {
+  body,
+  main,
+  html,
+  [class*="dashboard"],
+  [class*="editor"] {
     background-color: #ffffff !important;
     background: none !important;
     color: #000000 !important;
@@ -217,7 +221,8 @@ html.contrast-high
   }
 
   /* 4. Transforma os campos de digitação (Inputs) em texto normal de papel */
-  input, textarea {
+  input,
+  textarea {
     border: none !important;
     background: transparent !important;
     color: #000000 !important;
@@ -226,15 +231,16 @@ html.contrast-high
   }
 
   /* Esconde placeholders vazios para não imprimir "Escreva aqui..." */
-  input::placeholder, textarea::placeholder {
-    color: transparent !important; 
+  input::placeholder,
+  textarea::placeholder {
+    color: transparent !important;
   }
 
   /* 5. Destaca a caixa de Checkbox da Tarefa para ser preenchida à caneta */
   [class*="checkboxBox"] {
     border: 2px solid #000000 !important;
     background-color: #ffffff !important;
-    print-color-adjust: exact; 
+    print-color-adjust: exact;
   }
 
   /* Tarefas concluídas ficam a cinza na impressão */
@@ -252,9 +258,96 @@ html.contrast-high
     font-size: 28pt !important;
     color: #000000 !important;
   }
-  
+
   [class*="editorDescription"] {
     color: #333333 !important;
     margin-bottom: 32px !important;
   }
+}
+
+/* =========================================
+   MODO IMPRESSÃO SEGURA (Print-Friendly)
+   (MANTENHA O SEU CÓDIGO AQUI...)
+   ========================================= */
+
+/* =========================================
+   MODO AVANÇADO (Produtividade / Notion-like)
+   ========================================= */
+html.theme-advanced {
+  /* Volta ao padrão tradicional da Web (menor) */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.5rem; /* 24px */
+
+  /* Botões e toques mais compactos */
+  --touch-target-min: 36px;
+
+  /* Cantos menos arredondados, visual mais "sério" */
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Menos respiros, mais densidade de informação */
+  --space-sm: 4px;
+  --space-md: 8px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+}
+
+/* 1. Ocultar "Rodinhas de Treino" (Botões de Ajuda somem) */
+html.theme-advanced [id*="help-btn"] {
+  display: none !important;
+}
+
+/* 2. Densidade Extrema no Grid de Cadernos (3 a 4 colunas) */
+html.theme-advanced div[class*="grid"] {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+  gap: 16px !important;
+  margin-top: 16px !important;
+}
+
+/* =========================================
+   INTERFACE SUPER LIMPA (Hover Actions)
+   Apenas para o Modo Avançado
+   ========================================= */
+
+/* 1. Prepara o contentor do bloco */
+html.theme-advanced .advanced-block-container {
+  position: relative;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+}
+
+/* 2. Esconde TODOS os botões secundários por padrão */
+html.theme-advanced .advanced-block-container button[aria-label="Mover para cima"],
+html.theme-advanced .advanced-block-container button[aria-label="Mover para baixo"],
+html.theme-advanced .advanced-block-container [class*="deleteButton"],
+html.theme-advanced .advanced-block-container [class*="DictationButton"],
+html.theme-advanced .advanced-block-container [class*="EmojiPicker"] {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.9);
+  transition: all 0.2s ease-in-out;
+}
+
+/* 3. A Mágica: Revela TODOS os botões quando o rato passa por cima 
+   OU quando o utilizador clica dentro do input (focus-within) */
+html.theme-advanced .advanced-block-container:hover button[aria-label="Mover para cima"],
+html.theme-advanced .advanced-block-container:hover button[aria-label="Mover para baixo"],
+html.theme-advanced .advanced-block-container:hover [class*="deleteButton"],
+html.theme-advanced .advanced-block-container:hover [class*="DictationButton"],
+html.theme-advanced .advanced-block-container:hover [class*="EmojiPicker"],
+html.theme-advanced .advanced-block-container:focus-within button[aria-label="Mover para cima"],
+html.theme-advanced .advanced-block-container:focus-within button[aria-label="Mover para baixo"],
+html.theme-advanced .advanced-block-container:focus-within [class*="deleteButton"],
+html.theme-advanced .advanced-block-container:focus-within [class*="DictationButton"],
+html.theme-advanced .advanced-block-container:focus-within [class*="EmojiPicker"] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+/* 4. Subtil destaque de fundo ao passar o rato */
+html.theme-advanced .advanced-block-container:hover {
+  background-color: var(--bg-canvas);
 }

@@ -15,7 +15,7 @@ export type Spacing = "normal" | "large";
 export type NavigationMode = "simple" | "advanced";
 export type VisualFeedback = "normal" | "enhanced";
 export type ActionConfirmation = "on" | "off";
-export type PersonalizedMessages = "on" | "off"; // <-- NOVO
+export type PersonalizedMessages = "on" | "off";
 
 interface AccessibilityState {
   fontSize: FontSize;
@@ -24,14 +24,14 @@ interface AccessibilityState {
   navigationMode: NavigationMode;
   visualFeedback: VisualFeedback;
   actionConfirmation: ActionConfirmation;
-  personalizedMessages: PersonalizedMessages; // <-- NOVO
+  personalizedMessages: PersonalizedMessages;
   setFontSize: (size: FontSize) => void;
   setContrast: (contrast: Contrast) => void;
   setSpacing: (spacing: Spacing) => void;
   setNavigationMode: (mode: NavigationMode) => void;
   setVisualFeedback: (vf: VisualFeedback) => void;
   setActionConfirmation: (ac: ActionConfirmation) => void;
-  setPersonalizedMessages: (pm: PersonalizedMessages) => void; // <-- NOVO
+  setPersonalizedMessages: (pm: PersonalizedMessages) => void;
 }
 
 const defaultState: AccessibilityState = {
@@ -41,14 +41,14 @@ const defaultState: AccessibilityState = {
   navigationMode: "simple",
   visualFeedback: "normal",
   actionConfirmation: "on",
-  personalizedMessages: "on", // <-- NOVO
+  personalizedMessages: "on",
   setFontSize: () => {},
   setContrast: () => {},
   setSpacing: () => {},
   setNavigationMode: () => {},
   setVisualFeedback: () => {},
   setActionConfirmation: () => {},
-  setPersonalizedMessages: () => {}, // <-- NOVO
+  setPersonalizedMessages: () => {},
 };
 
 const AccessibilityContext = createContext<AccessibilityState>(defaultState);
@@ -60,10 +60,14 @@ export const AccessibilityProvider: React.FC<{ children: ReactNode }> = ({
   const [fontSize, setFontSizeState] = useState<FontSize>("normal");
   const [contrast, setContrastState] = useState<Contrast>("normal");
   const [spacing, setSpacingState] = useState<Spacing>("normal");
-  const [navigationMode, setNavigationModeState] = useState<NavigationMode>("simple");
-  const [visualFeedback, setVisualFeedbackState] = useState<VisualFeedback>("normal");
-  const [actionConfirmation, setActionConfirmationState] = useState<ActionConfirmation>("on");
-  const [personalizedMessages, setPersonalizedMessagesState] = useState<PersonalizedMessages>("on"); // <-- NOVO
+  const [navigationMode, setNavigationModeState] =
+    useState<NavigationMode>("simple");
+  const [visualFeedback, setVisualFeedbackState] =
+    useState<VisualFeedback>("normal");
+  const [actionConfirmation, setActionConfirmationState] =
+    useState<ActionConfirmation>("on");
+  const [personalizedMessages, setPersonalizedMessagesState] =
+    useState<PersonalizedMessages>("on");
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -75,10 +79,14 @@ export const AccessibilityProvider: React.FC<{ children: ReactNode }> = ({
         if (parsed.fontSize) setFontSizeState(parsed.fontSize);
         if (parsed.contrast) setContrastState(parsed.contrast);
         if (parsed.spacing) setSpacingState(parsed.spacing);
-        if (parsed.navigationMode) setNavigationModeState(parsed.navigationMode);
-        if (parsed.visualFeedback) setVisualFeedbackState(parsed.visualFeedback);
-        if (parsed.actionConfirmation) setActionConfirmationState(parsed.actionConfirmation);
-        if (parsed.personalizedMessages) setPersonalizedMessagesState(parsed.personalizedMessages); // <-- NOVO
+        if (parsed.navigationMode)
+          setNavigationModeState(parsed.navigationMode);
+        if (parsed.visualFeedback)
+          setVisualFeedbackState(parsed.visualFeedback);
+        if (parsed.actionConfirmation)
+          setActionConfirmationState(parsed.actionConfirmation);
+        if (parsed.personalizedMessages)
+          setPersonalizedMessagesState(parsed.personalizedMessages);
       } catch (error) {
         console.error("Erro ao ler configurações de acessibilidade:", error);
       }
@@ -95,7 +103,7 @@ export const AccessibilityProvider: React.FC<{ children: ReactNode }> = ({
       navigationMode,
       visualFeedback,
       actionConfirmation,
-      personalizedMessages, // <-- NOVO
+      personalizedMessages,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
 
@@ -104,15 +112,24 @@ export const AccessibilityProvider: React.FC<{ children: ReactNode }> = ({
     htmlElement.classList.toggle("font-large", fontSize === "large");
     htmlElement.classList.toggle("contrast-high", contrast === "high");
     htmlElement.classList.toggle("spacing-large", spacing === "large");
-    htmlElement.classList.toggle("visual-feedback-enhanced", visualFeedback === "enhanced");
+    htmlElement.classList.toggle(
+      "visual-feedback-enhanced",
+      visualFeedback === "enhanced",
+    );
+
+    // <-- NOVO: Injeta o Modo Avançado na raiz do HTML
+    htmlElement.classList.toggle(
+      "theme-advanced",
+      navigationMode === "advanced",
+    );
   }, [
     fontSize,
     contrast,
     spacing,
-    navigationMode,
+    navigationMode, // <-- Garante que a classe atualiza quando isto muda
     visualFeedback,
     actionConfirmation,
-    personalizedMessages, // <-- NOVO
+    personalizedMessages,
     isMounted,
   ]);
 
@@ -125,14 +142,14 @@ export const AccessibilityProvider: React.FC<{ children: ReactNode }> = ({
         navigationMode,
         visualFeedback,
         actionConfirmation,
-        personalizedMessages, // <-- NOVO
+        personalizedMessages,
         setFontSize: setFontSizeState,
         setContrast: setContrastState,
         setSpacing: setSpacingState,
         setNavigationMode: setNavigationModeState,
         setVisualFeedback: setVisualFeedbackState,
         setActionConfirmation: setActionConfirmationState,
-        setPersonalizedMessages: setPersonalizedMessagesState, // <-- NOVO
+        setPersonalizedMessages: setPersonalizedMessagesState,
       }}
     >
       {isMounted ? children : null}

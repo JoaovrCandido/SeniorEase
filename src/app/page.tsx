@@ -15,6 +15,7 @@ import {
   OnboardingTour,
   TourStep,
 } from "@/presentation/components/ui/OnboardingTour";
+import { CommandPalette } from "@/presentation/components/ui/CommandPalette";
 
 import {
   HelpIcon,
@@ -33,7 +34,8 @@ const DASHBOARD_STEPS: TourStep[] = [
   {
     targetId: "tour-help-btn",
     title: "1. Precisa de Ajuda?",
-    description: "Sempre que tiver dúvidas sobre o que fazer nesta tela, clique neste botão e eu explicarei tudo!",
+    description:
+      "Sempre que tiver dúvidas sobre o que fazer nesta tela, clique neste botão e eu explicarei tudo!",
   },
   {
     targetId: "tour-accessibility-btn",
@@ -43,12 +45,14 @@ const DASHBOARD_STEPS: TourStep[] = [
   {
     targetId: "tour-settings-btn",
     title: "3. Personalizar Tela",
-    description: "Ajuste o tamanho da letra, o contraste e outras opções para tornar tudo mais fácil de ler.",
+    description:
+      "Ajuste o tamanho da letra, o contraste e outras opções para tornar tudo mais fácil de ler.",
   },
   {
     targetId: "tour-create",
     title: "4. Criar Cadernos ou Listas",
-    description: "Crie cadernos para textos completos ou listas apenas para tarefas.",
+    description:
+      "Crie cadernos para textos completos ou listas apenas para tarefas.",
   },
   {
     targetId: "tour-history-btn",
@@ -59,20 +63,22 @@ const DASHBOARD_STEPS: TourStep[] = [
     targetId: "tour-trash-btn",
     title: "6. Lixeira",
     description: "Recupere itens apagados com facilidade.",
-  }
+  },
 ];
 
 const SETTINGS_STEPS: TourStep[] = [
   {
     targetId: "tour-modal-help-btn",
     title: "1. Precisa de Ajuda?",
-    description: "Sempre que tiver dúvidas sobre o que fazer nesta tela, clique neste botão e eu explicarei tudo!",
+    description:
+      "Sempre que tiver dúvidas sobre o que fazer nesta tela, clique neste botão e eu explicarei tudo!",
   },
   {
     targetId: "tour-accessibility-panel",
     title: "2. Personalização",
-    description: "Altere o tamanho da letra, as cores e a segurança para deixar tudo perfeitamente confortável para si.",
-  }
+    description:
+      "Altere o tamanho da letra, as cores e a segurança para deixar tudo perfeitamente confortável para si.",
+  },
 ];
 
 export default function Home() {
@@ -85,10 +91,10 @@ export default function Home() {
   const [isSettingsTourOpen, setIsSettingsTourOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  
+
   // <-- NOVO: Estado para saber qual o tipo a criar
   const [createType, setCreateType] = useState<"notebook" | "todo">("notebook");
-  
+
   const [notebookTitle, setNotebookTitle] = useState("");
   const [notebookDescription, setNotebookDescription] = useState("");
 
@@ -103,7 +109,10 @@ export default function Home() {
     if (notebookTitle.trim()) {
       await createNotebook(notebookTitle, notebookDescription, createType); // <-- NOVO TIPO ENVIADO
       setIsCreateModalOpen(false);
-      showToast(createType === "todo" ? "Lista criada com sucesso!" : "Caderno criado!", "success");
+      showToast(
+        createType === "todo" ? "Lista criada com sucesso!" : "Caderno criado!",
+        "success",
+      );
       setNotebookTitle("");
       setNotebookDescription("");
     }
@@ -122,10 +131,14 @@ export default function Home() {
 
           <div className={styles.flexWrapGap16}>
             {emergencyContact && (
-              <a 
-                href={`tel:${emergencyContact.replace(/\D/g, '')}`} 
+              <a
+                href={`tel:${emergencyContact.replace(/\D/g, "")}`}
                 className={styles.btnPrimarySurface}
-                style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderColor: '#f87171' }}
+                style={{
+                  backgroundColor: "#fee2e2",
+                  color: "#dc2626",
+                  borderColor: "#f87171",
+                }}
               >
                 <PhoneIcon /> Ligar S.O.S
               </a>
@@ -175,7 +188,6 @@ export default function Home() {
           <p className={styles.emptyState}>A carregar...</p>
         ) : (
           <div id="tour-create" className={styles.grid}>
-            
             {/* BOTÃO 1: Criar Caderno Normal */}
             <button
               className={`${styles.card} ${styles.cardDashedCreate}`}
@@ -191,7 +203,10 @@ export default function Home() {
             <button
               className={`${styles.card} ${styles.cardDashedCreate}`}
               onClick={() => openCreateModal("todo")}
-              style={{ borderColor: "var(--primary-main)", borderStyle: "dashed" }}
+              style={{
+                borderColor: "var(--primary-main)",
+                borderStyle: "dashed",
+              }}
             >
               <span className={styles.cardTitle}>+ Criar Lista de Tarefas</span>
               <span className={styles.cardDate}>
@@ -206,11 +221,16 @@ export default function Home() {
                 onClick={() => router.push(`/notebook/${notebook.id}`)}
               >
                 {/* Diferenciação Visual por Ícone */}
-                <div className={styles.flexAlignCenter} style={{ marginBottom: "8px", color: "var(--primary-main)" }}>
+                <div
+                  className={styles.flexAlignCenter}
+                  style={{ marginBottom: "8px", color: "var(--primary-main)" }}
+                >
                   {notebook.type === "todo" ? <TaskIcon /> : <BookIcon />}
-                  <span className={styles.cardTitle} style={{ margin: 0 }}>{notebook.title}</span>
+                  <span className={styles.cardTitle} style={{ margin: 0 }}>
+                    {notebook.title}
+                  </span>
                 </div>
-                
+
                 {notebook.description && (
                   <span className={styles.cardDescription}>
                     {notebook.description}
@@ -229,20 +249,28 @@ export default function Home() {
       <Modal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        title={createType === "todo" ? "Criar Nova Lista" : "Criar Novo Caderno"}
+        title={
+          createType === "todo" ? "Criar Nova Lista" : "Criar Novo Caderno"
+        }
         position="center"
       >
         <div className={styles.modalContent}>
           <Input
             label={createType === "todo" ? "Nome da Lista" : "Nome do Caderno"}
-            placeholder={createType === "todo" ? "Ex: Compras do Supermercado..." : "Ex: Aulas..."}
+            placeholder={
+              createType === "todo"
+                ? "Ex: Compras do Supermercado..."
+                : "Ex: Aulas..."
+            }
             value={notebookTitle}
             onChange={(e) => setNotebookTitle(e.target.value)}
             onDictate={(text) =>
               setNotebookTitle((prev) => (prev ? `${prev} ${text}` : text))
             }
             autoFocus
-            onEmoji={(emoji) => setNotebookTitle((prev) => (prev ? `${prev} ${emoji}` : emoji))}
+            onEmoji={(emoji) =>
+              setNotebookTitle((prev) => (prev ? `${prev} ${emoji}` : emoji))
+            }
           />
           <Input
             label="Descrição (Opcional)"
@@ -256,7 +284,11 @@ export default function Home() {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleConfirmCreate();
             }}
-            onEmoji={(emoji) => setNotebookDescription((prev) => (prev ? `${prev} ${emoji}` : emoji))}
+            onEmoji={(emoji) =>
+              setNotebookDescription((prev) =>
+                prev ? `${prev} ${emoji}` : emoji,
+              )
+            }
           />
           <div className={styles.modalFooter}>
             <Button variant="ghost" onClick={() => setIsCreateModalOpen(false)}>
@@ -277,7 +309,7 @@ export default function Home() {
         isOpen={isSettingsModalOpen}
         onClose={() => setIsSettingsModalOpen(false)}
         title="Personalizar Tela"
-        position="left" 
+        position="left"
         onHelp={() => setIsSettingsTourOpen(true)}
       >
         <AccessibilityPanel />
@@ -294,6 +326,8 @@ export default function Home() {
         onClose={() => setIsSettingsTourOpen(false)}
         steps={SETTINGS_STEPS}
       />
+
+      <CommandPalette />
     </main>
   );
 }

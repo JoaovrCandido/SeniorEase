@@ -88,9 +88,9 @@ export const useNotebook = () => {
   // AÇÕES DE CADERNO
   // =====================================
   const createNotebook = async (
-    title: string, 
-    description: string = "", 
-    type: "notebook" | "todo" = "notebook" // <-- NOVO
+    title: string,
+    description: string = "",
+    type: "notebook" | "todo" = "notebook", // <-- NOVO
   ) => {
     try {
       await createNotebookUseCase.execute(title, description, type);
@@ -186,7 +186,11 @@ export const useNotebook = () => {
   // =====================================
   // LÓGICA DE REORDENAÇÃO SEGURA
   // =====================================
-  const moveBlock = async (notebookId: string, blockId: string, direction: "up" | "down") => {
+  const moveBlock = async (
+    notebookId: string,
+    blockId: string,
+    direction: "up" | "down",
+  ) => {
     try {
       // 1. Puxa os dados atualizados diretamente do repositório
       const notebook = await repository.getById(notebookId);
@@ -202,14 +206,19 @@ export const useNotebook = () => {
       let targetBlockId: string | null = null;
       if (direction === "up" && visualIndex > 0) {
         targetBlockId = activeBlocks[visualIndex - 1].id;
-      } else if (direction === "down" && visualIndex < activeBlocks.length - 1) {
+      } else if (
+        direction === "down" &&
+        visualIndex < activeBlocks.length - 1
+      ) {
         targetBlockId = activeBlocks[visualIndex + 1].id;
       }
 
       if (targetBlockId) {
         // 4. Troca as posições usando a referência principal no array real
         const realIndexA = notebook.blocks.findIndex((b) => b.id === blockId);
-        const realIndexB = notebook.blocks.findIndex((b) => b.id === targetBlockId);
+        const realIndexB = notebook.blocks.findIndex(
+          (b) => b.id === targetBlockId,
+        );
 
         if (realIndexA >= 0 && realIndexB >= 0) {
           const temp = notebook.blocks[realIndexA];
@@ -218,7 +227,7 @@ export const useNotebook = () => {
 
           // 5. Atualiza a data do caderno e guarda tudo de forma segura
           notebook.updatedAt = new Date();
-          
+
           await repository.save(notebook);
           await fetchNotebooks();
         }

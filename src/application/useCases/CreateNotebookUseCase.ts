@@ -6,9 +6,9 @@ export class CreateNotebookUseCase {
   constructor(private readonly notebookRepository: INotebookRepository) {}
 
   async execute(
-    title: string, 
-    description: string = "", 
-    type: NotebookType = "notebook" // <-- NOVO: Padrão é caderno
+    title: string,
+    description: string = "",
+    type: NotebookType = "notebook", // <-- NOVO: Padrão é caderno
   ): Promise<void> {
     const newNotebook: Notebook = {
       id: crypto.randomUUID(),

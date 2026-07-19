@@ -50,12 +50,25 @@ export const HeadingBlockUI: React.FC<HeadingBlockUIProps> = ({
 
   return (
     <div className={styles.container}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginRight: "8px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "4px",
+          marginRight: "8px",
+        }}
+      >
         <button
           type="button"
           onClick={onMoveUp}
           disabled={disableUp}
-          style={{ background: "transparent", border: "none", cursor: disableUp ? "not-allowed" : "pointer", opacity: disableUp ? 0.3 : 1, color: "var(--primary-main)" }}
+          style={{
+            background: "transparent",
+            border: "none",
+            cursor: disableUp ? "not-allowed" : "pointer",
+            opacity: disableUp ? 0.3 : 1,
+            color: "var(--primary-main)",
+          }}
           aria-label="Mover para cima"
         >
           <UpArrowIcon />
@@ -64,7 +77,13 @@ export const HeadingBlockUI: React.FC<HeadingBlockUIProps> = ({
           type="button"
           onClick={onMoveDown}
           disabled={disableDown}
-          style={{ background: "transparent", border: "none", cursor: disableDown ? "not-allowed" : "pointer", opacity: disableDown ? 0.3 : 1, color: "var(--primary-main)" }}
+          style={{
+            background: "transparent",
+            border: "none",
+            cursor: disableDown ? "not-allowed" : "pointer",
+            opacity: disableDown ? 0.3 : 1,
+            color: "var(--primary-main)",
+          }}
           aria-label="Mover para baixo"
         >
           <DownArrowIcon />

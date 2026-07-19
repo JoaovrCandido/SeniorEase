@@ -1,0 +1,137 @@
+/* src/presentation/components/ui/CommandPalette.module.css */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999999; /* Camada mais alta de todo o sistema */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 15vh; /* Fica no topo, não no meio, para focar a leitura */
+}
+
+.palette {
+  background-color: var(--bg-surface);
+  width: 90%;
+  max-width: 600px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideDown 0.15s ease-out;
+}
+
+.searchHeader {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--bg-canvas);
+  gap: 12px;
+}
+
+.searchIcon {
+  color: var(--text-body);
+  opacity: 0.5;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: var(--text-lg);
+  color: var(--text-heading);
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--text-body);
+  opacity: 0.5;
+}
+
+.resultsList {
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.resultItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-align: left;
+  transition: background-color 0.1s;
+}
+
+/* Quando selecionado pelas setas do teclado ou rato */
+.resultItem[aria-selected="true"] {
+  background-color: var(--primary-surface);
+}
+
+.resultItem[aria-selected="true"] .itemTitle {
+  color: var(--primary-main);
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.itemTitle {
+  font-weight: bold;
+  color: var(--text-heading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemDescription {
+  font-size: 12px;
+  color: var(--text-body);
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kbd {
+  background-color: var(--bg-canvas);
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--text-body);
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.emptyState {
+  padding: 32px;
+  text-align: center;
+  color: var(--text-body);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
