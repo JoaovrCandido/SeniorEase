@@ -1,3 +1,4 @@
+// src/application/useCases/DeleteBlockUseCase.ts
 import { INotebookRepository } from "../../domain/repositories/INotebookRepository";
 
 export class DeleteBlockUseCase {

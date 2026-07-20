@@ -1,3 +1,4 @@
+// src/application/useCases/DeleteNotebookUseCase.ts
 import { INotebookRepository } from "../../domain/repositories/INotebookRepository";
 
 export class DeleteNotebookUseCase {
