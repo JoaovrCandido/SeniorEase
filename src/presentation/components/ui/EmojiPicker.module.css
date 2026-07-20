@@ -4,8 +4,8 @@
   border: 2px solid transparent;
   color: var(--text-body);
   cursor: pointer;
-  min-width: 48px;
-  min-height: 48px;
+  min-width: var(--touch-target-min); /* Substituído o 48px fixo */
+  min-height: var(--touch-target-min);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -28,7 +28,7 @@
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.7);
-  z-index: 100000; /* Z-index altíssimo para ficar por cima de qualquer modal */
+  z-index: 100000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,22 +81,14 @@
   gap: 12px;
 }
 
-@media (max-width: 400px) {
-  .grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
-}
-
 .emojiButton {
   background: transparent;
   border: 2px solid transparent;
-  font-size: 28px; /* Emoji grande e fácil de ver */
+  font-size: 28px;
   padding: 8px 4px;
   cursor: pointer;
   border-radius: var(--radius-md);
-  transition:
-    transform 0.1s,
-    background-color 0.2s;
+  transition: transform 0.1s, background-color 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,12 +102,30 @@
 }
 
 @keyframes popIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  .dialog {
+    padding: var(--space-md);
+    max-height: 80vh; /* Impede que corte caso o utilizador tenha a letra gigante */
+    overflow-y: auto;
   }
-  to {
-    opacity: 1;
-    transform: scale(1);
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .emojiButton {
+    font-size: 24px; /* Ajuste ligeiro para caber no grid apertado */
+  }
+}
+
+@media (max-width: 400px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

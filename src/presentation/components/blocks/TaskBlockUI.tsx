@@ -4,7 +4,7 @@ import { TaskBlock } from "../../../domain/entities/Block";
 import { DictationButton } from "../ui/DictationButton";
 import { TrashIcon, UpArrowIcon, DownArrowIcon } from "../ui/Icons";
 import { EmojiPicker } from "../ui/EmojiPicker";
-import { useToast } from "../../store/ToastContext"; // <-- NOVO IMPORT
+import { useToast } from "../../store/ToastContext";
 import styles from "./TaskBlockUI.module.css";
 
 interface TaskBlockUIProps {
@@ -31,7 +31,7 @@ export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
   onChangeContent,
 }) => {
   const [localContent, setLocalContent] = useState(block.content);
-  const { showToast } = useToast(); // <-- Usando o Toast para os avisos
+  const { showToast } = useToast();
 
   useEffect(() => {
     setLocalContent(block.content);
@@ -53,7 +53,6 @@ export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
     onChangeContent(block.id, newContent);
   };
 
-  // <-- NOVA FUNÇÃO DE VALIDAÇÃO -->
   const handleToggle = () => {
     if (!localContent || localContent.trim() === "") {
       showToast(
@@ -112,7 +111,7 @@ export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
       <button
         type="button"
         className={styles.checkboxButton}
-        onClick={handleToggle} // <-- Usando a função com validação
+        onClick={handleToggle}
         aria-label="Concluir tarefa"
       >
         <div className={styles.checkboxBox} aria-hidden="true">
@@ -141,9 +140,10 @@ export const TaskBlockUI: React.FC<TaskBlockUIProps> = ({
         placeholder="Escreva a sua tarefa aqui..."
       />
 
+      {/* CORREÇÃO: Remoção do style inline e adição da classe actionsWrapper */}
       <div
         id={isFirst ? "tour-first-block-actions" : undefined}
-        style={{ display: "flex", gap: "8px", alignItems: "center" }}
+        className={styles.actionsWrapper}
       >
         <EmojiPicker onSelect={handleEmoji} />
         <DictationButton onDictate={handleDictate} />

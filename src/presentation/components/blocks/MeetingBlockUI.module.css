@@ -1,3 +1,4 @@
+/* src/presentation/components/blocks/MeetingBlockUI.module.css */
 .container {
   display: flex;
   flex-direction: column;
@@ -90,4 +91,41 @@
   color: var(--danger-main);
   background-color: #fee2e2;
   outline: none;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+  .headerRow {
+    gap: 8px;
+    width: 100%; /* Previne overflow */
+  }
+  .inputRow {
+    flex-direction: column; 
+    gap: 4px;
+  }
+  
+  /* Força os inputs a respeitarem o limite da tela */
+  .inputTitle, .inputBase, .inputUrl {
+    width: 100%;
+    min-width: 0; 
+  }
+  
+  /* Padroniza o visual das ações em coluna */
+  .headerRow ~ * {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: var(--bg-canvas);
+    border-radius: var(--radius-md);
+    margin-top: 4px;
+  }
+  
+  .iconWrapper {
+    display: none;
+  }
 }

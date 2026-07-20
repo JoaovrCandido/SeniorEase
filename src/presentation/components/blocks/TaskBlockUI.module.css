@@ -12,7 +12,6 @@
   transition: all 0.2s ease-in-out;
 }
 
-/* Destaca o bloco inteiro quando o utilizador está a escrever nele */
 .container:focus-within {
   border-color: var(--primary-main);
   background-color: var(--bg-canvas);
@@ -22,7 +21,6 @@
   opacity: 0.8;
 }
 
-/* Área de clique gigante para a checkbox (min 48px) */
 .checkboxButton {
   flex-shrink: 0;
   display: flex;
@@ -40,7 +38,6 @@
   outline: 4px solid var(--text-heading);
 }
 
-/* O quadrado visual da checkbox */
 .checkboxBox {
   width: 32px;
   height: 32px;
@@ -71,7 +68,6 @@
   transform: scale(1);
 }
 
-/* O campo de texto a imitar o Notion */
 .input {
   flex-grow: 1;
   min-height: var(--touch-target-min);
@@ -81,7 +77,7 @@
   color: var(--text-heading);
   font-family: var(--font-sans);
   padding: 0;
-  resize: none; /* Se usarmos textarea no futuro */
+  resize: none;
 }
 
 .input:focus {
@@ -93,7 +89,6 @@
   color: var(--text-body);
 }
 
-/* Botão de apagar com área de toque segura */
 .deleteButton {
   flex-shrink: 0;
   display: flex;
@@ -106,14 +101,86 @@
   color: var(--text-body);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition:
-    color 0.2s,
-    background-color 0.2s;
+  transition: color 0.2s, background-color 0.2s;
 }
 
 .deleteButton:hover,
 .deleteButton:focus-visible {
   color: var(--danger-main);
-  background-color: #fee2e2; /* Fundo vermelho muito claro para aviso */
+  background-color: #fee2e2;
   outline: none;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+    gap: 8px;
+    /* Usamos Grid para manter checkbox e texto alinhados, e botões em baixo */
+    /* display: grid; */
+    /* grid-template-columns: var(--touch-target-min) 1fr; */
+    align-items: center;
+  }
+
+  .checkboxButton {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .input {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    min-width: 0; /* Impede o scroll lateral */
+  }
+
+  /* Tudo o que vem DEPOIS do input (Ações) vai para a linha de baixo, ocupando tudo */
+  .input ~ * {
+    grid-column: 1 / -1; /* Ocupa as duas colunas do grid */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: var(--bg-canvas);
+    border-radius: var(--radius-md);
+    margin-top: 4px;
+  }
+
+  .checkboxBox {
+    width: 28px;
+    height: 28px;
+    border-width: 2px;
+  }
+
+  .checkIcon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Adicione no final do ficheiro antes dos @media */
+.actionsWrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  .actionsWrapper {
+    grid-column: 1 / -1; /* Ocupa as colunas todas no Grid da tarefa */
+    width: 100%;
+    flex-direction: column; /* Empilha Emoji, Mic e Lixeira */
+    margin-top: 4px;
+  }
+  
+  .actionsWrapper > * {
+    width: 100%;
+    justify-content: center;
+    background-color: var(--bg-canvas);
+    border-radius: var(--radius-md);
+  }
 }

@@ -54,3 +54,12 @@
   background-color: var(--bg-canvas);
   border-style: solid;
 }
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  .button {
+    padding: 0 16px; /* Evita que botões fiquem gigantes e empurrem outros elementos */
+  }
+}

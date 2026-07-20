@@ -21,3 +21,11 @@
   color: var(--text-body);
   margin-bottom: 8px;
 }
+
+/* RESPONSIVIDADE DO PAINEL */
+@media (max-width: 768px) {
+  .buttonGroup button {
+    flex: 1 1 100%; /* No telemóvel, cada botão ocupa a linha toda */
+    justify-content: center;
+  }
+}

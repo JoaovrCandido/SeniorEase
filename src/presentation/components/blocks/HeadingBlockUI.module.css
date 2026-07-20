@@ -4,14 +4,13 @@
   align-items: flex-start;
   gap: 16px;
   padding: 8px 16px;
-  margin-top: 32px; /* Muito respiro antes de um novo título */
-  margin-bottom: 16px; /* Respiro depois do título */
+  margin-top: 32px;
+  margin-bottom: 16px;
   border-radius: var(--radius-md);
   border: 2px solid transparent;
   transition: all 0.2s ease-in-out;
 }
 
-/* Dá um feedback visual discreto quando o idoso está a editar o título */
 .container:focus-within {
   background-color: var(--bg-surface);
   border-color: var(--primary-surface);
@@ -23,8 +22,6 @@
   min-height: var(--touch-target-min);
   border: none;
   background: transparent;
-
-  /* A magia do título: tipografia gigante e pesada */
   font-size: var(--text-xl);
   font-weight: 800;
   color: var(--text-heading);
@@ -43,7 +40,6 @@
   font-weight: 600;
 }
 
-/* Botão de apagar com área de toque segura (48px) */
 .deleteButton {
   flex-shrink: 0;
   display: flex;
@@ -56,7 +52,7 @@
   color: var(--text-body);
   border-radius: var(--radius-md);
   cursor: pointer;
-  opacity: 0.5; /* Fica mais discreto ao lado de um título */
+  opacity: 0.5;
   transition: all 0.2s;
 }
 
@@ -64,6 +60,60 @@
 .deleteButton:focus-visible {
   opacity: 1;
   color: var(--danger-main);
-  background-color: #fee2e2; /* Fundo de aviso suave */
+  background-color: #fee2e2;
   outline: none;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+    gap: 8px;
+    margin-top: 16px;
+    /* flex-direction: column; Força tudo a empilhar em coluna */
+  }
+  
+  .input {
+    width: 100%;
+    min-width: 0;
+    font-size: var(--text-lg);
+  }
+
+  /* Todos os botões ocupam a largura toda */
+  .input ~ * {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: var(--bg-canvas);
+    border-radius: var(--radius-md);
+    margin-top: 4px;
+  }
+}
+
+/* Adicione no final do ficheiro antes dos @media */
+.actionsWrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  .actionsWrapper {
+    width: 100%;
+    flex-direction: column; /* Empilha Emoji, Mic e Lixeira */
+    margin-top: 4px;
+  }
+  
+  /* Faz cada botão ocupar a linha toda para clique fácil */
+  .actionsWrapper > * {
+    width: 100%;
+    justify-content: center;
+    background-color: var(--bg-canvas);
+    border-radius: var(--radius-md);
+  }
 }

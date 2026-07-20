@@ -351,3 +351,103 @@ html.theme-advanced .advanced-block-container:focus-within [class*="EmojiPicker"
 html.theme-advanced .advanced-block-container:hover {
   background-color: var(--bg-canvas);
 }
+
+/* =========================================
+   RESPONSIVIDADE GLOBAL E MOBILE
+   ========================================= */
+
+@media (max-width: 768px) {
+  :root {
+    /* Encolhe os "respiros" gigantes para aproveitar o ecrã do telemóvel */
+    --space-lg: 16px;
+    --space-xl: 20px;
+    --text-xl: 1.5rem;
+  }
+
+  html.font-large {
+    --text-xl: 1.75rem; 
+  }
+
+  html.spacing-large {
+    --space-xl: 24px;
+  }
+
+  /* No mobile, o Modo Avançado exibe 2 colunas em vez de 4 */
+  html.theme-advanced div[class*="grid"] {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+    gap: 8px !important;
+  }
+}
+
+/* =========================================
+   CORREÇÃO CRÍTICA PARA DISPOSITIVOS DE TOQUE
+   ========================================= */
+/* Como telemóveis e tablets não têm rato (hover), 
+   garantimos que os botões de ação estão SEMPRE visíveis no Modo Avançado */
+@media (hover: none) and (pointer: coarse) {
+  html.theme-advanced .advanced-block-container button[aria-label="Mover para cima"],
+  html.theme-advanced .advanced-block-container button[aria-label="Mover para baixo"],
+  html.theme-advanced .advanced-block-container [class*="deleteButton"],
+  html.theme-advanced .advanced-block-container [class*="DictationButton"],
+  html.theme-advanced .advanced-block-container [class*="EmojiPicker"] {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: scale(1) !important;
+  }
+}
+
+/* =========================================
+   CORREÇÃO: OVERFLOW E VAZAMENTO DE TELA
+   ========================================= */
+
+/* Garante que NENHUM bloco de tarefa ou anotação ultrapasse o limite do ecrã */
+.advanced-block-container > div {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* O Segredo do Flexbox: min-width: 0 impede que os inputs forcem o ecrã a alargar */
+.advanced-block-container input,
+.advanced-block-container textarea,
+.advanced-block-container [class*="inputGroup"],
+.advanced-block-container [class*="inputRow"] {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-wrap: break-word !important; 
+}
+
+/* src/app/globals.css */
+
+/* =========================================
+   PADRONIZAÇÃO DOS BLOCOS EM COLUNA (MOBILE)
+   ========================================= */
+/* @media (max-width: 768px) {
+
+  .advanced-block-container > div {
+    flex-wrap: wrap !important;
+  }
+
+
+  .advanced-block-container textarea,
+  .advanced-block-container [class*="inputGroup"] {
+    flex: 1 1 100% !important;
+  }
+
+
+  .advanced-block-container input {
+    flex: 1 1 60% !important; 
+  }
+
+
+  .advanced-block-container [class*="deleteButton"],
+  .advanced-block-container [class*="DictationButton"],
+  .advanced-block-container [class*="EmojiPicker_triggerButton"] {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    justify-content: center !important;
+    margin-top: 8px !important;
+    background-color: var(--bg-canvas) !important;
+    border-radius: var(--radius-md) !important;
+  }
+} */

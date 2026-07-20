@@ -1,6 +1,7 @@
+/* src/presentation/components/blocks/ParagraphBlockUI.module.css */
 .container {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Ajustado para alinhar ao topo se a textarea crescer */
   gap: var(--space-md);
   margin-bottom: var(--space-md);
   padding: var(--space-md);
@@ -23,6 +24,7 @@
   color: var(--text-body);
   font-family: var(--font-sans);
   resize: vertical;
+  margin-top: 8px; /* Alinha o texto com o botão de apagar */
 }
 .textarea:focus {
   outline: none;
@@ -48,4 +50,56 @@
   color: var(--danger-main);
   background-color: #fee2e2;
   outline: none;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+    gap: 8px;
+    /* flex-direction: column; Força tudo a empilhar em coluna */
+  }
+
+  .textarea {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Todos os botões ocupam a largura toda e ficam centralizados */
+  .textarea ~ * {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: var(--bg-canvas);
+    border-radius: var(--radius-md);
+    margin-top: 4px;
+  }
+}
+
+/* Adicione no final do ficheiro antes dos @media */
+.actionsWrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  .actionsWrapper {
+    width: 100%;
+    flex-direction: column; /* Empilha Emoji, Mic e Lixeira */
+    margin-top: 4px;
+  }
+  
+  /* Faz cada botão ocupar a linha toda para clique fácil */
+  .actionsWrapper > * {
+    width: 100%;
+    justify-content: center;
+    background-color: var(--bg-canvas);
+    border-radius: var(--radius-md);
+  }
 }

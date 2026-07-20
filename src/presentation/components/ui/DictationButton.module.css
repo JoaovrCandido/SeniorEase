@@ -4,8 +4,8 @@
   border: 2px solid transparent;
   color: var(--text-body);
   cursor: pointer;
-  min-width: 48px;
-  min-height: 48px;
+  min-width: var(--touch-target-min); /* Substituído o 48px fixo pela variável */
+  min-height: var(--touch-target-min);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -14,7 +14,6 @@
   flex-shrink: 0;
 }
 
-/* Classe dinâmica quando está a gravar */
 .listening {
   background: #fee2e2;
   border-color: var(--danger-main);

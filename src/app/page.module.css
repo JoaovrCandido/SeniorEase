@@ -1,5 +1,4 @@
 /* src/app/page.module.css */
-
 .main {
   min-height: 100vh;
   padding-bottom: 100px;
@@ -11,7 +10,7 @@
 .dashboard {
   max-width: 1024px;
   margin: 0 auto;
-  padding: 24px 0;
+  padding: 24px 16px; /* Ajuste: 16px nas laterais para não colar no telemóvel */
 }
 
 .header {
@@ -77,7 +76,7 @@
 .editor {
   max-width: 1024px;
   margin: 0 auto;
-  padding: 24px 0;
+  padding: 24px 16px; /* Ajuste: 16px nas laterais */
 }
 
 .editorHeader {
@@ -139,7 +138,6 @@
   outline: none;
 }
 
-/* Substitua a antiga classe .a11yButton por esta no src/app/page.module.css */
 .backButton {
   background-color: var(--bg-surface);
   border: 2px solid var(--text-body);
@@ -172,19 +170,13 @@
   font-weight: 400;
   color: var(--text-heading);
   line-height: 2;
-  padding: var(--space-xl) 16px;
+  padding: var(--space-xl) 0;
   animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .readHeading {
@@ -235,10 +227,6 @@
   font-weight: inherit;
 }
 
-.readCard strong {
-  font-weight: inherit;
-}
-
 .toggleReadingButton {
   background-color: var(--bg-surface);
   color: var(--text-heading);
@@ -286,229 +274,156 @@
   width: auto;
 }
 
-.secondaryButton {
+.secondaryButton, .dangerButton {
   background: transparent;
-  border: 2px solid var(--text-body);
-  color: var(--text-heading);
   padding: 8px 16px;
   border-radius: var(--radius-md);
   font-weight: bold;
   cursor: pointer;
+  border: 2px solid;
 }
 
-.secondaryButton:hover {
-  background: var(--bg-canvas);
+.secondaryButton {
+  border-color: var(--text-body);
+  color: var(--text-heading);
 }
+.secondaryButton:hover { background: var(--bg-canvas); }
 
 .dangerButton {
-  background: transparent;
-  border: 2px solid var(--danger-main);
+  border-color: var(--danger-main);
   color: var(--danger-main);
-  padding: 8px 16px;
-  border-radius: var(--radius-md);
-  font-weight: bold;
-  cursor: pointer;
 }
-
-/* Modificado para usar a variável em vez de HEX fixo */
-.dangerButton:hover {
-  background: var(--danger-surface);
-}
+.dangerButton:hover { background: var(--danger-surface); }
 
 /* =========================================
    CLASSES UTILITÁRIAS
    ========================================= */
+.pageHeader { display: flex; gap: 16px; align-items: center; }
+.pageHeaderBetween { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+.contentWrapper { margin-top: 24px; }
+.flexAlignCenter { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.flexWrapGap16 { display: flex; gap: 16px; flex-wrap: wrap; }
+.flexColGap8 { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.mt16 { margin-top: 16px; }
 
-.pageHeader {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
-.pageHeaderBetween {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-.contentWrapper {
-  margin-top: 24px;
-}
-.flexAlignCenter {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
-.flexWrapGap16 {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.flexColGap8 {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-}
-.mt16 {
-  margin-top: 16px;
-}
+.textSuccess { color: var(--success-main); }
+.textBaseHeading, .textBaseBody { font-size: var(--text-base); display: flex; align-items: center; gap: 8px; }
+.textBaseHeading { color: var(--text-heading); }
+.textBaseBody { color: var(--text-body); }
+.textItalicSuccess { font-style: italic; color: var(--success-main); margin-top: 8px; display: block; }
+.textItalicPrimary { font-style: italic; color: var(--primary-main); }
+.textLgBoldHeading { font-size: var(--text-lg); font-weight: bold; color: var(--text-heading); margin-top: 8px; display: block; }
+.iconText { display: flex; align-items: center; gap: 8px; justify-content: center; }
 
-.textSuccess {
-  color: var(--success-main);
-}
-.textBaseHeading {
-  font-size: var(--text-base);
-  color: var(--text-heading);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.textBaseBody {
-  font-size: var(--text-base);
-  color: var(--text-body);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.textItalicSuccess {
-  font-style: italic;
-  color: var(--success-main);
-  margin-top: 8px;
-  display: block;
-}
-.textItalicPrimary {
-  font-style: italic;
-  color: var(--primary-main);
-}
-.textLgBoldHeading {
-  font-size: var(--text-lg);
+.cardSuccess { cursor: default; border: 2px solid var(--success-main); opacity: 0.9; }
+.cardDanger { cursor: default; border: 2px solid var(--danger-main); opacity: 0.9; }
+.cardDashed { cursor: default; border: 2px dashed var(--text-body); opacity: 0.9; }
+.cardDashedCreate { border-style: dashed; background-color: transparent; }
+
+.btnPrimarySurface, .btnOutline, .btnOutlineSuccess {
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
   font-weight: bold;
-  color: var(--text-heading);
-  margin-top: 8px;
-  display: block;
-}
-.iconText {
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-  justify-content: center;
-}
-
-.cardSuccess {
-  cursor: default;
-  border: 2px solid var(--success-main);
-  opacity: 0.9;
-}
-.cardDanger {
-  cursor: default;
-  border: 2px solid var(--danger-main);
-  opacity: 0.9;
-}
-.cardDashed {
-  cursor: default;
-  border: 2px dashed var(--text-body);
-  opacity: 0.9;
-}
-.cardDashedCreate {
-  border-style: dashed;
-  background-color: transparent;
+  transition: all 0.2s;
 }
 
 .btnPrimarySurface {
   background-color: var(--primary-surface);
   border: none;
   color: var(--primary-main);
-  padding: 8px 16px;
-  border-radius: var(--radius-md);
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
 }
-.btnPrimarySurface:hover {
-  filter: brightness(0.95);
-  transform: translateY(-2px);
-}
+.btnPrimarySurface:hover { filter: brightness(0.95); transform: translateY(-2px); }
 
 .btnOutline {
   background-color: transparent;
   border: 2px solid var(--text-body);
   color: var(--text-heading);
-  padding: 8px 16px;
-  border-radius: var(--radius-md);
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
 }
-.btnOutline:hover {
-  background-color: var(--bg-canvas);
-  transform: translateY(-2px);
-}
+.btnOutline:hover { background-color: var(--bg-canvas); transform: translateY(-2px); }
 
 .btnOutlineSuccess {
   background-color: transparent;
   border: 2px solid var(--success-main);
   color: var(--success-main);
-  padding: 8px 16px;
-  border-radius: var(--radius-md);
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
+}
+.btnOutlineSuccess:hover { background-color: var(--success-surface); transform: translateY(-2px); }
+
+.trashContainer { display: flex; flex-direction: column; gap: 48px; margin-top: 24px; }
+.sectionTitle { font-size: var(--text-xl); margin-bottom: 16px; color: var(--text-heading); }
+.editorHeaderWrap { flex-wrap: wrap; justify-content: space-between; align-items: flex-start; }
+.editorA11yControls { display: flex; gap: 16px; align-items: center; margin-top: 16px; padding: 16px 0; border-top: 1px solid var(--text-body); }
+.modalContent { display: flex; flex-direction: column; gap: var(--space-lg); }
+.modalFooter { display: flex; justify-content: flex-end; gap: var(--space-md); }
+.divider { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+
+/* =========================================
+   RESPONSIVIDADE E MOBILE
+   ========================================= */
+/* src/app/page.module.css */
+
+/* =========================================
+   RESPONSIVIDADE E MOBILE
+   ========================================= */
+@media (max-width: 768px) {
+  .main {
+    padding-bottom: 180px; /* Garante que a barra não tapa a última tarefa */
+  }
+
+  .pageHeaderBetween {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-md);
+  }
+
+  .flexWrapGap16 {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .flexWrapGap16 button, .flexWrapGap16 a {
+    flex: 1 1 calc(50% - 8px); 
+    font-size: 0.9rem;
+    justify-content: center;
+  }
+
+  .editorHeader .flexAlignCenter {
+    flex-wrap: wrap;
+  }
+  
+  .editorHeader .flexAlignCenter button {
+    flex: 1 1 calc(50% - 8px);
+    justify-content: center;
+  }
+
+  /* ==============================================
+     A BARRA INFERIOR (Grid Perfeito e sem Vazamento)
+     ============================================== */
+  .bottomBar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Padrão: 2 colunas cravadas */
+    gap: 8px;
+    padding: 12px;
+    padding-bottom: env(safe-area-inset-bottom, 16px); 
+    border-top: 1px solid var(--bg-canvas);
+    height: auto;
+  }
+  
+  .bottomBar .actionButton {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 4px;
+    font-size: 0.85rem;
+  }
 }
 
-/* Modificado para usar a variável em vez de HEX fixo */
-.btnOutlineSuccess:hover {
-  background-color: var(--success-surface);
-  transform: translateY(-2px);
-}
-
-.trashContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-  margin-top: 24px;
-}
-.sectionTitle {
-  font-size: var(--text-xl);
-  margin-bottom: 16px;
-  color: var(--text-heading);
-}
-.editorHeaderWrap {
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.editorA11yControls {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  margin-top: 16px;
-  padding: 16px 0;
-  border-top: 1px solid var(--text-body);
-}
-.modalContent {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-}
-.modalFooter {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-md);
-}
-
-.divider {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
+/* Se o telemóvel for mais largo (modo paisagem), cabem 4 na mesma linha */
+@media (min-width: 480px) and (max-width: 768px) {
+  .bottomBar {
+    grid-template-columns: repeat(4, 1fr); 
+  }
 }

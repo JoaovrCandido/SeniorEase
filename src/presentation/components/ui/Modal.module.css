@@ -9,25 +9,12 @@
   display: flex;
   z-index: 100;
   backdrop-filter: blur(4px);
-}
-
-.overlayCenter {
-  align-items: center;
-  justify-content: center;
   padding: var(--space-md);
 }
 
-.overlayLeft {
-  align-items: stretch;
-  justify-content: flex-start;
-  padding: var(--space-md);
-}
-
-.overlayRight {
-  align-items: stretch;
-  justify-content: flex-end;
-  padding: var(--space-md);
-}
+.overlayCenter { align-items: center; justify-content: center; }
+.overlayLeft { align-items: stretch; justify-content: flex-start; }
+.overlayRight { align-items: stretch; justify-content: flex-end; }
 
 .modal {
   background-color: var(--bg-surface);
@@ -37,17 +24,12 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-
   scrollbar-color: var(--primary-main) transparent;
   scrollbar-width: thin;
 }
 
-.modal::-webkit-scrollbar {
-  width: 8px;
-}
-.modal::-webkit-scrollbar-track {
-  background: transparent;
-}
+.modal::-webkit-scrollbar { width: 8px; }
+.modal::-webkit-scrollbar-track { background: transparent; }
 .modal::-webkit-scrollbar-thumb {
   background-color: var(--primary-main);
   border-radius: var(--radius-lg);
@@ -61,70 +43,33 @@
   overflow-y: auto;
 }
 
-.modalLeft {
+.modalLeft, .modalRight {
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
   max-height: 100%;
   overflow-y: auto;
-  animation: slideInLeft 0.3s ease-out;
 }
 
-.modalRight {
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  max-height: 100%;
-  overflow-y: auto;
-  animation: slideInRight 0.3s ease-out;
-}
+.modalLeft { animation: slideInLeft 0.3s ease-out; }
+.modalRight { animation: slideInRight 0.3s ease-out; }
 
 @keyframes popIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
-
 @keyframes slideInLeft {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
 }
-
 @keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.header { display: flex; justify-content: space-between; align-items: center; }
+.title { font-size: var(--text-xl); color: var(--text-heading); font-weight: 700; }
+.headerActions { display: flex; gap: 12px; align-items: center; }
 
-.title {
-  font-size: var(--text-xl);
-  color: var(--text-heading);
-  font-weight: 700;
-}
-
-.headerActions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-/* O Botão de Ajuda Perfeito (Amarelo e com borda) */
 .helpButton {
   background-color: var(--primary-surface);
   border: none;
@@ -140,12 +85,8 @@
 }
 
 .helpButton:hover,
-.helpButton:focus-visible {
-  filter: brightness(0.95);
-  transform: translateY(-2px);
-}
+.helpButton:focus-visible { filter: brightness(0.95); transform: translateY(-2px); }
 
-/* O Botão de Fechar Consistente com a Plataforma */
 .closeButton {
   background: transparent;
   border: none;
@@ -166,14 +107,27 @@
   outline: none;
 }
 
-.footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-md);
-  margin-top: var(--space-sm);
-}
+.footer { display: flex; justify-content: flex-end; gap: var(--space-md); margin-top: var(--space-sm); }
 
-@media (max-width: 600px) {
+/* RESPONSIVIDADE DOS MODAIS */
+@media (max-width: 768px) {
+  .overlay {
+    padding: 0; /* Remove o padding do overlay para o modal colar nos cantos */
+  }
+
+  .modalCenter {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    margin-top: auto; /* Faz o modal colar ao fundo do ecrã (Bottom Sheet) */
+    padding: var(--space-lg);
+    max-height: 95vh;
+  }
+
+  .modalLeft, .modalRight {
+    border-radius: 0; /* Ocupa o ecrã todo */
+    max-width: 100%;
+    padding: var(--space-lg);
+  }
+
   .footer {
     flex-direction: column;
     align-items: stretch;

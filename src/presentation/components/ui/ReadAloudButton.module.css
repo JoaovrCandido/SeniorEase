@@ -14,17 +14,30 @@
   min-height: var(--touch-target-min);
   transition: all 0.2s ease;
 }
+
 .button:hover,
 .button:focus-visible {
   filter: brightness(0.95);
   outline: none;
 }
+
 .speaking {
   background-color: #fee2e2;
   color: var(--danger-main);
 }
+
 .iconWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  .button {
+    padding: 8px 16px;
+    font-size: var(--text-sm); /* Reduz o texto para não esmagar o cabeçalho no mobile */
+  }
 }
