@@ -74,7 +74,7 @@
     margin-top: 16px;
     /* flex-direction: column; Força tudo a empilhar em coluna */
   }
-  
+
   .input {
     width: 100%;
     min-width: 0;
@@ -108,7 +108,7 @@
     flex-direction: column; /* Empilha Emoji, Mic e Lixeira */
     margin-top: 4px;
   }
-  
+
   /* Faz cada botão ocupar a linha toda para clique fácil */
   .actionsWrapper > * {
     width: 100%;

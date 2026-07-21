@@ -94,7 +94,7 @@
     flex-direction: column; /* Empilha Emoji, Mic e Lixeira */
     margin-top: 4px;
   }
-  
+
   /* Faz cada botão ocupar a linha toda para clique fácil */
   .actionsWrapper > * {
     width: 100%;

@@ -24,14 +24,25 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-  transition: top 0.4s ease, bottom 0.4s ease, left 0.4s ease, right 0.4s ease, transform 0.4s ease, max-width 0.3s ease;
+  transition:
+    top 0.4s ease,
+    bottom 0.4s ease,
+    left 0.4s ease,
+    right 0.4s ease,
+    transform 0.4s ease,
+    max-width 0.3s ease;
   scrollbar-width: thin;
   scrollbar-color: var(--primary-main) var(--bg-canvas);
   pointer-events: auto;
 }
 
-.dialog::-webkit-scrollbar { width: 10px; }
-.dialog::-webkit-scrollbar-track { background: var(--bg-canvas); border-radius: var(--radius-md); }
+.dialog::-webkit-scrollbar {
+  width: 10px;
+}
+.dialog::-webkit-scrollbar-track {
+  background: var(--bg-canvas);
+  border-radius: var(--radius-md);
+}
 .dialog::-webkit-scrollbar-thumb {
   background-color: var(--primary-main);
   border-radius: var(--radius-md);
@@ -62,49 +73,212 @@
 }
 
 /* POSICIONAMENTOS (QUADRANTES) */
-.dialogCenter { top: 50%; left: 50%; transform: translate(-50%, -50%); animation: popInCenter 0.3s ease-out; }
-.dialogTopCenter { top: 24px; bottom: auto; left: 50%; right: auto; transform: translateX(-50%); animation: popInTopCenter 0.3s ease-out; }
-.dialogBottomCenter { top: auto; bottom: 24px; left: 50%; right: auto; transform: translateX(-50%); animation: popInBottomCenter 0.3s ease-out; }
-.dialogTopLeft { top: 24px; bottom: auto; left: 24px; right: auto; transform: none; animation: popInTopLeft 0.3s ease-out; }
-.dialogTopRight { top: 24px; bottom: auto; left: auto; right: 24px; transform: none; animation: popInTopRight 0.3s ease-out; }
-.dialogBottomLeft { top: auto; bottom: 24px; left: 24px; right: auto; transform: none; animation: popInBottomLeft 0.3s ease-out; }
-.dialogBottomRight { top: auto; bottom: 24px; left: auto; right: 24px; transform: none; animation: popInBottomRight 0.3s ease-out; }
-
-@keyframes popInCenter { from { opacity: 0; transform: translate(-50%, -45%); } to { opacity: 1; transform: translate(-50%, -50%); } }
-@keyframes popInTopCenter { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translateX(-50%); } }
-@keyframes popInBottomCenter { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translateX(-50%); } }
-@keyframes popInTopLeft { from { opacity: 0; transform: translate(-20px, -20px); } to { opacity: 1; transform: translate(0, 0); } }
-@keyframes popInTopRight { from { opacity: 0; transform: translate(20px, -20px); } to { opacity: 1; transform: translate(0, 0); } }
-@keyframes popInBottomLeft { from { opacity: 0; transform: translate(-20px, 20px); } to { opacity: 1; transform: translate(0, 0); } }
-@keyframes popInBottomRight { from { opacity: 0; transform: translate(20px, 20px); } to { opacity: 1; transform: translate(0, 0); } }
-
-.title { font-size: var(--text-xl); color: var(--primary-main); font-weight: 800; padding-right: 40px; }
-.description { font-size: var(--text-lg); color: var(--text-body); line-height: 1.5; }
-.footer { display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md); flex-wrap: wrap; gap: var(--space-md); }
-.stepIndicator { font-size: var(--text-base); font-weight: bold; color: var(--text-body); }
-.audioControls { display: flex; gap: 8px; margin-top: 16px; }
-.audioButton {
-  display: flex; align-items: center; gap: 8px; background: var(--primary-surface);
-  color: var(--primary-main); border: none; padding: 12px 16px; border-radius: var(--radius-md);
-  font-weight: bold; cursor: pointer; font-size: var(--text-base); transition: background-color 0.2s;
+.dialogCenter {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: popInCenter 0.3s ease-out;
 }
-.audioButtonSpeaking { background: var(--danger-surface); color: var(--danger-main); }
-.iconWrapper { display: flex; align-items: center; justify-content: center; }
-.actionButtons { display: flex; gap: 16px; }
+.dialogTopCenter {
+  top: 24px;
+  bottom: auto;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  animation: popInTopCenter 0.3s ease-out;
+}
+.dialogBottomCenter {
+  top: auto;
+  bottom: 24px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  animation: popInBottomCenter 0.3s ease-out;
+}
+.dialogTopLeft {
+  top: 24px;
+  bottom: auto;
+  left: 24px;
+  right: auto;
+  transform: none;
+  animation: popInTopLeft 0.3s ease-out;
+}
+.dialogTopRight {
+  top: 24px;
+  bottom: auto;
+  left: auto;
+  right: 24px;
+  transform: none;
+  animation: popInTopRight 0.3s ease-out;
+}
+.dialogBottomLeft {
+  top: auto;
+  bottom: 24px;
+  left: 24px;
+  right: auto;
+  transform: none;
+  animation: popInBottomLeft 0.3s ease-out;
+}
+.dialogBottomRight {
+  top: auto;
+  bottom: 24px;
+  left: auto;
+  right: 24px;
+  transform: none;
+  animation: popInBottomRight 0.3s ease-out;
+}
 
-:global(.tour-prevent-click) { pointer-events: none !important; }
+@keyframes popInCenter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+@keyframes popInTopCenter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+}
+@keyframes popInBottomCenter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+}
+@keyframes popInTopLeft {
+  from {
+    opacity: 0;
+    transform: translate(-20px, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+@keyframes popInTopRight {
+  from {
+    opacity: 0;
+    transform: translate(20px, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+@keyframes popInBottomLeft {
+  from {
+    opacity: 0;
+    transform: translate(-20px, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+@keyframes popInBottomRight {
+  from {
+    opacity: 0;
+    transform: translate(20px, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+.title {
+  font-size: var(--text-xl);
+  color: var(--primary-main);
+  font-weight: 800;
+  padding-right: 40px;
+}
+.description {
+  font-size: var(--text-lg);
+  color: var(--text-body);
+  line-height: 1.5;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-md);
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+.stepIndicator {
+  font-size: var(--text-base);
+  font-weight: bold;
+  color: var(--text-body);
+}
+.audioControls {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+.audioButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary-surface);
+  color: var(--primary-main);
+  border: none;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: var(--text-base);
+  transition: background-color 0.2s;
+}
+.audioButtonSpeaking {
+  background: var(--danger-surface);
+  color: var(--danger-main);
+}
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.actionButtons {
+  display: flex;
+  gap: 16px;
+}
+
+:global(.tour-prevent-click) {
+  pointer-events: none !important;
+}
 :global(.tour-highlight) {
   z-index: 99999 !important;
   background-color: var(--bg-surface) !important;
-  box-shadow: 0 0 0 8px var(--bg-surface), 0 0 0 9999px rgba(0, 0, 0, 0.75) !important;
+  box-shadow:
+    0 0 0 8px var(--bg-surface),
+    0 0 0 9999px rgba(0, 0, 0, 0.75) !important;
   border-radius: var(--radius-md) !important;
   pointer-events: none !important;
   scroll-margin-top: 140px !important;
   scroll-margin-bottom: 140px !important;
   position: relative !important;
 }
-:global(.tour-elevate) { z-index: 9999 !important; }
-:global(.tour-overflow-visible) { overflow: visible !important; overflow-x: visible !important; overflow-y: visible !important; }
+:global(.tour-elevate) {
+  z-index: 9999 !important;
+}
+:global(.tour-overflow-visible) {
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
 
 /* =========================================
    RESPONSIVIDADE (MOBILE)
@@ -113,7 +287,7 @@
   .dialog {
     width: 95%;
     padding: var(--space-lg);
-    
+
     /* MÁGICA: No telemóvel, forçamos o balão a ficar SEMPRE preso em baixo 
        (estilo Bottom Sheet) para nunca tapar elementos do topo */
     top: auto !important;
@@ -123,7 +297,7 @@
     transform: translateX(-50%) !important;
     animation: popInBottomCenter 0.3s ease-out !important;
   }
-  
+
   .footer {
     flex-direction: column;
     align-items: stretch;

@@ -1,7 +1,7 @@
 // src/presentation/hooks/useDictation.spec.ts
-import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useDictation } from './useDictation';
+import { renderHook, act } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { useDictation } from "./useDictation";
 
 // 1. Criamos os espiões globais
 const mockStart = vi.fn();
@@ -9,7 +9,7 @@ const mockStop = vi.fn();
 const mockShowToast = vi.fn();
 
 // 2. CORREÇÃO: Mockamos a Classe para aceitar o 'new'
-vi.mock('../../infrastructure/services/SpeechRecognitionService', () => {
+vi.mock("../../infrastructure/services/SpeechRecognitionService", () => {
   return {
     SpeechRecognitionService: vi.fn().mockImplementation(function () {
       return {
@@ -20,16 +20,16 @@ vi.mock('../../infrastructure/services/SpeechRecognitionService', () => {
   };
 });
 
-vi.mock('../store/ToastContext', () => ({
+vi.mock("../store/ToastContext", () => ({
   useToast: () => ({ showToast: mockShowToast }),
 }));
 
-describe('useDictation', () => {
+describe("useDictation", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('deve disparar erro via Toast se o microfone falhar (exceto no-speech)', () => {
+  it("deve disparar erro via Toast se o microfone falhar (exceto no-speech)", () => {
     const { result } = renderHook(() => useDictation());
 
     act(() => {
@@ -46,13 +46,13 @@ describe('useDictation', () => {
 
     // Simulamos que o microfone deu erro "not-allowed"
     act(() => {
-      onErrorCallback('not-allowed');
+      onErrorCallback("not-allowed");
     });
 
     expect(result.current.isListening).toBe(false);
     expect(mockShowToast).toHaveBeenCalledWith(
-      'Microfone indisponível ou permissão negada.',
-      'error'
+      "Microfone indisponível ou permissão negada.",
+      "error",
     );
   });
 });

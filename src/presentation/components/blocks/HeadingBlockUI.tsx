@@ -98,7 +98,7 @@ export const HeadingBlockUI: React.FC<HeadingBlockUIProps> = ({
         onBlur={handleBlur}
         placeholder="Escreva um Título Principal..."
       />
-      
+
       {/* CORREÇÃO: Remoção do style inline e adição da classe actionsWrapper */}
       <div
         id={isFirst ? "tour-first-block-actions" : undefined}

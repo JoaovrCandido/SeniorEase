@@ -95,12 +95,13 @@
     width: 100%; /* Previne overflow */
   }
   .inputRow {
-    flex-direction: column; 
+    flex-direction: column;
     gap: 4px;
   }
-  
+
   /* Força os inputs a respeitarem o limite da tela */
-  .inputTitle, .inputBase {
+  .inputTitle,
+  .inputBase {
     width: 100%;
     min-width: 0;
   }
@@ -114,7 +115,7 @@
     border-radius: var(--radius-md);
     margin-top: 4px;
   }
-  
+
   .iconWrapper {
     display: none;
   }

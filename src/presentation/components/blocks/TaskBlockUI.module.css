@@ -101,7 +101,9 @@
   color: var(--text-body);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: color 0.2s, background-color 0.2s;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
 }
 
 .deleteButton:hover,
@@ -176,7 +178,7 @@
     flex-direction: column; /* Empilha Emoji, Mic e Lixeira */
     margin-top: 4px;
   }
-  
+
   .actionsWrapper > * {
     width: 100%;
     justify-content: center;

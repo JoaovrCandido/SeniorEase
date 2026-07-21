@@ -105,16 +105,18 @@
     width: 100%; /* Previne overflow */
   }
   .inputRow {
-    flex-direction: column; 
+    flex-direction: column;
     gap: 4px;
   }
-  
+
   /* Força os inputs a respeitarem o limite da tela */
-  .inputTitle, .inputBase, .inputUrl {
+  .inputTitle,
+  .inputBase,
+  .inputUrl {
     width: 100%;
-    min-width: 0; 
+    min-width: 0;
   }
-  
+
   /* Padroniza o visual das ações em coluna */
   .headerRow ~ * {
     width: 100%;
@@ -124,7 +126,7 @@
     border-radius: var(--radius-md);
     margin-top: 4px;
   }
-  
+
   .iconWrapper {
     display: none;
   }

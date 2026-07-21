@@ -96,7 +96,7 @@ export default function HistoryPage() {
                   className={`${styles.card} ${styles.cardSuccess}`}
                 >
                   <span className={styles.textBaseHeading}>
-                    <CheckIcon /> {block.content || "Tarefa concluída"}
+                    <CheckIcon /> {"content" in block ? block.content : ""}
                   </span>
                   <span className={styles.textItalicSuccess}>
                     Concluído no caderno: {notebookTitle}

@@ -319,8 +319,12 @@ html.theme-advanced .advanced-block-container {
 }
 
 /* 2. Esconde TODOS os botões secundários por padrão */
-html.theme-advanced .advanced-block-container button[aria-label="Mover para cima"],
-html.theme-advanced .advanced-block-container button[aria-label="Mover para baixo"],
+html.theme-advanced
+  .advanced-block-container
+  button[aria-label="Mover para cima"],
+html.theme-advanced
+  .advanced-block-container
+  button[aria-label="Mover para baixo"],
 html.theme-advanced .advanced-block-container [class*="deleteButton"],
 html.theme-advanced .advanced-block-container [class*="DictationButton"],
 html.theme-advanced .advanced-block-container [class*="EmojiPicker"] {
@@ -332,16 +336,30 @@ html.theme-advanced .advanced-block-container [class*="EmojiPicker"] {
 
 /* 3. A Mágica: Revela TODOS os botões quando o rato passa por cima 
    OU quando o utilizador clica dentro do input (focus-within) */
-html.theme-advanced .advanced-block-container:hover button[aria-label="Mover para cima"],
-html.theme-advanced .advanced-block-container:hover button[aria-label="Mover para baixo"],
+html.theme-advanced
+  .advanced-block-container:hover
+  button[aria-label="Mover para cima"],
+html.theme-advanced
+  .advanced-block-container:hover
+  button[aria-label="Mover para baixo"],
 html.theme-advanced .advanced-block-container:hover [class*="deleteButton"],
 html.theme-advanced .advanced-block-container:hover [class*="DictationButton"],
 html.theme-advanced .advanced-block-container:hover [class*="EmojiPicker"],
-html.theme-advanced .advanced-block-container:focus-within button[aria-label="Mover para cima"],
-html.theme-advanced .advanced-block-container:focus-within button[aria-label="Mover para baixo"],
-html.theme-advanced .advanced-block-container:focus-within [class*="deleteButton"],
-html.theme-advanced .advanced-block-container:focus-within [class*="DictationButton"],
-html.theme-advanced .advanced-block-container:focus-within [class*="EmojiPicker"] {
+html.theme-advanced
+  .advanced-block-container:focus-within
+  button[aria-label="Mover para cima"],
+html.theme-advanced
+  .advanced-block-container:focus-within
+  button[aria-label="Mover para baixo"],
+html.theme-advanced
+  .advanced-block-container:focus-within
+  [class*="deleteButton"],
+html.theme-advanced
+  .advanced-block-container:focus-within
+  [class*="DictationButton"],
+html.theme-advanced
+  .advanced-block-container:focus-within
+  [class*="EmojiPicker"] {
   opacity: 1;
   pointer-events: auto;
   transform: scale(1);
@@ -365,7 +383,7 @@ html.theme-advanced .advanced-block-container:hover {
   }
 
   html.font-large {
-    --text-xl: 1.75rem; 
+    --text-xl: 1.75rem;
   }
 
   html.spacing-large {
@@ -385,8 +403,12 @@ html.theme-advanced .advanced-block-container:hover {
 /* Como telemóveis e tablets não têm rato (hover), 
    garantimos que os botões de ação estão SEMPRE visíveis no Modo Avançado */
 @media (hover: none) and (pointer: coarse) {
-  html.theme-advanced .advanced-block-container button[aria-label="Mover para cima"],
-  html.theme-advanced .advanced-block-container button[aria-label="Mover para baixo"],
+  html.theme-advanced
+    .advanced-block-container
+    button[aria-label="Mover para cima"],
+  html.theme-advanced
+    .advanced-block-container
+    button[aria-label="Mover para baixo"],
   html.theme-advanced .advanced-block-container [class*="deleteButton"],
   html.theme-advanced .advanced-block-container [class*="DictationButton"],
   html.theme-advanced .advanced-block-container [class*="EmojiPicker"] {
@@ -414,7 +436,7 @@ html.theme-advanced .advanced-block-container:hover {
 .advanced-block-container [class*="inputRow"] {
   min-width: 0 !important;
   max-width: 100% !important;
-  overflow-wrap: break-word !important; 
+  overflow-wrap: break-word !important;
 }
 
 /* src/app/globals.css */

@@ -4,7 +4,9 @@
   border: 2px solid transparent;
   color: var(--text-body);
   cursor: pointer;
-  min-width: var(--touch-target-min); /* Substituído o 48px fixo pela variável */
+  min-width: var(
+    --touch-target-min
+  ); /* Substituído o 48px fixo pela variável */
   min-height: var(--touch-target-min);
   border-radius: var(--radius-md);
   display: flex;

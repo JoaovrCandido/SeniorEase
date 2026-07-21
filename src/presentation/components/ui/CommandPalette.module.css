@@ -144,7 +144,7 @@
     padding-top: 0;
     align-items: flex-start;
   }
-  
+
   .palette {
     width: 100%;
     height: 100vh; /* Ocupa o ecrã todo no mobile */
@@ -154,11 +154,15 @@
   }
 
   .searchInput {
-    font-size: var(--text-base); /* Evita que o iOS faça zoom automático no input */
+    font-size: var(
+      --text-base
+    ); /* Evita que o iOS faça zoom automático no input */
   }
 
   .resultsList {
-    max-height: calc(100vh - 140px); /* Dá espaço para o teclado virtual do telemóvel */
+    max-height: calc(
+      100vh - 140px
+    ); /* Dá espaço para o teclado virtual do telemóvel */
     padding-bottom: 50vh; /* Truque para conseguir fazer scroll além do teclado */
   }
 

@@ -38,6 +38,8 @@
 @media (max-width: 768px) {
   .button {
     padding: 8px 16px;
-    font-size: var(--text-sm); /* Reduz o texto para não esmagar o cabeçalho no mobile */
+    font-size: var(
+      --text-sm
+    ); /* Reduz o texto para não esmagar o cabeçalho no mobile */
   }
 }

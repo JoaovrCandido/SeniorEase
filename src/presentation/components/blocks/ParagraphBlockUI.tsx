@@ -95,7 +95,7 @@ export const ParagraphBlockUI: React.FC<Props> = ({
         }
         placeholder="Digite sua anotação aqui..."
       />
-      
+
       {/* CORREÇÃO: Remoção do style inline e adição da classe actionsWrapper */}
       <div
         id={isFirst ? "tour-first-block-actions" : undefined}
